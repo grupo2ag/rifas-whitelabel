@@ -1,0 +1,54 @@
+.c-nav {
+    @apply flex items-center justify-center gap-10 md:gap-4 lg:gap-6;
+
+    &__item{
+        @apply text-xl lg:text-base xl:text-base text-black md:text-black font-semibold cursor-pointer relative hover:opacity-70;
+
+        &:before{
+            content: "";
+            @apply w-[0] h-[2px] absolute left-0 -bottom-0 bg-black;
+            transition: .5s;
+            -webkit-transition: .5s;
+        }
+
+        &:hover{
+            &:before{
+                @apply w-full;
+            }
+        }
+
+        &--emphasis{
+            @apply py-2 px-6 bg-secondary rounded-full;
+
+            &:before{
+                display: none;
+            }
+        }
+    }
+
+    &--vertical{
+        @apply gap-0 flex flex-col items-start justify-start;
+
+        .c-nav__item{
+            @apply flex my-3 px-6 lg:px-0;
+        }
+    }
+
+    &--footer{
+        @apply w-full md:flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6;
+
+        .c-nav__item{
+            @apply text-base;
+        }
+    }
+
+}
+
+.c-header-mb{
+    @apply  w-full fixed bottom-0 bg-white  flex justify-center w-full z-[10] gap-[1px] md:hidden;
+
+    &__item{
+        @apply bg-primary text-white flex-1 px-3 py-2.5 text-sm flex flex-col justify-center items-center gap-0.5;
+    }
+}
+

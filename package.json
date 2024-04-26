@@ -1,0 +1,28 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "dependencies": {
+        "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/inertia-vue3": "^0.6.0",
+        "@vitejs/plugin-vue": "^5.0.4",
+        "@vueuse/core": "^10.9.0",
+        "autoprefixer": "^10.4.19",
+        "axios": "^1.6.4",
+        "daisyui": "^4.10.2",
+        "daisyui-vue": "^0.0.1-alpha.21",
+        "laravel-vite-plugin": "^1.0.2",
+        "postcss": "^8.4.38",
+        "sass": "^1.70.0",
+        "swiper": "^11.1.1",
+        "tailwindcss": "^3.4.3",
+        "vite": "^5.0",
+        "vue": "^3.4.25"
+    },
+    "devDependencies": {
+        "vue-plugin-load-script": "^2.1.1"
+    }
+}

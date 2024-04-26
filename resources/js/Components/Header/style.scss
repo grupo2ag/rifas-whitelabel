@@ -1,0 +1,106 @@
+.c-header {
+    @apply w-full bg-white py-4 md:py-4 lg:py-5 flex justify-center fixed top-0 left-0 z-20;
+}
+
+.c-sidebar-mb {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: -100%;
+    visibility: hidden;
+    -webkit-transition: 200ms ease-in;
+    transition: 200ms ease-in;
+    z-index: -9;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    @apply flex bg-[#F7F7F7] pb-[62px] pl-5  pt-1;
+
+    &.active {
+        top: 0;
+        visibility: visible;
+        z-index: 18;
+    }
+
+    .text-social{
+        @apply text-3xl font-bold tracking-[0.15rem];
+        text-orientation: mixed;
+        writing-mode: vertical-rl;
+        transform: rotate(-180deg);
+    }
+
+    &__box {
+        width: 80px;
+        height: calc(100% - 62px);
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        .c-menu__text {
+            font-size: 2.0rem;
+            top: 50px;
+            font-weight: bold;
+            //position: absolute;
+            transform: rotate(-90deg);
+
+        }
+    }
+
+    /* &:before {
+         content: '';
+         width: 100%;
+         height: 100%;
+         position: absolute;
+         top: 0;
+         left: 0;
+         background: rgba(0, 0, 0, 0.6);
+         background-blend-mode: overlay;
+         mix-blend-mode: normal;
+         backdrop-filter: blur(10px);
+         z-index: -1;
+     }*/
+}
+
+.o-hamburguer {
+
+    .trace{
+        @apply w-6 h-5 flex items-center justify-center;
+
+        span {
+            @apply w-full h-[2px] bg-secondary relative rounded-xl;
+            transition: 0.2s ease-in-out, top 0.2s ease-out;
+
+            &:before, &:after {
+                content: "";
+                @apply w-full h-full bg-secondary absolute left-0;
+                transition: 0.2s ease-in-out, top 0.2s ease-out;
+            }
+
+            &:before {
+                top: 6px;
+            }
+
+            &:after {
+                bottom: 6px;
+            }
+        }
+    }
+
+    &.active {
+        .trace span {
+            background-color: transparent;
+            transition: 0.2s ease-out;
+
+            &:before {
+                top: 0!important;
+                transform: rotate3d(0, 0, 1, -45deg);
+            }
+
+            &:after {
+                top: 0!important;
+                transform: rotate3d(0, 0, 1, 45deg);
+            }
+        }
+    }
+}
