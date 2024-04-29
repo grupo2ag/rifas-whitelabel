@@ -580,7 +580,7 @@ export default {
             <div class="grid grid-cols-4 md:grid-cols-12 gap-2 md:gap-1 mt-5">
                 <template v-for="(item, index) in data" :key="index">
                     <Tooltip variant="primary" content="Luiz Meirelles" placement="top">
-                        <button :ref="'numb_' + index"
+                        <button type="button" :ref="'numb_' + index"
                                 class="c-raffle__number"
                                 :class="item.status === 'paid' ? 'c-raffle__number--success' : item.status === 'reserved' ? 'c-raffle__number--reserved' : ''"
                                 @click="addItem(index, item.status)">
