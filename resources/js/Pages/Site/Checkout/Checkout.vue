@@ -2,7 +2,7 @@
 import App from '@/Pages/App.vue'
 import Icon from '@/Components/Icon/Icon.vue'
 import Tab from '@/Components/Tabs/Tab.vue'
-import PaymentExposed from '@/Pages/Checkout/PaymentExposed/PaymentExposed.vue'
+import PaymentExposed from '@/Pages/Site/Checkout/PaymentExposed/PaymentExposed.vue'
 import {Button, Progress, Tooltip, TabPanel} from 'daisyui-vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
@@ -72,7 +72,7 @@ export default {
 
 <template>
     <App>
-        <section class="pt-16 md:pt-28 md:pb-4">
+        <section class="pt-16 md:pt-24 md:pb-4">
             <div class="container p-8 md:rounded-3xl flex flex-col md:flex-row mx-auto gap-8 bg-white">
                 <div class="w-full md:w-7/12 flex flex-col items-start">
                     <h1 class="text-3xl font-bold uppercase mb-1 md:hidden">VITAMINI C GUMMY</h1>
@@ -212,6 +212,20 @@ export default {
         <section id="purchase" class="md:py-4">
             <div class="container flex-col lg:flex-row p-8 md:rounded-3xl bg-white">
                 <PaymentExposed/>
+            </div>
+        </section>
+
+        <section class="py-4">
+            <div class="container p-8 rounded-3xl flex flex-col gap-8 bg-white">
+                <div class="w-full">
+                    <p class="text-lg font-bold text-black mb-4">Prêmios</p>
+
+                    <ul>
+                        <li class="text-black">1 Prêmio - ED. 09 - IPHONE 14 128GB LACRADO OU 4000 NO PIX</li>
+                        <li class="text-black">2 Prêmio - ED. 09 - IPHONE 14 128GB LACRADO OU 4000 NO PIX</li>
+                        <li class="text-black">3 Prêmio - ED. 09 - IPHONE 14 128GB LACRADO OU 4000 NO PIX</li>
+                    </ul>
+                </div>
             </div>
         </section>
 

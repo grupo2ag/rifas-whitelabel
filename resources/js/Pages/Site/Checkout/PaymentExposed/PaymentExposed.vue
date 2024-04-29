@@ -1,5 +1,5 @@
 <script>
-import {Button, Progress, Tooltip, TabPanel} from 'daisyui-vue';
+import {Button, Tooltip} from 'daisyui-vue';
 
 export default {
     name: "PaymentExposed",
@@ -515,9 +515,6 @@ export default {
             selected: [],
             showModal: true,
         }
-    },
-    mounted() {
-        //this.items = this.data
     },
     methods: {
         filterItems(status) {
