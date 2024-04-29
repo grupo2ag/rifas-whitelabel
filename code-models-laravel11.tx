@@ -1,0 +1,23 @@
+alterar o arquivo
+vendor/reliese/laravel/src/Meta/Postgres/Schema.php
+
+remover $schemas = $connection->getDoctrineSchemaManager()->listDatabases();
+add  $schemas = $connection->select('SELECT schema_name FROM information_schema.schemata');
+            $schemas = array_column($schemas, 'schema_name');
+
+na function schemas  (doctrine dbal foi removido)
+
+Ex:
+
+ public static function schemas(Connection $connection)
+    {
+        //$schemas = $connection->getDoctrineSchemaManager()->listDatabases();
+        $schemas = $connection->select('SELECT schema_name FROM information_schema.schemata');
+        $schemas = array_column($schemas, 'schema_name');
+
+        return array_diff($schemas, [
+            'postgres',
+            'template0',
+            'template1',
+        ]);
+    }
