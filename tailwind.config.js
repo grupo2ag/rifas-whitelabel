@@ -9,7 +9,11 @@ export default {
         "./resources/**/*.vue",
     ],
     theme: {
-        extend: {},
+        extend: {
+            gridColumn: {
+                '20' : 'repeat(12, minmax(0, 1fr))'
+            }
+        },
         container: {
             center: true,
             padding: {

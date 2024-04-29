@@ -2,6 +2,7 @@
 import App from '@/Pages/App.vue'
 import Icon from '@/Components/Icon/Icon.vue'
 import Tab from '@/Components/Tabs/Tab.vue'
+import PaymentExposed from '@/Pages/Checkout/PaymentExposed/PaymentExposed.vue'
 import {Button, Progress, Tooltip, TabPanel} from 'daisyui-vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
@@ -17,6 +18,7 @@ export default {
         App,
         Icon,
         Tab,
+        PaymentExposed,
         Button,
         Progress,
         Tooltip,
@@ -46,7 +48,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this.isLargeScreen)
+        // console.log(this.isLargeScreen)
     },
     methods: {
         setThumbsSwiper(swiper) {
@@ -74,7 +76,7 @@ export default {
             <div class="container p-8 md:rounded-3xl flex flex-col md:flex-row mx-auto gap-8 bg-white">
                 <div class="w-full md:w-7/12 flex flex-col items-start">
                     <h1 class="text-3xl font-bold uppercase mb-1 md:hidden">VITAMINI C GUMMY</h1>
-                    <p class="text-xs px-3 py-1 bg-primary text-white rounded-md mb-4 md:hidden">Corra ultimos números</p>
+                    <p class="text-xs px-3 py-1 bg-primary text-white rounded-md mb-4 md:hidden">Corra</p>
 
                     <div class="w-full flex flex-col gap-6">
                         <div class="w-full flex flex-col md:flex-row gap-3 md:gap-4">
@@ -136,14 +138,14 @@ export default {
                     <div class="flex flex-col items-start gap-3 relative">
                         <div class="flex flex-col items-start">
                             <h1 class="text-3xl font-bold uppercase mb-1 hidden md:block">VITAMINI C GUMMY</h1>
-                            <p class="text-xs px-3 py-1 bg-primary text-white rounded-md mb-1.5 hidden md:block">Corra
-                                ultimos números</p>
+                            <p class="text-xs px-3 py-1 bg-primary text-white rounded-md mb-1.5 hidden md:block">
+                                Corra
+                            </p>
 
                             <p class="text-black/50 text-">
                                 Gominhas de morango, de manga e de maçã-verde, com 150mg de Vit C por unidade. Pensada
                                 especialmente para crianças. Sem açúcar, glúten, lactose, conservantes, corantes e
-                                aromas
-                                artificiais.
+                                aromas artificiais.
                             </p>
                         </div>
 
@@ -158,7 +160,7 @@ export default {
                             <Progress type="primary" value="50" max="100"/>
                         </div>
 
-                        <Button variant="primary" class="w-full" @click="goto('purchase', 75)">Comprar</Button>
+                        <Button variant="primary" class="w-full pulsate-fwd" @click="goto('purchase', 75)">Adquira Já</Button>
 
                         <ul class="w-full flex">
                             <li class="text-sm flex-1">
@@ -172,68 +174,44 @@ export default {
                             </li>
                         </ul>
 
-                        <div class="w-full flex gap-1">
-                            <a :href="'https://api.whatsapp.com/send?text=' + url "
-                               target="_blank" aria-label="Whatsapp"
-                               class="bg-[#21bd5b] hover:bg-[#1da851] transition ease-in-out duration-300 text-xs text-white font-black py-2 px-3 rounded-md flex items-center">
-                                <Icon name="icon-whatsapp"
-                                      class="h-4 w-4 object-contain fill-white"/>
-                            </a>
-                            <a :href="'https://telegram.me/share/url?url=' + url"
-                               target="_blank" aria-label="telegram"
-                               class="bg-[#0088cc] hover:bg-[#467dab] transition ease-in-out duration-300 text-xs text-white font-black py-2 px-3 rounded-md flex items-center">
-                                <Icon name="icon-telegram"
-                                      class="h-4 w-4 object-contain fill-white"/>
-                            </a>
-                            <a :href="'https://www.facebook.com/sharer/sharer.php?u=' + url + '/' + url"
-                               target="_blank" aria-label="facebook"
-                               class="bg-[#4267B2] hover:bg-[#185ab1] transition ease-in-out duration-300 text-xs text-white font-black md:py-2 px-3 rounded-md  flex items-center">
-                                <Icon name="icon-facebook-fill"
-                                      class="h-4 w-4 object-contain fill-white"/>
-                            </a>
-                            <a :href="'https://twitter.com/intent/tweet?url=' + url + '/' + url + '&text='"
-                               target="_blank" aria-label="twitter"
-                               class="bg-[#202020] hover:bg-[#000000] transition ease-in-out duration-300 text-xs text-white font-black md:py-2 px-3 rounded-md flex items-center">
-                                <Icon name="icon-x"
-                                      class="h-4 w-4 object-contain fill-white"/>
-                            </a>
-                        </div>
+                        <div class="w-full">
+                            <p class="text-black/80 text-sm mb-1">Compartilhe:</p>
 
-                        <Button outline="true" size="sm" class="flex">
-                            <Icon name="icon-whatsapp"
-                                  class="h-4 w-4 object-contain"/>
-                            Suporte
-                        </Button>
+                            <div class="w-full flex gap-1">
+                                <a :href="'https://api.whatsapp.com/send?text=' + url "
+                                   target="_blank" aria-label="Whatsapp"
+                                   class="bg-[#21bd5b] hover:bg-[#1da851] transition ease-in-out duration-300 text-xs text-white font-black py-2 px-3 rounded-md flex items-center">
+                                    <Icon name="icon-whatsapp"
+                                          class="h-4 w-4 object-contain fill-white"/>
+                                </a>
+                                <a :href="'https://telegram.me/share/url?url=' + url"
+                                   target="_blank" aria-label="telegram"
+                                   class="bg-[#0088cc] hover:bg-[#467dab] transition ease-in-out duration-300 text-xs text-white font-black py-2 px-3 rounded-md flex items-center">
+                                    <Icon name="icon-telegram"
+                                          class="h-4 w-4 object-contain fill-white"/>
+                                </a>
+                                <a :href="'https://www.facebook.com/sharer/sharer.php?u=' + url + '/' + url"
+                                   target="_blank" aria-label="facebook"
+                                   class="bg-[#4267B2] hover:bg-[#185ab1] transition ease-in-out duration-300 text-xs text-white font-black md:py-2 px-3 rounded-md  flex items-center">
+                                    <Icon name="icon-facebook-fill"
+                                          class="h-4 w-4 object-contain fill-white"/>
+                                </a>
+                                <a :href="'https://twitter.com/intent/tweet?url=' + url + '/' + url + '&text='"
+                                   target="_blank" aria-label="twitter"
+                                   class="bg-[#202020] hover:bg-[#000000] transition ease-in-out duration-300 text-xs text-white font-black md:py-2 px-3 rounded-md flex items-center">
+                                    <Icon name="icon-x"
+                                          class="h-4 w-4 object-contain fill-white"/>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="purchase" class="md:py-4">
-            <div class="container flex-col lg:flex-row p-8 md:rounded-3xl flex flex-col md:flex-row mx-auto gap-8 bg-white">
-                <div class="flex-1">
-                    <p class="text-center font-bold mb-6">Escolha seus números, e depois finalize a reserva/compra</p>
-
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <Button outline="true" variant="primary" class="flex flex-col flex-1">
-                            Todos
-                        </button>
-                        <Button outline="true" variant="primary" class="flex-1">Disponivel</button>
-                        <Button variant="warning" class="flex-1">Reservado</button>
-                        <Button variant="success" class="flex-1">Pago</button>
-                    </div>
-
-                    <div class="border-t border-black/20 mt-6">
-
-                        <div class="grid grid-cols-4 md:grid-cols-10 gap-2 md:gap-4 mt-5">
-                            <template v-for="(item, index) in 100" :key="index">
-                                <Tooltip variant="primary" content="Luiz Meirelles" placement="top">
-                                    <Button outline="true" variant="primary">{{ index }}</button>
-                                </Tooltip>
-                            </template>
-                        </div>
-                    </div>
-                </div>
+            <div class="container flex-col lg:flex-row p-8 md:rounded-3xl bg-white">
+                <PaymentExposed/>
             </div>
         </section>
 
