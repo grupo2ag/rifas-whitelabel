@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Raffle;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -36,13 +37,18 @@ final class RaffleFactory extends Factory
     */
     public function definition(): array
     {
+        $quantity = random_int(1, 10);
+        $price = 100;
+        $total = $price * $quantity;
+
         return [
             'title' => fake()->title,
             'subtitle' => fake()->optional()->word,
-            'pix_expired' => fake()->word,
-            'buyer_ranking' => fake()->word,
+            'pix_expired' => fake()->unixTime(new DateTime('+3 weeks')),
+            'buyer_ranking' => rand(1,4),
             'link' => fake()->url,
-            'price' => fake()->word,
+            'price' => $price,
+            'total' => $total,
             'status' => fake()->word,
             'quantity' => fake()->word,
             'numbers' => fake()->optional()->text,

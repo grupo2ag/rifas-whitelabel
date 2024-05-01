@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "799c6759111ca3b1fb8dd0a5d3ac6fc1",
+    "content-hash": "491fea35a0e60b94c02b71f21f39b1a3",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.305.5",
+            "version": "3.305.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "aff7806278b7ce7777ced1afd7534c72329e9240"
+                "reference": "f4108b0222fdc0f0d96c5dbc8055b957d06f1cae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/aff7806278b7ce7777ced1afd7534c72329e9240",
-                "reference": "aff7806278b7ce7777ced1afd7534c72329e9240",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f4108b0222fdc0f0d96c5dbc8055b957d06f1cae",
+                "reference": "f4108b0222fdc0f0d96c5dbc8055b957d06f1cae",
                 "shasum": ""
             },
             "require": {
@@ -151,9 +151,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.305.5"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.305.7"
             },
-            "time": "2024-04-29T18:07:32+00:00"
+            "time": "2024-05-01T18:05:51+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -2738,16 +2738,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "7219739c4e01d4680c980545821733b6ed8ee880"
+                "reference": "8ff64b92c1b1ec84fcde9f8bb9ff2ca34cb8a77a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7219739c4e01d4680c980545821733b6ed8ee880",
-                "reference": "7219739c4e01d4680c980545821733b6ed8ee880",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/8ff64b92c1b1ec84fcde9f8bb9ff2ca34cb8a77a",
+                "reference": "8ff64b92c1b1ec84fcde9f8bb9ff2ca34cb8a77a",
                 "shasum": ""
             },
             "require": {
@@ -2840,7 +2840,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-18T16:35:06+00:00"
+            "time": "2024-05-01T06:54:22+00:00"
         },
         {
             "name": "nette/schema",
@@ -7665,6 +7665,69 @@
             "time": "2024-03-06T16:20:09+00:00"
         },
         {
+            "name": "orangehill/iseed",
+            "version": "v3.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/orangehill/iseed.git",
+                "reference": "403ea734f16da238bda7fcc10b8dc549751fa035"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/orangehill/iseed/zipball/403ea734f16da238bda7fcc10b8dc549751fa035",
+                "reference": "403ea734f16da238bda7fcc10b8dc549751fa035",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "php": "^7.2|^8.0.2"
+            },
+            "require-dev": {
+                "illuminate/filesystem": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "laravel/framework": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+                "mockery/mockery": "^1.0.0",
+                "phpunit/phpunit": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Orangehill\\Iseed\\IseedServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Orangehill\\Iseed": "src/"
+                },
+                "classmap": [
+                    "src/Orangehill/Iseed/Exceptions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Tihomir Opacic",
+                    "email": "tihomir.opacic@orangehilldev.com"
+                }
+            ],
+            "description": "Generate a new Laravel database seed file based on data from the existing database table.",
+            "keywords": [
+                "artisan",
+                "generators",
+                "laravel",
+                "seed"
+            ],
+            "support": {
+                "issues": "https://github.com/orangehill/iseed/issues",
+                "source": "https://github.com/orangehill/iseed/tree/v3.0.4"
+            },
+            "time": "2024-03-27T08:01:21+00:00"
+        },
+        {
             "name": "pestphp/pest",
             "version": "v2.34.7",
             "source": {
@@ -10213,67 +10276,6 @@
                 "source": "https://github.com/ta-tikoma/phpunit-architecture-test/tree/0.8.4"
             },
             "time": "2024-01-05T14:10:56+00:00"
-        },
-        {
-            "name": "thedoctor0/laravel-factory-generator",
-            "version": "1.4.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TheDoctor0/laravel-factory-generator.git",
-                "reference": "4281cc073161b01874be3a825233580382cbba45"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TheDoctor0/laravel-factory-generator/zipball/4281cc073161b01874be3a825233580382cbba45",
-                "reference": "4281cc073161b01874be3a825233580382cbba45",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/console": "^10.0|^11.0",
-                "illuminate/filesystem": "^10.0|^11.0",
-                "illuminate/support": "^10.0|^11.0",
-                "php": "^8.1"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "TheDoctor0\\LaravelFactoryGenerator\\FactoryGeneratorServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "TheDoctor0\\LaravelFactoryGenerator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Automatically generate Laravel factories for your models.",
-            "keywords": [
-                "factories",
-                "factory",
-                "generator",
-                "laravel",
-                "tests"
-            ],
-            "support": {
-                "issues": "https://github.com/TheDoctor0/laravel-factory-generator/issues",
-                "source": "https://github.com/TheDoctor0/laravel-factory-generator/tree/1.4.2"
-            },
-            "funding": [
-                {
-                    "url": "https://www.paypal.me/thedoctor0",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/thedoctor0",
-                    "type": "github"
-                }
-            ],
-            "time": "2024-04-30T10:30:29+00:00"
         },
         {
             "name": "theseer/tokenizer",
