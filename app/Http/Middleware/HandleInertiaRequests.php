@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,8 +36,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $host = preg_replace('/^www\./', '', $request->getHost());
+
+        $configDataByURL = User::leftJoin('user_configurations', 'user_configurations.user_id', '=', 'users.id')
+                               ->where(['users.domain' => $host])
+                               ->firstOrFail(['user_configurations.*', 'users.domain']);
+
         return array_merge(parent::share($request), [
-            //
+            'siteconfig' => $configDataByURL
         ]);
     }
 }

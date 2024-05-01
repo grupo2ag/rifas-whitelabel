@@ -7,11 +7,12 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class AffiliateGain
- * 
+ *
  * @property int $id
  * @property int|null $amount
  * @property int $participant_id
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $paied
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Participant $participant
  * @property AffiliateRaffle $affiliate_raffle
  *
@@ -28,6 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AffiliateGain extends Model
 {
+    use HasFactory;
+
 	protected $table = 'affiliate_gains';
 
 	protected $casts = [

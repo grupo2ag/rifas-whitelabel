@@ -7,11 +7,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Participant
- * 
+ *
  * @property int $id
  * @property int $checked
  * @property int|null $msg_paid_sent
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $reserved
  * @property int|null $customer_id
  * @property int $raffle_id
- * 
+ *
  * @property Raffle $raffle
  * @property Collection|AffiliateGain[] $affiliate_gains
  * @property Collection|Charge[] $charges
@@ -34,6 +35,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Participant extends Model
 {
+    use HasFactory;
+
 	protected $table = 'participants';
 	public $timestamps = false;
 
