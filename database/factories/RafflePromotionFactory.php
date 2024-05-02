@@ -38,7 +38,7 @@ final class RafflePromotionFactory extends Factory
     {
         return [
             'quantity_numbers' => fake()->word,
-            'ordem' => fake()->word,
+            'order' => fake()->word,
             'discount' => fake()->word,
             'amount' => fake()->word,
             'raffle_id' => \App\Models\Raffle::factory(),

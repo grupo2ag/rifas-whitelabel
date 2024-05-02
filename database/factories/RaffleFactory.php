@@ -37,31 +37,31 @@ final class RaffleFactory extends Factory
     */
     public function definition(): array
     {
-        $quantity = random_int(1, 10);
+        $quantity = 100000;
         $price = 100;
         $total = $price * $quantity;
 
         return [
-            'title' => fake()->title,
-            'subtitle' => fake()->optional()->word,
-            'pix_expired' => fake()->unixTime(new DateTime('+3 weeks')),
+            'title' => fake()->jobTitle,
+            'subtitle' => fake()->word,
+            'pix_expired' => 5,//fake()->unixTime(new DateTime('+5 weeks')),
             'buyer_ranking' => rand(1,4),
             'link' => fake()->url,
             'price' => $price,
             'total' => $total,
-            'status' => fake()->word,
-            'quantity' => fake()->word,
-            'numbers' => fake()->optional()->text,
-            'type' => fake()->word,
-            'highlight' => fake()->word,
-            'minimum_purchase' => fake()->word,
-            'maximum_purchase' => fake()->word,
-            'visible' => fake()->word,
-            'user_id' => \App\Models\User::factory(),
-            'partial' => fake()->word,
-            'description' => fake()->optional()->text,
-            'video' => fake()->optional()->word,
-            'gateway_id' => \App\Models\Gateway::factory(),
+            'status' => 'Ativo',
+            'quantity' => $quantity,
+            'numbers' => numbers_generate($quantity),
+            'type' => 'automatico', //manual
+            'highlight' => 1,
+            'minimum_purchase' => 5,
+            'maximum_purchase' => 1000,
+            'visible' => 1,
+            'user_id' => \App\Models\User::where('id', 2)->first()->id,
+            'partial' => 1,
+            'description' => fake()->text,
+            'video' => null,
+            'gateway_id' => 1,
         ];
     }
 }

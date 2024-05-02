@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('raffle_awards', function (Blueprint $table) {
             $table->id();
-            $table->integer('ordem')->nullable();
-            $table->text('descricao');
+            $table->integer('order')->nullable();
+            $table->text('description');
             $table->text('winner_name')->nullable();
             $table->text('winner_image')->nullable();
             $table->string('winner_phone')->nullable();

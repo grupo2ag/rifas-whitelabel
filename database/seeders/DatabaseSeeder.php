@@ -13,14 +13,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        if(config('app.env') === 'local'){
+            $this->call([
+                UserSeeder::class,
+                GatewaySeeder::class,
+                RaffleSeeder::class,
+                RaffleAwardSeeder::class,
+                RafflePromotionSeeder::class
+            ]);
+        }else{
+            //Producao
+            $this->call([
+                GatewaySeeder::class
+            ]);
+        }
 
-        /*User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);*/
-
-        $this->call(\Database\SeedersApp\Models\RaffleSeeder::class);
-        $this->call(\Database\Seeders\Tables\RafflesSeeder::class);
     }
 }

@@ -37,8 +37,8 @@ final class RaffleAwardFactory extends Factory
     public function definition(): array
     {
         return [
-            'ordem' => fake()->optional()->word,
-            'descricao' => fake()->text,
+            'order' => fake()->optional()->word,
+            'description' => fake()->text,
             'winner_name' => fake()->optional()->text,
             'winner_image' => fake()->optional()->text,
             'winner_phone' => fake()->optional()->word,
