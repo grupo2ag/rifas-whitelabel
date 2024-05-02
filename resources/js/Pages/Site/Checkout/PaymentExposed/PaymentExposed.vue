@@ -1,5 +1,6 @@
 <script>
-import {Button, Tooltip} from 'daisyui-vue';
+import {Tooltip} from 'daisyui-vue';
+import Button from '@/Components/Button/Button.vue'
 
 export default {
     name: "PaymentExposed",
@@ -549,25 +550,25 @@ export default {
 
 <template>
     <div class="flex flex-col">
-        <p class="text-center font-bold mb-6">Escolha seus números, e depois finalize a reserva/compra</p>
+        <p class="text-center font-bold text-neutral mb-6">Escolha seus números, e depois finalize a reserva/compra</p>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Button variant="primary" class="flex flex-col flex-1"
+            <Button color="info" class="flex-1"
                     @click="filterItems('all')">
                 Todos
             </button>
 
-            <Button outline="true" variant="primary" class="flex-1"
+            <Button color="outline-primary" class="flex-1"
                     @click="filterItems('')">
                 Disponivel
             </button>
 
-            <Button variant="warning" class="flex-1"
+            <Button color="warning" class="flex-1"
                     @click="filterItems('reserved')">
                 Reservado
             </button>
 
-            <Button variant="success" class="flex-1"
+            <Button color="success" class="flex-1"
                     @click="filterItems('paid')">
                 Pago
             </button>
