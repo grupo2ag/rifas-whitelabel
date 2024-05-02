@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-[x-cloak] {
-    display: none;
+
+html{
+    @apply bg-root;
+    scroll-behavior: smooth;
+}
+
+.c-content{
+    @apply p-7 rounded-3xl bg-content border border-base-100/70;
+}
+
+.pulsate-fwd {
+    -webkit-animation: pulsate-fwd 0.6s ease-in-out infinite both;
+    animation: pulsate-fwd 0.6s ease-in-out infinite both;
+}
+
+@keyframes pulsate-fwd {
+    0% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(1.05);
+        transform: scale(1.05);
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+
+.bedge{
+    @apply py-3 rounded-md text-sm;
 }

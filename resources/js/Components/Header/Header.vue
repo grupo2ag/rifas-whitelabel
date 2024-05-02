@@ -1,6 +1,7 @@
 
 <script>
-import NavigationMenu from "@/Components/NavigationMenu/NavigationMenu.vue";
+import Icon from "@/Components/Icon/Icon.vue";
+
 // import SocialMenu from "@/Components/SocialMenu/SocialMenu.vue";
 import {Link} from '@inertiajs/inertia-vue3';
 import {defineComponent} from 'vue'
@@ -10,7 +11,7 @@ import {useMediaQuery} from '@vueuse/core'
 export default defineComponent({
     name: "Header",
     components: {
-        NavigationMenu,
+        Icon,
         // SocialMenu,
         // Icon,
         Link
@@ -61,31 +62,16 @@ export default defineComponent({
 <template>
     <header>
         <div class="c-header">
-            <div class="container flex justify-between">
+            <div class="container flex items-center justify-between">
                 <div class="w-auto">
                     <Link href="/" class="text-4xl uppercase text-primary font-black" aria-label="Astra Pay">
                         Rifa8
                     </Link>
                 </div>
 
-                <template class="hidden lg:flex">
-                    <NavigationMenu/>
-                </template>
-
-                <button type="button" class="c-header-mb__item o-hamburguer lg:hidden" :class="[isActive ? 'active' : '']"
-                        @click="toggleHumburger()">
-                    <div class="trace">
-                        <span></span>
-                    </div>
+                <button type="button" class="text-neutral flex gap-1" @click="">
+                    <Icon name="icon-bag" class="h-5 stroke-neutral"/>Meus Bilhetes
                 </button>
-            </div>
-        </div>
-
-        <NavigationMenu :sidebar="true" @close="removeHumburger()" @toggle="toggleHumburger" :active="isActive"/>
-
-        <div class="c-sidebar-mb" :class="[isActive ? 'active' : '']">
-            <div class="w-full container pt-28 pb-16 relative">
-                <NavigationMenu orientation="vertical" @close="removeHumburger()" @toggle="toggleHumburger" :active="isActive" class="w-full"/>
             </div>
         </div>
     </header>

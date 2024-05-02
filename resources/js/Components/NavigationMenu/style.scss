@@ -2,7 +2,7 @@
     @apply flex items-center justify-center gap-10 md:gap-4 lg:gap-6;
 
     &__item{
-        @apply text-xl lg:text-base xl:text-base text-black md:text-black font-semibold cursor-pointer relative hover:opacity-70;
+        @apply text-xl lg:text-base xl:text-base text-black md:text-neutral font-semibold cursor-pointer relative hover:opacity-70 flex gap-2;
 
         &:before{
             content: "";
