@@ -7,7 +7,7 @@ use Inertia\Inertia;
 
 
 Route::prefix('/super')
-    //->middleware( \App\Http\Middleware\LevelAdminMiddleware::class)
+    ->middleware( \App\Http\Middleware\LevelAdminMiddleware::class)
     ->group(function()
 {
     /* ROTAS AUTENTICADAS ADMIN AQUI */

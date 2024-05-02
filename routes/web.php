@@ -19,7 +19,7 @@ Route::get('/', function () {
     ]);
 });
 
-//Route::middleware(\App\Http\Middleware\LevelMiddleware::class)->group(function (){
+Route::middleware(\App\Http\Middleware\LevelMiddleware::class)->group(function (){
 
     /* ROTAS AUTENTICADAS AQUI */
     Route::middleware([
@@ -46,7 +46,7 @@ Route::get('/', function () {
     Route::get('/checkout', function () {
         return Inertia::render('Site/Checkout/Checkout');
     })->name('checkout');
-//});
+});
 
 require 'admin/admin_web.php';
 require 'raffle/raffle_web.php';
