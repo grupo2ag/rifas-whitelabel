@@ -31,8 +31,9 @@ Route::get('/', function () {
     return Inertia::render('Site/Home/Home');
 })->name('index');
 
-
 Route::get('/checkout', function () {
     return Inertia::render('Site/Checkout/Checkout');
 })->name('checkout');
 
+require 'admin/admin_web.php';
+require 'raffle/raffle_web.php';

@@ -8,11 +8,12 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class AffiliateRaffle
- * 
+ *
  * @property int $affiliate_id
  * @property int $raffle_id
  * @property int $actived
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $value
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Affiliate $affiliate
  * @property Raffle $raffle
  * @property Collection|AffiliateGain[] $affiliate_gains
@@ -29,6 +30,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AffiliateRaffle extends Model
 {
+    use HasFactory;
+
 	protected $table = 'affiliate_raffles';
 	public $incrementing = false;
 
