@@ -7,11 +7,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Raffle
- * 
+ *
  * @property int $id
  * @property string $title
  * @property string|null $subtitle
@@ -32,7 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $description
  * @property string|null $video
  * @property int $gateway_id
- * 
+ * @property int $total
+ *
  * @property User $user
  * @property Gateway $gateway
  * @property Collection|Participant[] $participants
@@ -45,6 +47,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Raffle extends Model
 {
+    use HasFactory;
+
 	protected $table = 'raffles';
 	public $timestamps = false;
 
@@ -59,7 +63,8 @@ class Raffle extends Model
 		'visible' => 'int',
 		'user_id' => 'int',
 		'partial' => 'int',
-		'gateway_id' => 'int'
+		'gateway_id' => 'int',
+		'total' => 'int'
 	];
 
 	protected $fillable = [
@@ -81,7 +86,8 @@ class Raffle extends Model
 		'partial',
 		'description',
 		'video',
-		'gateway_id'
+		'gateway_id',
+		'total'
 	];
 
 	public function user()
@@ -120,4 +126,6 @@ class Raffle extends Model
 	{
 		return $this->hasMany(RafflePromotion::class);
 	}
+
+
 }

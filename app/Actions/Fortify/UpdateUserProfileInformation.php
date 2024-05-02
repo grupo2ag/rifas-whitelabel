@@ -10,6 +10,9 @@ use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
+    protected $appends = [
+        'profile_photo_url' , 'temporary_profile_photo_url'
+    ];
     /**
      * Validate and update the given user's profile information.
      *

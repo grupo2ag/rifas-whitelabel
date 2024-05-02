@@ -1,9 +1,7 @@
 <script>
 import { Link } from '@inertiajs/inertia-vue3';
-// import Button from '@/Components/Button/Button.vue';
+import Button from '@/Components/Button/Button.vue';
 import Icon from '@/Components/Icon/Icon.vue';
-import {Button, Progress, Tooltip, Tabs, TabPanel} from 'daisyui-vue';
-
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Navigation, Autoplay, Keyboard } from 'swiper/modules';
 import 'swiper/css';
@@ -83,7 +81,7 @@ export default {
                         class="swiper-hero">
 
                     <swiper-slide v-for="(item, key) in slide" :key="key">
-                        <div class="w-full h-full md:rounded-2xl overflow-hidden ">
+                        <div class="w-full h-full md:rounded-2xl border-base-200 overflow-hidden ">
                             <div class="aspect-[2/3] md:aspect-[4/1.8]" :aria-label="item.name">
                                 <img :src="item.image"
                                      class="w-full h-full object-cover pointer-events-none hidden md:block" :alt="item.name">
@@ -92,7 +90,7 @@ export default {
                             </div>
 
                             <div class="box-banner">
-                                <Button type="button" variant="primary" class="pulsate-fwd">Adiquira e concorra</Button>
+                                <Button type="button" color="primary" class="pulsate-fwd">Adiquira e concorra</Button>
                             </div>
                         </div>
                     </swiper-slide>
@@ -100,17 +98,16 @@ export default {
                     <div class="swipper-navigation">
                         <div class=" px-4 md:w-[100%] mx-auto flex justify-between">
                             <button type="button" class="swiper-nav-button custom-prev-button" @click="goPrev">
-                                <Icon name="icon-carret-left" class="w-4 h-4 mr-0.5 fill-secondary" />
+                                <Icon name="icon-carret-left" class="w-4 h-4 mr-0.5 fill-primary" />
                             </button>
 
                             <button type="button" class="swiper-nav-button custom-next-button" @click="goNext">
-                                <Icon name="icon-carret-right" class="w-4 h-4 ml-0.5 fill-secondary" />
+                                <Icon name="icon-carret-right" class="w-4 h-4 ml-0.5 fill-primary" />
                             </button>
                         </div>
                     </div>
                 </swiper>
             </div>
-
         </div>
     </section>
 </template>

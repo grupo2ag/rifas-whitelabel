@@ -19,7 +19,7 @@ export default defineComponent(  {
 <template>
     <Header/>
 
-    <main class="bg-">
+    <main>
         <slot/>
     </main>
 

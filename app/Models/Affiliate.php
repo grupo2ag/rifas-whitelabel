@@ -21,7 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $pix_key
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int $user_id
  * 
+ * @property User $user
  * @property Collection|Raffle[] $raffles
  *
  * @package App\Models
@@ -30,13 +32,23 @@ class Affiliate extends Model
 {
 	protected $table = 'affiliates';
 
+	protected $casts = [
+		'user_id' => 'int'
+	];
+
 	protected $fillable = [
 		'name',
 		'phone',
 		'email',
 		'document',
-		'pix_key'
+		'pix_key',
+		'user_id'
 	];
+
+	public function user()
+	{
+		return $this->belongsTo(User::class);
+	}
 
 	public function raffles()
 	{

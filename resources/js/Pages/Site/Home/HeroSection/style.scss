@@ -22,7 +22,7 @@
         }
 
         .swiper-nav-button {
-            @apply bg-black w-8 h-8 flex items-center justify-center pointer-events-auto rounded-full cursor-pointer hover:opacity-50 relative;
+            @apply bg-content/60 w-8 h-8 flex items-center justify-center pointer-events-auto rounded-full cursor-pointer hover:opacity-50 relative;
         }
 
         .swiper-button-disabled {
@@ -30,15 +30,15 @@
         }
 
         .swiper-pagination{
-            @apply w-[96%] text-right mb-2;
+            @apply w-[96%] text-right mb-2 pointer-events-none;
             left: 50%;
             transform: translate(-50%);
 
             .swiper-pagination-bullet{
-                @apply border border-black bg-transparent opacity-100;
+                @apply border border-black bg-transparent opacity-100 pointer-events-auto;
 
                 &-active{
-                    @apply bg-black
+                    @apply bg-black;
                 }
             }
         }

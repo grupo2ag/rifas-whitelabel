@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('raffle_promotions', function (Blueprint $table) {
             $table->id();
             $table->integer('quantity_numbers')->comment("quantidade de numeros para ativar a promocao");
-            $table->integer('ordem')->comment("ordem de exibicao");
+            $table->integer('order')->comment("ordem de exibicao");
             $table->integer('discount')->comment("valor do desconto em porcentagem");
             $table->integer('amount')->comment("valor final com desconto");
             $table->bigInteger('raffle_id');

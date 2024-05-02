@@ -40,7 +40,7 @@ export default {
 <template>
     <nav v-if="!sidebar" class="c-nav" :class="orientation ? 'c-nav--' + orientation : ''">
         <button type="button" class="c-nav__item" @click="goto('contact', 70)">
-            Meus Bilhetes
+            <Icon name="icon-bag" class="h-5 stroke-neutral"/>Meus Bilhetes
         </button>
     </nav>
 </template>

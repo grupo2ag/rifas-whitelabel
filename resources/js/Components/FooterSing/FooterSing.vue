@@ -48,35 +48,34 @@ export default defineComponent( {
 </script>
 
 <template>
-    <footer class="bg-base-200">
+    <footer class="pt-3">
         <div class="container">
-            <div class=" p-8 rounded-3xl flex flex-col gap-8 bg-white grid grid-cols-1 md:grid-cols-4">
+            <div class="c-content grid grid-cols-1 md:grid-cols-4 gap-6">
                 <aside>
                     <Link href="/" class="text-2xl uppercase text-primary font-black" aria-label="Astra Pay">
                         Rifa8
                     </Link>
-                    <p class="text-sm text-black/50">Rifas 8 Ltd.<br>© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
+                    <p class="text-sm text-neutral/70">Rifas 8 Ltd.<br>© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
                 </aside>
                 <nav class="flex flex-col">
-                    <h6 class="text-lg font-bold text-black mb-1">Suporte</h6>
-                    <a class="text-black/70 flex items-center gap-1">WhatsApp <Icon name="icon-whatsapp" class="h-4 w-4 fill-black/70"/> </a>
-                    <a class="text-black/70">email@email.com</a>
+                    <h6 class="text-lg font-bold text-neutral mb-1">Suporte</h6>
+                    <a class="text-neutral/70 flex items-center gap-1">WhatsApp <Icon name="icon-whatsapp" class="h-4 w-4 fill-neutral/70"/> </a>
+                    <a class="text-neutral/70">email@email.com</a>
+                </nav>
+                <nav class="flex flex-col items-start">
+                    <h6 class="text-lg font-bold text-neutral mb-1">Forma de Pagamento</h6>
+                    <img src="/images/pix.svg" class="h-10" alt="">
+<!--                        <Icon name="icon-pix2" class="h-10 fill-neutral"/>-->
                 </nav>
                 <nav class="flex flex-col">
-                    <h6 class="text-lg font-bold text-black mb-1">Forma de Pagamento</h6>
-                    <p class="link link-hover flex items-center gap-1">
-                        <img src="/images/pix.svg" class="h-10" alt="">
-                    </p>
-                </nav>
-                <nav class="flex flex-col">
-                    <h6 class="text-lg font-bold text-black mb-1">Grupos</h6>
+                    <h6 class="text-lg font-bold text-neutral mb-1">Grupos</h6>
                     <SocialMenu/>
                 </nav>
             </div>
         </div>
 
         <div class="container py-4 flex justify-center">
-            <Link href="/" class="text-xl uppercase text-secondary font-black" aria-label="Astra Pay">
+            <Link href="/" class="text-sm uppercase text-neutral font-black" aria-label="Astra Pay">
                 PREMIO FACIL
             </Link>
         </div>

@@ -1,9 +1,10 @@
 <script>
 import App from '@/Pages/App.vue'
 import HeroSection from '@/Pages/Site/Home/HeroSection/HeroSection.vue'
+import Button from '@/Components/Button/Button.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 
-import {Button, Progress, Tooltip, Tabs, TabPanel} from 'daisyui-vue';
+import {Progress, Tooltip, Tabs, TabPanel} from 'daisyui-vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
 
@@ -46,7 +47,7 @@ export default {
     <App>
         <HeroSection/>
 
-        <section class="py-10">
+        <section class="pt-10 pb-5">
             <div class="container">
                 <div class="">
                     <h2 class="o-title">Próximos Sorteios</h2>
@@ -59,9 +60,9 @@ export default {
                                          class="w-full h-full object-cover rounded-xl" alt="">
                                 </figure>
                                 <div class="flex flex-col justify-between">
-                                    <p class="text-black/60">VITAMINI C GUMMY</p>
-                                    <p class="font-bold text-lg">R$ 115,00</p>
-                                    <Button variant="primary" class="mt-2">Clique e Participe</Button>
+                                    <p class="text-neutral/60">VITAMINI C GUMMY</p>
+                                    <p class="text-neutral font-bold text-xl">R$ 115,00</p>
+                                    <Button color="primary" class="mt-2">Clique e Participe</Button>
                                 </div>
                             </a>
                         </template>
@@ -70,7 +71,7 @@ export default {
             </div>
         </section>
 
-        <section class="py-10">
+        <section class="py-5">
             <div class="container">
                 <div class="">
                     <h2 class="o-title">Últimos Sorteios</h2>
@@ -83,15 +84,15 @@ export default {
                                          class="w-full h-full object-cover rounded-xl" alt="">
                                 </figure>
                                 <div class="flex flex-col justify-between">
-                                    <p class="text-sm">Sorteado: <span class="font-bold">N 21</span></p>
-                                    <p class="text-sm">Ganhador: <span class="font-bold">Luiz Henrique Meirelles - SP</span></p>
-                                    <Button variant="primary" class="mt-2">Ver Resultado</Button>
+                                    <p class="text-neutral">Sorteado: <span class="font-bold">N 21</span></p>
+                                    <p class="text-neutral">Ganhador: <span class="font-bold">Luiz Henrique Meirelles - SP</span></p>
+                                    <Button type="button" color="primary" class="mt-2">Ver Resultado</Button>
                                 </div>
                             </a>
                         </template>
                     </div>
                     <div class="mt-5 w-full flex justify-center">
-                        <button>ver mais</button>
+                        <a type="button" class="text-neutral">ver mais</a>
                     </div>
                 </div>
             </div>
@@ -102,15 +103,15 @@ export default {
 
 <style lang="scss" scoped>
 .c-card__item {
-    @apply flex flex-col gap-4 border border-black/10 bg-white p-4 rounded-2xl;
+    @apply flex flex-col gap-4 border border-base-100 bg-content p-4 rounded-2xl;
 }
 
 .o-title {
-    @apply flex text-2xl font-bold items-center gap-3 mb-2;
+    @apply flex text-2xl font-bold text-neutral items-center gap-3 mb-2;
 
     &:after {
         content: '';
-        @apply h-[1px] bg-black/40 flex-1 mt-1;
+        @apply h-[1px] flex-1 mt-1;
     }
 }
 

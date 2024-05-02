@@ -83,11 +83,11 @@
         @apply py-2 px-3 border border-primary text-primary rounded-lg;
 
         &--reserved{
-          @apply border-warning bg-warning text-black;
+          @apply bg-warning border-warning text-warning-bw;
         }
 
         &--success{
-            @apply border-success bg-success text-white;
+            @apply bg-success border-success text-success-bw;
         }
 
         &[active='true']{
