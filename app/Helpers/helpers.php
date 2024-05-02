@@ -32,7 +32,7 @@ if(!function_exists('numbers_available')) {
 }
 
 if(!function_exists('numbers_reserve')) {
-    function numbers_reserve($raffleId, $qttNumbers){
+    function numbers_reserve($raffleId, $qttNumbers, $customerId, $reserved = false){
 
         $disponiveis = numbers_available($raffleId);
 
@@ -55,7 +55,7 @@ if(!function_exists('numbers_reserve')) {
 
         $updateNumbers = implode(',', $disponiveis);
         DB::beginTransaction();
-
+        //customer já vir cadastrado só inserir o participant number
         try {
             Raffle::where('id', $raffleId)->update(['numbers' => $updateNumbers]);
             Participant::create();
