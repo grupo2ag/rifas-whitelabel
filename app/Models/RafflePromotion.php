@@ -34,7 +34,7 @@ class RafflePromotion extends Model
 
 	protected $casts = [
 		'quantity_numbers' => 'int',
-		'ordem' => 'int',
+		'order' => 'int',
 		'discount' => 'int',
 		'amount' => 'int',
 		'raffle_id' => 'int'
@@ -42,7 +42,7 @@ class RafflePromotion extends Model
 
 	protected $fillable = [
 		'quantity_numbers',
-		'ordem',
+		'order',
 		'discount',
 		'amount',
 		'raffle_id'

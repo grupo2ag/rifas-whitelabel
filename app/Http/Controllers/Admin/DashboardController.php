@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Affiliate;
 use App\Models\Raffle;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class DashboardController
 {
+
     public function index(){
 
         //$data['total_affiliates'] = Affiliate::count();

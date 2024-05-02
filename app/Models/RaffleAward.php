@@ -35,14 +35,14 @@ class RaffleAward extends Model
 	protected $table = 'raffle_awards';
 
 	protected $casts = [
-		'ordem' => 'int',
+		'order' => 'int',
 		'number_award' => 'int',
 		'raffle_id' => 'int'
 	];
 
 	protected $fillable = [
-		'ordem',
-		'descricao',
+		'order',
+		'description',
 		'winner_name',
 		'winner_image',
 		'winner_phone',
