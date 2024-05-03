@@ -31,6 +31,8 @@ class ChargePaid extends Model
 
 	protected $table = 'charge_paids';
 
+    public $timestamps = true;
+
 	protected $casts = [
 		'paied_date' => 'datetime',
 		'charge_id' => 'int'
