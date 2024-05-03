@@ -38,7 +38,7 @@ class Participant extends Model
     use HasFactory;
 
 	protected $table = 'participants';
-	public $timestamps = false;
+	public $timestamps = true;
 
 	protected $casts = [
 		'checked' => 'int',
@@ -47,7 +47,8 @@ class Participant extends Model
 		'paid' => 'int',
 		'reserved' => 'int',
 		'customer_id' => 'int',
-		'raffle_id' => 'int'
+		'raffle_id' => 'int',
+		'rafflepromotion_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -62,7 +63,8 @@ class Participant extends Model
 		'paid',
 		'reserved',
 		'customer_id',
-		'raffle_id'
+		'raffle_id',
+        'rafflepromotion_id'
 	];
 
 	public function raffle()

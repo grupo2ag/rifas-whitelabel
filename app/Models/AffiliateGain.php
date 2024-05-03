@@ -33,7 +33,10 @@ class AffiliateGain extends Model
 
 	protected $table = 'affiliate_gains';
 
-	protected $casts = [
+    public $timestamps = true;
+
+
+    protected $casts = [
 		'amount' => 'int',
 		'participant_id' => 'int',
 		'raffle_id' => 'int',
