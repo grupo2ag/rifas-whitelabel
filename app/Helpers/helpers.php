@@ -68,3 +68,23 @@ if(!function_exists('numbers_reserve')) {
         return ['errors' => false, 'reserved' => $resutlNumbers];
     }
 }
+
+if (!function_exists('luminosity')) {
+    function luminosity($color)
+    {
+        if (!empty($color)) {
+            $color = str_replace(',', '', $color);
+            $rgb = explode(' ', $color);
+
+            $r = $rgb[0];
+            $g = $rgb[1];
+            $b = $rgb[2];
+
+            $value = ($r * 299 + $g * 587 + $b * 114) / 1000;
+
+            return $value > 150 ? '0 0 0' : '255 255 255';
+        }
+
+        return 0;
+    }
+}

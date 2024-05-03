@@ -1,9 +1,11 @@
 <style>
 
     :root {
-        --primary: 67.67% 0.2676 0;
-        --primary-bw: 100% 0 0
+        --primary: {{$page['props']['siteconfig']['primary_color']}};
+        --primary-bw: {{luminosity($page['props']['siteconfig']['primary_color'])}}
     }
+
+{{--    {{dd($page['props']['siteconfig']['primary_color'])}}--}}
 
     [theme=light]{
         --root: 97.02% 0 0;

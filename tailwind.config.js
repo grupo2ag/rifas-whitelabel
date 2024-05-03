@@ -16,8 +16,8 @@ export default {
         extend: {
             colors: {
                 'primary': {
-                    DEFAULT: 'oklch(var(--primary) / <alpha-value>)',
-                    'bw': 'oklch(var(--primary-bw) / <alpha-value>)' //black/white
+                    DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
+                    'bw': 'rgb(var(--primary-bw) / <alpha-value>)' //black/white
                 },
                 'secondary': 'oklch(var(--primary) / <alpha-value>)',
                 'root': 'oklch(var(--root) / <alpha-value>)',
