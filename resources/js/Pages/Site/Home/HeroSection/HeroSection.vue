@@ -59,7 +59,7 @@ export default {
 </script>
 
 <template>
-    <section class="c-hero" id="hero">
+    <section id="hero" class="c-hero">
         <div class="container flex">
             <div class="w-full">
                 <swiper ref="swiper" :keyboard="true" :slidesPerView="1"  :spaceBetween="15" loop="true" :autoplay="{

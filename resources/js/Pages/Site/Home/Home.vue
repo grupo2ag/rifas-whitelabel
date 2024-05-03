@@ -71,7 +71,7 @@ export default {
             </div>
         </section>
 
-        <section class="py-5">
+        <section id="drawn" class="py-5">
             <div class="container">
                 <div class="">
                     <h2 class="o-title">Últimos Sorteios</h2>
@@ -114,5 +114,4 @@ export default {
         @apply h-[1px] flex-1 mt-1;
     }
 }
-
 </style>

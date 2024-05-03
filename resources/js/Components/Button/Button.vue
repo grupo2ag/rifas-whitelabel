@@ -23,11 +23,11 @@ const sizeClasses = computed(() => {
         case 'xs':
             return 'text-xs px-4 py-2';
         case 'sm':
-            return 'text-sm px-4 py-2';
+            return 'text-sm px-4 py-1.5';
         case 'lg':
             return 'text-lg px-7 py-2.5';
         default:
-            return 'text-base leading-none px-3 md:px-4 py-3';
+            return 'text-base leading-none px-4 py-2.5';
     }
 });
 

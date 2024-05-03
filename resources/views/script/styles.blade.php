@@ -1,5 +1,4 @@
 <style>
-
     :root {
         --primary: {{$page['props']['siteconfig']['primary_color']}};
         --primary-bw: {{luminosity($page['props']['siteconfig']['primary_color'])}}
