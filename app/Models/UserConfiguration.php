@@ -44,7 +44,9 @@ class UserConfiguration extends Model
     use HasFactory;
 
 	protected $table = 'user_configurations';
-	public $incrementing = false;
+	public $incrementing = true;
+
+    public $timestamps = true;
 
 	protected $casts = [
 		'id' => 'int',
@@ -69,7 +71,9 @@ class UserConfiguration extends Model
 		'youtube',
 		'google_analytics',
 		'facebook_pixel',
-		'user_id'
+		'user_id',
+		'whatsapp',
+		'telegram'
 	];
 
 	public function user()

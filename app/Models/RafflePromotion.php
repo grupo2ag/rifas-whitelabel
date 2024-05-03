@@ -32,6 +32,8 @@ class RafflePromotion extends Model
 
 	protected $table = 'raffle_promotions';
 
+    public $timestamps = true;
+
 	protected $casts = [
 		'quantity_numbers' => 'int',
 		'order' => 'int',

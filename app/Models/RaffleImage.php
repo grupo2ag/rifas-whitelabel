@@ -29,6 +29,8 @@ class RaffleImage extends Model
 
 	protected $table = 'raffle_images';
 
+    public $timestamps = true;
+
 	protected $casts = [
 		'raffle_id' => 'int'
 	];

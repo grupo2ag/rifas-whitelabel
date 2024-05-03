@@ -26,11 +26,11 @@ final class CustomerFactory extends Factory
      */
     public function withFaker()
     {
-        $faker = \Faker\Generator();
-        $faker->addProvider(new \Faker\Provider\pt_BR\Person($faker));
+        $faker = new \Faker\Generator;
+        /*$faker->addProvider(new \Faker\Provider\pt_BR\Person($faker));
         $faker->addProvider(new \Faker\Provider\pt_br\Address($faker));
         $faker->addProvider(new \Faker\Provider\pt_br\PhoneNumber($faker));
-        $faker->addProvider(new \Faker\Provider\pt_br\Company($faker));
+        $faker->addProvider(new \Faker\Provider\pt_br\Company($faker));*/
         return \Faker\Factory::create('pt_BR');
     }
 
@@ -42,9 +42,9 @@ final class CustomerFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name,
-            'phone' => fake()->phoneNumber(),
-            'email' => fake()->safeEmail,
+            'name' => $this->faker->name(),
+            'phone' => '55 '.$this->faker->cellphoneNumber(),
+            'email' => $this->faker->unique()->safeEmail(),
             'cpf' => $this->faker->cpf(false),
         ];
     }

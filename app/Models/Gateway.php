@@ -29,6 +29,8 @@ class Gateway extends Model
 
 	protected $table = 'gateways';
 
+    public $timestamps = true;
+
 	protected $fillable = [
 		'name'
 	];

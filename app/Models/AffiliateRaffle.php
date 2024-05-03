@@ -33,6 +33,9 @@ class AffiliateRaffle extends Model
     use HasFactory;
 
 	protected $table = 'affiliate_raffles';
+
+    public $timestamps = true;
+
 	public $incrementing = false;
 
 	protected $casts = [
