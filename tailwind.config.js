@@ -12,6 +12,7 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],
+    important: true,
     theme: {
         extend: {
             colors: {
@@ -19,29 +20,29 @@ export default {
                     DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
                     'bw': 'rgb(var(--primary-bw) / <alpha-value>)' //black/white
                 },
-                'secondary': 'oklch(var(--primary) / <alpha-value>)',
-                'root': 'oklch(var(--root) / <alpha-value>)',
-                'content': 'oklch(var(--content) / <alpha-value>)',
+                'secondary': 'rgb(var(--primary) / <alpha-value>)',
+                'root': 'rgb(var(--root) / <alpha-value>)',
+                'content': 'rgb(var(--content) / <alpha-value>)',
                 'base': {
-                    100: 'oklch(var(--base-100) / <alpha-value>)',
-                    200: 'oklch(var(--base-200) / <alpha-value>)',
-                    300: 'oklch(var(--base-300) / <alpha-value>)',
+                    100: 'rgb(var(--base-100) / <alpha-value>)',
+                    200: 'rgb(var(--base-200) / <alpha-value>)',
+                    300: 'rgb(var(--base-300) / <alpha-value>)',
                 },
                 'neutral': {
-                    DEFAULT: 'oklch(var(--neutral) / <alpha-value>)',
-                    'bw': 'oklch(var(--neutral-bw) / <alpha-value>)',
+                    DEFAULT: 'rgb(var(--neutral) / <alpha-value>)',
+                    'bw': 'rgb(var(--neutral-bw) / <alpha-value>)',
                 },
                 'success': {
-                    DEFAULT: 'oklch(var(--success) / <alpha-value>)',
-                    'bw': 'oklch(var(--success-bw) / <alpha-value>)'
+                    DEFAULT: 'rgb(var(--success) / <alpha-value>)',
+                    'bw': 'rgb(var(--success-bw) / <alpha-value>)'
                 },
                 'warning': {
-                    DEFAULT: 'oklch(var(--warning) / <alpha-value>)',
-                    'bw': 'oklch(var(--warning-bw) / <alpha-value>)'
+                    DEFAULT: 'rgb(var(--warning) / <alpha-value>)',
+                    'bw': 'rgb(var(--warning-bw) / <alpha-value>)'
                 },
                 'info': {
-                    DEFAULT: 'oklch(var(--info) / <alpha-value>)',
-                    'bw': 'oklch(var(--info-bw) / <alpha-value>)'
+                    DEFAULT: 'rgb(var(--info) / <alpha-value>)',
+                    'bw': 'rgb(var(--info-bw) / <alpha-value>)'
                 },
                 'white': {
                     light: '#F7F7F7',
@@ -124,6 +125,7 @@ export default {
     plugins: [
         forms,
         typography,
+        require('daisyui'),
         function ({addComponents}) {
             addComponents({
                 '.container': {

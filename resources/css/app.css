@@ -4,7 +4,7 @@
 
 
 html{
-    @apply bg-root;
+    @apply !bg-root;
     scroll-behavior: smooth;
 }
 

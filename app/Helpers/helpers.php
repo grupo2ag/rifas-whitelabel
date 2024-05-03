@@ -70,11 +70,11 @@ if(!function_exists('numbers_reserve')) {
 }
 
 if (!function_exists('luminosity')) {
-    function luminosity($color)
+    function luminosity($hex)
     {
-        if (!empty($color)) {
-            $color = str_replace(',', '', $color);
-            $rgb = explode(' ', $color);
+        if (!empty($hex)) {
+
+            $rgb = explode(' ', $hex);
 
             $r = $rgb[0];
             $g = $rgb[1];
