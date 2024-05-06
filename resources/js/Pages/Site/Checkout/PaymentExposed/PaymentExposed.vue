@@ -323,7 +323,13 @@ export default {
 
 <template>
     <div class="flex flex-col">
-        <p class="text-center font-bold text-neutral mb-6">Escolha seus números, e depois finalize a reserva/compra</p>
+        <p class="text-center text-lg font-bold text-neutral">
+            Escolha seus números
+        </p>
+
+        <p class="text-center text-neutral/70 mb-4">
+            Escolha os números desejados e, em seguida, finalize a reserva/compra.
+        </p>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             <Button type="button" color="info" class="flex-1"
@@ -386,8 +392,8 @@ export default {
                         </div>
 
                         <div class="w-full md:w-6/12">
-                            <Button color="success" class="w-full uppercase font-bold">
-                               Reserva
+                            <Button color="success" class="w-full uppercase font-bold pulsate-fwd">
+                                <Icon name="icon-check-circle" class="h-6 mr-2 stroke-success-bw"/> Reservar
                             </Button>
                         </div>
                     </div>

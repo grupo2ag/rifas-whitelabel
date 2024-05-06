@@ -16,7 +16,7 @@ const props = defineProps({
     }
 });
 
-const defaultClasses = computed(() => 'flex items-center justify-center whitespace-nowrap rounded-md text-center focus:outline-none transition');
+const defaultClasses = computed(() => 'flex items-center justify-center whitespace-nowrap rounded-xl text-center focus:outline-none transition');
 
 const sizeClasses = computed(() => {
     switch (props.size) {
@@ -116,28 +116,7 @@ const disabledClasses = computed(() => {
     </Link>
 </template>
 
-
-<style src="./style.scss" lang="scss" scoped/>
-
-
 <style lang="scss" scoped>
-
-.colorful {
-    //border: 1px solid #fff;
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    border: solid 1px transparent;
-    background-image: linear-gradient(#511EDA, #FD0478, #FFCD5A, #23E5F6), linear-gradient(101deg, #511EDA, #FD0478, #FFCD5A, #23E5F6);
-    background-origin: border-box;
-    background-clip: content-box, border-box;
-    box-shadow: 1px 1000px 1px #fff inset;
-
-    &:hover {
-        box-shadow: 1px 1000px 1px #eaeaea inset;
-    }
-}
-
 .is-loading {
     color: transparent !important;
     justify-content: center;
@@ -179,4 +158,5 @@ const disabledClasses = computed(() => {
             fill: transparent;
         }
     }
-}</style>
+}
+</style>

@@ -48,13 +48,9 @@ export default {
                 {img: 'https://swiperjs.com/demos/images/nature-6.jpg'},
 
             ],
-            isLargeScreen: useMediaQuery('(min-width: 768px)')
-
-            //loading: true,
+            isLargeScreen: useMediaQuery('(min-width: 768px)'),
+            purchaseType: 1
         }
-    },
-    mounted() {
-        // console.log(this.isLargeScreen)
     },
     methods: {
         setThumbsSwiper(swiper) {
@@ -199,8 +195,8 @@ export default {
         <section id="purchase" class="md:py-3">
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
-                    <PaymentExposed v-if="true"/>
-                    <PaymentRandom v-if="false"/>
+                    <PaymentExposed v-if="purchaseType === 1"/>
+                    <PaymentRandom v-else/>
                 </div>
             </div>
         </section>
@@ -269,26 +265,7 @@ export default {
     </App>
 </template>
 
-
 <style lang="scss" scoped>
-.c-tab {
-    &__header {
-        @apply flex items-center justify-center border-b border-black/30;
-
-        button {
-            @apply flex-1 text-center;
-
-            &.active {
-                @apply border-b-2 border-primary -mb-[1px]
-            }
-        }
-    }
-
-    &__content {
-        @apply p-4 text-base text-black/70
-    }
-}
-
 .c-regulation__content {
     @apply relative h-[380px] text-neutral/70 overflow-hidden;
     transition: all 1s ease-out;
