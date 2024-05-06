@@ -6,6 +6,7 @@ import Button from '@/Components/Button/Button.vue'
 import Badge from '@/Components/Badge/Badge.vue'
 import Progress from '@/Components/Progress/Progress.vue'
 import PaymentExposed from '@/Pages/Site/Checkout/PaymentExposed/PaymentExposed.vue'
+import PaymentRandom from '@/Pages/Site/Checkout/PaymentRandom/PaymentRandom.vue'
 import {Tooltip, TabPanel} from 'daisyui-vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
@@ -23,6 +24,7 @@ export default {
         Tab,
         Badge,
         PaymentExposed,
+        PaymentRandom,
         Button,
         Progress,
         Tooltip,
@@ -77,11 +79,11 @@ export default {
 <template>
     <App>
         <section class="pt-16 md:pt-24 md:pb-3">
-            <div class="container">
+            <div class="md:container">
                 <div class="c-content flex flex-col md:flex-row gap-8">
                     <div class="w-full md:w-7/12 flex flex-col items-start">
                         <h1 class="text-3xl text-neutral font-bold uppercase mb-1 md:hidden">VITAMINI C GUMMY</h1>
-                        <p class="text-xs px-3 py-1 bg-primary rounded-md mb-4 md:hidden">Corra</p>
+                        <p class="text-xs px-3 py-1 bg-primary text-primary-bw rounded-md mb-4 md:hidden">Corra</p>
 
                         <div class="w-full flex flex-col gap-6">
                             <div class="w-full flex flex-col md:flex-row gap-3 md:gap-4">
@@ -117,34 +119,15 @@ export default {
                                     </swiper>
                                 </div>
                             </div>
-
-                            <div class="w-full border-b border-black/20 hidden"></div>
-
-                            <div class="w-full hidden">
-                                <p class="text-lg font-bold text-black">Prêmios</p>
-                                <div ref="regulation" class="py-4 text-black/60">
-                                    <ul>
-                                        <li>
-                                            1 - Pelúcia a escolha do ganhador
-                                        </li>
-                                        <li>
-                                            2 - Pelúcia a escolha do ganhador
-                                        </li>
-                                        <li>
-                                            3 - Pelúcia a escolha do ganhador
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
                     <div class="w-full md:w-5/12 ">
                         <div class="flex flex-col items-start gap-3 relative">
                             <div class="flex flex-col items-start">
-                                <h1 class="text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">VITAMINI C GUMMY</h1>
+                                <h1 class="text-2xl md:text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">VITAMINI C GUMMY</h1>
 
-                                <Badge color="primary" class="mb-2">Corra</Badge>
+                                <Badge color="primary" class="mb-2 hidden md:block">Corra</Badge>
 
                                 <p class="text-neutral/70">
                                     Gominhas de morango, de manga e de maçã-verde, com 150mg de Vit C por unidade. Pensada
@@ -165,13 +148,13 @@ export default {
 
                             <Button type="button" color="primary" class="pulsate-fwd w-full"  @click="goto('purchase', 75)">Adquira Já</Button>
 
-                            <ul class="w-full flex">
-                                <li class="text-sm text-neutral flex-1">
+                            <ul class="w-full flex flex-col md:flex-row gap-3">
+                                <li class="w-full md:w-auto text-sm text-neutral flex-1">
                                     Data do sorteio:
                                     <p class="text-base font-bold">A Definir</p>
                                 </li>
 
-                                <li class="text-sm text-neutral flex-1">
+                                <li class="w-full md:w-auto text-sm text-neutral flex-1">
                                     Sorteio será realizado:
                                     <p class="text-base font-bold">Loteria Federal</p>
                                 </li>
@@ -214,15 +197,16 @@ export default {
         </section>
 
         <section id="purchase" class="md:py-3">
-            <div class="container">
+            <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
-                    <PaymentExposed/>
+                    <PaymentExposed v-if="true"/>
+                    <PaymentRandom v-if="false"/>
                 </div>
             </div>
         </section>
 
-        <section class="py-3">
-            <div class="container">
+        <section class="md:py-3">
+            <div class="md:container">
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Prêmios</p>
 
@@ -235,8 +219,8 @@ export default {
             </div>
         </section>
 
-        <section class="py-3">
-            <div class="container">
+        <section class="md:py-3">
+            <div class="md:container">
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold mb-2 text-neutral">Regulamento</p>
                     <div id="regulation" class="c-regulation__content" :class="activeHeight ? 'active' : ''">

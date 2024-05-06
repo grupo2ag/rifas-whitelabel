@@ -95,3 +95,10 @@
         }
     }
 }
+
+.c-btn-count{
+    @apply flex items-center bg-primary justify-center w-7 h-7 rounded-full cursor-pointer;
+    svg{
+        @apply w-5 h-5 stroke-primary-bw;
+    }
+}
