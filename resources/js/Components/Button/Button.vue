@@ -27,7 +27,7 @@ const sizeClasses = computed(() => {
         case 'lg':
             return 'text-lg px-7 py-2.5';
         default:
-            return 'text-base leading-none px-4 py-2.5';
+            return 'text-base leading-none px-4 py-3.5';
     }
 });
 

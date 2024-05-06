@@ -17,7 +17,7 @@ onMounted(() => {
 
 <template>
     <div class="relative py-3" :class="[ 'form-control', !!error && 'has-error' ]">
-        <label :for="name" class="px-2 block text-neutral/70 text-[13px] font-semibold absolute top-[3px] left-1 z-10 bg-white">
+        <label :for="name" class="px-2 block text-neutral/70 text-[13px] font-semibold absolute top-[3px] left-1 z-10 bg-content">
             {{ label }}
         </label>
         <input :id="name"
@@ -36,7 +36,7 @@ onMounted(() => {
                :value="modelValue"
                :ref="ref"
                @input="$emit('update:modelValue', $event.target.value)"
-               class="block px-3 pb-2 pt-3 text-base w-full text-neutral border  rounded-md focus:outline-none focus:ring-0 focus:border-blue"
+               class="block px-3 pb-2 pt-3 text-base bg-content w-full text-neutral border rounded-md focus:outline-none focus:ring-0 focus:border-blue"
                :class="[!!error ? 'border-red' :  'border-white-dark']"/>
 
         <div class="block w-6 h-6 border-2 rounded-full border-t-white border-gray-light animate-spin loading-icon" v-if="loading"></div>
@@ -56,7 +56,7 @@ input[type=date]{
 }
 
 input::placeholder{
-    color: #808080;
+    @apply text-neutral/60
 }
 
 

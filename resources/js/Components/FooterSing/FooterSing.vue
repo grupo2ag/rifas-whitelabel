@@ -25,8 +25,8 @@ export default defineComponent( {
 </script>
 
 <template>
-    <footer class="pt-3">
-        <div class="container">
+    <footer class="md:pt-3">
+        <div class="md:container">
             <div class="c-content grid grid-cols-1 md:grid-cols-4 gap-6">
                 <aside>
                     <Link href="/" class="text-2xl uppercase text-primary font-black" :aria-label="basic.sitem_title">
