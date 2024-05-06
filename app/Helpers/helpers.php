@@ -1,5 +1,7 @@
 <?php
 
+use App\Libraries\Pixcred;
+use App\Models\Charge;
 use App\Models\Customer;
 use App\Models\LogError;
 use App\Models\Participant;
@@ -8,30 +10,47 @@ use App\Models\RafflePromotion;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Uuid;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-if(!function_exists('numbers_generate')) {
-    function numbers_generate(int $quantity)
+if(!function_exists('pixcred_generate')) {
+
+    function pixcred_generate(int $raffleId, array $pix_data)
     {
-        $numbers = [];
-        $left_zero = strlen($quantity) - 1;
 
-        for ($i = 0; $i < $quantity; $i++) {
-            $arr = str_pad($i, $left_zero,  '0', STR_PAD_LEFT);
-            array_push( $numbers, $arr);
+        $rifa = Raffle::join('gateways', 'gateways.id', '=', 'raffles.gateway_id')
+            ->leftJoin('gateway_configurations', 'gateway_configurations.user_id', 'raffles.user_id')
+            ->whereRaw('gateway_configurations.gateway_id = gateways.id')
+            ->where('raffles.id', $raffleId)
+            ->first(['gateway_configurations.*','gateways.*']);
+
+        if(empty($rifa->token) || empty($rifa->login)) {
+            setLogErros('Libraries->Pixcred', 'Rifa faltando gateway', $rifa, 'algum dado do gateway vazio', $raffleId );
+            return false;
         }
 
-        return implode(",", $numbers);
-    }
-}
+        if(config('app.env') === 'production') $endpoint = $rifa->endpoint_prod;
+        else $endpoint = $rifa->endpoint_sandbox;
 
-if(!function_exists('numbers_available')) {
-    function numbers_available(int $raffleId)
-    {
-        $rifa = Raffle::select('numbers')->find($raffleId);
+        $pix = new Pixcred(['token' => $rifa->token, 'endpoint' => $endpoint, 'authtoken' => $rifa->token, 'authlogin' => $rifa->login]);
 
-        $numbersRifa = explode(",", $rifa->numbers);
+        $params['value'] = (float)($pix_data['value']/100);
+        $params['payer_name'] = $pix_data['payer_name'];
+        $params['expiration_time'] = $pix_data['expiration_time'];
+        $params['description'] = $pix_data['description'];
+        $params['order_id'] = $pix_data['order_id'];
 
-        return $numbersRifa;
+        if(!empty($pix_data['payer_doc'])) $params['payer_doc'] = $pix_data['payer_doc'];
+
+        $generator = $pix->pix_generate($params);
+
+        if(!empty($generator['pix_link'])) {
+            $generator['qrCode'] = QrCode::size(250)->generate($generator['pix_link']);
+
+            return $generator;
+        }
+
+        return false;
     }
 }
 
@@ -119,9 +138,10 @@ if(!function_exists('numbers_reserve')) {
                 $promotion_id = $promotion['id'];
             }
 
-            $expired = !empty($rifa->pix_expired) ? $rifa->pix_expired : 5;
+            $minutes = !empty($rifa->pix_expired) ? $rifa->pix_expired : 5;
+            $expired = Carbon::now()->addMinutes($minutes);
 
-            Participant::create([
+            $participant = Participant::create([
                 'name' => $registration_data['name'],
                 'phone'=> $registration_data['phone'],
                 'email' => !empty($registration_data['email']) ? $registration_data['email'] : null,
@@ -133,17 +153,78 @@ if(!function_exists('numbers_reserve')) {
                 'customer_id' => $customerId,
                 'raffle_id' => $raffleId,
                 'raffle_promotion_id' => $promotion_id,
-                'expired_at' => Carbon::now()->addMinutes($expired)
+                'expired_at' => $expired
+            ]);
+
+            if(empty($participant->id)){
+                //throw new Exception('Erro geração do pix');
+                setLogErros('HELPERS->numbers_reserve', 'Erro inserir participant', $participant, 'catch', $raffleId);
+                return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente.'];
+                DB::rollBack();
+            }
+
+            $expired_time = (int)$minutes*60;
+            $pix_data = [
+                "value" => $amount,
+                "payer_name" => $registration_data['name'],
+                "payer_doc" => !empty($registration_data['cpf']) ? $registration_data['cpf'] : null,
+                "expiration_time" => $expired_time,
+                "description" => $rifa->title.'-'.$raffleId,
+                "order_id" => UUID::uuid4(),
+                "participant" => $participant->id
+            ];
+            $generate = pixcred_generate($raffleId, $pix_data);
+
+            if(!$generate){
+                //throw new Exception('Erro geração do pix');
+                setLogErros('HELPERS->pixcred_generate', 'Erro geração do pix', $pix_data, 'catch', $raffleId);
+                return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente.'];
+                DB::rollBack();
+            }
+
+            Charge::create([
+                'pix_id' => $generate['order_id'],
+                'pix_code' => $generate['pix_link'],
+                'amount' => $amount,
+                'json' => json_encode($generate),
+                'expired' => $expired_time,
+                'participant_id' => $participant->id
             ]);
 
             DB::commit();
         }catch (QueryException $e){
             setLogErros('HELPERS->numbers_reserve', $e->getMessage(), [$raffleId, $qttNumbers, $customerId, $registration_data, $paid,  $numbers], 'catch', $raffleId);
-            return ['errors' => true, 'message' => 'Problema ao efetuar reserva, verifique seus numeros e tente novamente.'];
+            return ['errors' => true, 'message' => 'Problema ao efetuar reserva, tente novamente.'];
             DB::rollBack();
         }
 
-        return ['errors' => false, 'numbers' => $resutlNumbers, 'amount' => $amount, 'totalNotDiscount' => $totalNotDiscount, 'discount' => $discount];
+        return ['errors' => false, 'numbers' => $resutlNumbers, 'amount' => $amount, 'totalNotDiscount' => $totalNotDiscount, 'discount' => $discount, 'pix' => $generate];
+    }
+}
+
+if(!function_exists('numbers_generate')) {
+    function numbers_generate(int $quantity)
+    {
+        $numbers = [];
+        $left_zero = strlen($quantity) - 1;
+
+        for ($i = 0; $i < $quantity; $i++) {
+            $arr = str_pad($i, $left_zero,  '0', STR_PAD_LEFT);
+            array_push( $numbers, $arr);
+        }
+
+        return implode(",", $numbers);
+    }
+}
+
+if(!function_exists('numbers_available')) {
+    function numbers_available(int $raffleId)
+    {
+        $rifa = Raffle::select('numbers')->find($raffleId);
+
+        $numbersRifa = explode(",", $rifa->numbers);
+
+        return $numbersRifa;
     }
 }
 
@@ -159,6 +240,25 @@ if(!function_exists('raffle_promotion')) {
 
             return ['id' => $rifapromo->id, 'discount' => $discount, 'amount' => $amount, 'total' => $total];
         }
+
+        return false;
+    }
+}
+
+if(!function_exists('setLogErros')) {
+
+    function setLogErros($table, $exception = null, $payload = null, $comment = null, $id_reference = null)
+    {
+        $log = [
+            'users_id' => !empty(session()->get('site_config')->user_id) ? session()->get('site_config')->user_id : null,
+            'exception' => json_encode($exception),
+            'payload'  => json_encode($payload),
+            'table'  => $table,
+            'comment'  => $comment,
+            'id_reference'  => $id_reference
+        ];
+
+        if (LogError::create($log)) return true;
 
         return false;
     }
@@ -181,24 +281,5 @@ if (!function_exists('luminosity')) {
         }
 
         return 0;
-    }
-}
-
-if(!function_exists('setLogErros')) {
-
-    function setLogErros($table, $exception = null, $payload = null, $comment = null, $id_reference = null)
-    {
-        $log = [
-            'users_id' => !empty(session()->get('site_config')->user_id) ? session()->get('site_config')->user_id : null,
-            'exception' => json_encode($exception),
-            'payload'  => json_encode($payload),
-            'table'  => $table,
-            'comment'  => $comment,
-            'id_reference'  => $id_reference
-        ];
-
-        if (LogError::create($log)) return true;
-
-        return false;
     }
 }

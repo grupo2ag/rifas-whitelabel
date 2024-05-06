@@ -6,14 +6,17 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "bacon/bacon-qr-code": "^2.0",
         "inertiajs/inertia-laravel": "^1.0",
         "intervention/image": "^2.7",
+        "kirschbaum-development/eloquent-power-joins": "^3.5",
         "laravel/framework": "^11.0",
         "laravel/jetstream": "^5.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "laravellegends/pt-br-validator": "^11.0",
         "league/flysystem-aws-s3-v3": "^3.27",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
