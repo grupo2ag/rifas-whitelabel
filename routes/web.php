@@ -28,8 +28,8 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
     Route::get('/compaing', function () {
-        return Inertia::render('Panel/User/Compaign');
-    })->name('compaign');
+        return Inertia::render('Panel/User/Campaign');
+    })->name('campaign');
 });
 
 Route::get('/account', function () {
@@ -41,8 +41,8 @@ Route::get('/', function () {
 })->name('index');
 
 Route::get('/compaing', function () {
-    return Inertia::render('Panel/User/Compaign');
-})->name('compaign');
+    return Inertia::render('Panel/User/Campaign');
+})->name('campaign');
 
 Route::get('/checkout', function () {
     return Inertia::render('Site/Checkout/Checkout');

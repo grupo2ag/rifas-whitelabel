@@ -12,7 +12,7 @@ import FooterAuth from "@/Pages/Auth/FooterAuth.vue";
             </Link>
         </div>
 
-        <div class="flex flex-col items-center justify-center w-full md:w-8/12 lg:w-8/12 bg-bgadm">
+        <div class="flex flex-col items-center justify-center w-full md:w-8/12 lg:w-8/12 bg-root">
             <div class="flex items-center justify-center flex-1 w-full mt-10 md:mt-20">
                 <div class="flex flex-col w-10/12 gap-6 md:w-80 md:gap-8">
                     <Link href="/" class="">

@@ -55,7 +55,7 @@ export default {
 
 <template>
     <div>
-        <div class="min-h-screen pt-[60px] md:pt-0">
+        <div class="min-h-screen pt-[60px] md:pt-0 bg-root">
             <Sidebar></Sidebar>
 
             <header class="md:pl-28 md:pr-8">

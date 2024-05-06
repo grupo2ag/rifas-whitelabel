@@ -40,10 +40,10 @@ export default {
                     <CardDashboard :title="'Total Arrecadado'" :valueCount="'R$4,000.000'"/>
                 </div>
             </div>
-            <div class="card bg-primary">
+            <div class="card bg-content">
                 <div class="flex flex-row">
                     <div class="flex justify-start w-full">
-                        <div class="px-4 text-white card-title">
+                        <div class="px-4 text-neutral card-title">
                             Minhas Campanhas
                         </div>
                     </div>
