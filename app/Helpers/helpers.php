@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Customer;
+use App\Models\LogError;
 use App\Models\Participant;
 use App\Models\Raffle;
 use App\Models\RafflePromotion;
@@ -137,6 +138,7 @@ if(!function_exists('numbers_reserve')) {
 
             DB::commit();
         }catch (QueryException $e){
+            setLogErros('HELPERS->numbers_reserve', $e->getMessage(), [$raffleId, $qttNumbers, $customerId, $registration_data, $paid,  $numbers], 'catch', $raffleId);
             return ['errors' => true, 'message' => 'Problema ao efetuar reserva, verifique seus numeros e tente novamente.'];
             DB::rollBack();
         }
@@ -179,5 +181,24 @@ if (!function_exists('luminosity')) {
         }
 
         return 0;
+    }
+}
+
+if(!function_exists('setLogErros')) {
+
+    function setLogErros($table, $exception = null, $payload = null, $comment = null, $id_reference = null)
+    {
+        $log = [
+            'users_id' => !empty(session()->get('site_config')->user_id) ? session()->get('site_config')->user_id : null,
+            'exception' => json_encode($exception),
+            'payload'  => json_encode($payload),
+            'table'  => $table,
+            'comment'  => $comment,
+            'id_reference'  => $id_reference
+        ];
+
+        if (LogError::create($log)) return true;
+
+        return false;
     }
 }

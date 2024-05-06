@@ -11,12 +11,13 @@ use Illuminate\Support\Str;
 
 class TesteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         //dd(numbers_generate(100000));
         //$request = new Request();
         //$request->merge(["raffle_id"=>1]);
         //dd($this->simulacao_compra($request));
+        //dd($request->session());
         $registration_data = [
             'name' => 'Sebastião Barbosa Silva',
             'phone' => '55 (53) 91831-8081'
