@@ -14,10 +14,14 @@ class TesteController extends Controller
     public function index()
     {
         //dd(numbers_generate(100000));
-        $request = new Request();
-        $request->merge(["raffle_id"=>1]);
-        dd($this->simulacao_compra($request));
-        dd(numbers_reserve(1, 2, 1, false, ['00001', '00002']));
+        //$request = new Request();
+        //$request->merge(["raffle_id"=>1]);
+        //dd($this->simulacao_compra($request));
+        $registration_data = [
+            'name' => 'Sebastião Barbosa Silva',
+            'phone' => '55 (53) 91831-8081'
+        ];
+        dd(numbers_reserve(1, 2, 1, $registration_data, false, ['00000', '00003']));
         //dd(numbers_available(1));
     }
 

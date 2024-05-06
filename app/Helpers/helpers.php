@@ -36,19 +36,24 @@ if(!function_exists('numbers_available')) {
 
 if(!function_exists('numbers_reserve')) {
     /**
-     * @param int $raffleId - dodigo da rifa
+     * @param int $raffleId - codigo da rifa
      * @param int $qttNumbers - quantidade de numeros reservados/comprados
      * @param int $customerId - codigo do customer
      * @param bool $automatic - compra automatica ou manual
      * @return array
      */
-    function numbers_reserve(int $raffleId, int $qttNumbers, int $customerId, bool $paid = false,  array $numbers = []): array
+    function numbers_reserve(int $raffleId, int $qttNumbers, int $customerId, array $registration_data, bool $paid = false,  array $numbers = []): array
     {
 
         $rifa = Raffle::find($raffleId);
 
-        $disponiveis = explode(",", $rifa->numbers);
+        $disponiveis = explode(",", $rifa->numbers); //pega os numeros disponiveis da rifa
 
+        if(empty($registration_data['name']) || empty($registration_data['phone'])) {
+            return ['errors' => true, 'message' => 'Informe corretamente o nome e telefone.'];
+        }
+
+        //valida os disponiveis com a quantidade solicitada
         if(count($disponiveis) == 0){
             $texto = $rifa->type == 'automatico' ? 'vendidos' : 'vendidos/reservados';
             return ['errors' => true, 'message' => 'Todos '.$texto];
@@ -57,51 +62,53 @@ if(!function_exists('numbers_reserve')) {
             return ['errors' => true, 'message' => 'Quantidade indisponível para a rifa selecionada. A quantidade disponível é: ' . count($disponiveis)];
         }
 
-        $resutlNumbers = [];
+        $resutlNumbers = []; //array retorno numeros aleatorios ou manuais
 
-        if(!empty($numbers)){
-            $intersect = array_intersect($numbers, $disponiveis);
-            $diff = array_diff($numbers, $intersect);
+        if(!empty($numbers)){ //se for manual envia os numeros em um array
+            $intersect = array_intersect($numbers, $disponiveis); //verifica se estao disponiveis
+            $diff = array_diff($numbers, $intersect); //verifica se estao disponiveis
 
             if(!empty($diff)){
-                $texto = 'O numero está indisponível: '.explode(',', $diff);
-                if(count($diff) > 1) $texto = 'Os numeros estão indisponíveis: '.explode(',', $diff);
+                $texto = 'O numero está indisponível: '.implode(',', $diff);
+                if(count($diff) > 1) $texto = 'Os numeros estão indisponíveis: '.implode(',', $diff);
 
                 return ['errors' => true, 'message' => $texto];
             }
 
-            sort($numbers);
+            sort($numbers); //organiza os numeros
             $selecionados = $numbers;
 
-            foreach ($selecionados as $resultNumber) {
+            foreach ($selecionados as $resultNumber) { //retira os numeros do array da rifa
                 $resutlNumbers[] = $resultNumber;
                 $idx = array_search($resultNumber, $disponiveis);
                 unset($disponiveis[$idx]);
             }
-        }else{
+        }else{ //numeros aleatorios
             shuffle($disponiveis);
-            $selecionados = array_slice($disponiveis, 0, $qttNumbers);
+            $selecionados = array_slice($disponiveis, 0, $qttNumbers); //pega a quantidade aleatoria
 
-            foreach ($selecionados as $key => $resultNumber) {
+            foreach ($selecionados as $key => $resultNumber) { //retira os numeros do array da rifa
                 $resutlNumbers[] = $resultNumber;
                 unset($disponiveis[$key]);
             }
         }
 
-        sort($disponiveis);
-        sort($resutlNumbers);
+        sort($disponiveis); //organiza os arrays
+        sort($resutlNumbers); //organiza os arrays
 
-        $updateNumbers = implode(',', $disponiveis);
-        $updateReservedNumbers = implode(',', $resutlNumbers);
-        DB::beginTransaction();
+        $updateNumbers = implode(',', $disponiveis);  //transforma o array em string
+        $updateReservedNumbers = implode(',', $resutlNumbers); //transforma o array em string
+
+        DB::beginTransaction(); //inicia a transaction no banco
         try {
-            Raffle::where('id', $raffleId)->update(['numbers' => $updateNumbers]);
-            $customer = Customer::where('id', $customerId)->first();
+            Raffle::where('id', $raffleId)->update(['numbers' => $updateNumbers]); //atualiza a rifa com os novos numeros disponiveis
 
+            //pega o total
             $amount = $rifa->price * $qttNumbers;
             $totalNotDiscount = 0;
             $discount = 0;
 
+            //Verifica se tem promocao
             $promotion_id = null;
             $promotion = raffle_promotion($raffleId, $qttNumbers);
             if(!empty($promotion)){
@@ -111,18 +118,21 @@ if(!function_exists('numbers_reserve')) {
                 $promotion_id = $promotion['id'];
             }
 
+            $expired = !empty($rifa->pix_expired) ? $rifa->pix_expired : 5;
+
             Participant::create([
-                'name' => $customer->name,
-                'phone'=> $customer->phone,
-                'email' => $customer->email,
-                'document' => $customer->cpf,
+                'name' => $registration_data['name'],
+                'phone'=> $registration_data['phone'],
+                'email' => !empty($registration_data['email']) ? $registration_data['email'] : null,
+                'document' => !empty($registration_data['cpf']) ? $registration_data['cpf'] : null,
                 'amount' => $amount,
                 'numbers' => $updateReservedNumbers,
                 'paid' => $paid ? count($resutlNumbers) : 0,
                 'reserved' => $paid ? 0 : count($resutlNumbers),
                 'customer_id' => $customerId,
                 'raffle_id' => $raffleId,
-                'raffle_promotion_id' => $promotion_id
+                'raffle_promotion_id' => $promotion_id,
+                'expired_at' => Carbon::now()->addMinutes($expired)
             ]);
 
             DB::commit();
