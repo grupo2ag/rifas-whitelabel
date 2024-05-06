@@ -39,6 +39,8 @@ const colorsClasses = computed(() => {
             return 'bg-warning hover:bg-warning/80 text-warning-bw';
         case 'success':
             return 'bg-success hover:bg-success/80 text-success-bw';
+        case 'light':
+            return 'bg-base-100 hover:bg-success/80 text-success-bw';
         case 'info':
             return 'bg-info hover:bg-info/80 text-info-bw';
         case 'gray':
@@ -46,7 +48,7 @@ const colorsClasses = computed(() => {
         case 'outline-primary':
             return 'border border-primary rounded-md text-primary hover:bg-primary hover:text-primary-bw';
         case 'outline-light':
-            return 'border border-black dark:border-white rounded-md text-black dark:text-white hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black';
+            return ' border border-neutral/30 rounded-md text-neutral hover:bg-primary hover:text-primary-bw hover:border-primary';
         case 'outline-dark':
             return 'border border-black rounded-md text-black hover:bg-white hover:bg-black/10';
         case 'outline-red':

@@ -49,7 +49,7 @@ export default {
 
             ],
             isLargeScreen: useMediaQuery('(min-width: 768px)'),
-            purchaseType: 1
+            purchaseType: 2
         }
     },
     methods: {

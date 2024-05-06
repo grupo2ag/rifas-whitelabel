@@ -115,20 +115,20 @@ export default {
             <div class="grid gap-3 grid-cols-2 mb-3"
                  :class="'md:grid-cols-' + (quotas.length > 2 ? quotas.length / 2 : 'DA')">
                 <template v-for="(item, index) in quotas" :key="index">
-                    <Button type="button" color="outline-primary" @click="addQuotas(item.quantity)" class="flex-col">
+                    <Button type="button" color="outline-light" @click="addQuotas(item.quantity)" class="flex-col">
                         <span class="text-3xl font-bold">+ {{ item.quantity }}</span>
                         <span class="text-xs">Selecionar</span>
                     </Button>
                 </template>
             </div>
 
-            <div class="px-5 py-3 w-full flex items-center justify-center gap-2 bg-base-200 mb-3 rounded-xl">
+            <div class="px-5 py-3 w-full flex items-center justify-center gap-2 bg-base-100 mb-3 rounded-xl">
                 <div class="w-6/12 md:w-3/12 mx-auto flex items-center">
                     <button type="button" class="c-btn-count"
                             @click="removeItem">
                         <Icon name="icon-minus"/>
                     </button>
-                    <p class="px-5 flex-1 bg-base-200 rounded-lg text-xl font-bold text-center text-neutral">
+                    <p class="px-5 flex-1 bg-base-100 rounded-lg text-xl font-bold text-center text-neutral">
                         {{ quantity }}
                     </p>
                     <button type="button" class="c-btn-count"
@@ -139,10 +139,10 @@ export default {
             </div>
 
             <div class="px-5 py-3 w-full flex items-center justify-between gap-4 bg-primary mb-3 rounded-xl">
-                <p class="w-6/12 text-sm text-content">{{ quantity }} x {{ func.formatValue(value) }} </p>
+                <p class="w-6/12 text-sm text-primary-bw">{{ quantity }} x {{ func.formatValue(value) }} </p>
 
-                <p class="w-6/12 text-right text-sm md:text-sm text-content">
-                    Total <span class="text-xl font-bold text-content">{{ func.formatValue(total) }}</span>
+                <p class="w-6/12 text-right text-sm md:text-sm text-primary-bw">
+                    Total <span class="text-xl font-bold text-primary-bw">{{ func.formatValue(total) }}</span>
                 </p>
             </div>
 
