@@ -105,6 +105,11 @@ class Raffle extends Model
 		return $this->hasMany(Participant::class);
 	}
 
+    public function scopeActivateRaffles()
+    {
+        return $this->where('status', '=', 'Ativo');
+    }
+
 	public function affiliates()
 	{
 		return $this->belongsToMany(Affiliate::class, 'affiliate_raffles')

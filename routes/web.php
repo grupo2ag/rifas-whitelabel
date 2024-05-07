@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -25,9 +26,10 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+       return (new DashboardController())->index();
+        // return Inertia::render('Panel/User/Dashboard');
     })->name('dashboard');
-    Route::get('/compaing', function () {
+    Route::get('/campaign', function () {
         return Inertia::render('Panel/User/Campaign');
     })->name('campaign');
 });
@@ -40,16 +42,8 @@ Route::get('/', function () {
     return Inertia::render('Site/Home/Home');
 })->name('index');
 
-Route::get('/compaing', function () {
-    return Inertia::render('Panel/User/Campaign');
-})->name('campaign');
-
 Route::get('/checkout', function () {
     return Inertia::render('Site/Checkout/Checkout');
 })->name('checkout');
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Panel/User/Dashboard');
-})->name('dashboard');
 
 

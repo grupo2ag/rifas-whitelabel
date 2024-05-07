@@ -27,16 +27,16 @@ export default {
         </template>
         <div class="container">
             <div class="flex flex-row flex-wrap mb-2">
-                <div class="lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
+                <div class="lg:w-3/12 w-full mb-2 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Campanhas Criadas'" :valueCount="'1'"/>
                 </div>
-                <div class="lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
+                <div class="lg:w-3/12 w-full mb-2 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Campanhas Ativas'" :valueCount="'1'"/>
                 </div>
-                <div class="lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
+                <div class="lg:w-3/12 w-full mb-2 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Campanhas Finalizadas'" :valueCount="'0'"/>
                 </div>
-                <div class="lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
+                <div class="lg:w-3/12 w-full mb-2 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Total Arrecadado'" :valueCount="'R$4,000.000'"/>
                 </div>
             </div>

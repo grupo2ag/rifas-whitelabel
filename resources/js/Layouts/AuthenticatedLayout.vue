@@ -14,7 +14,12 @@ import {
 </script>
 <script>
 import { usePage } from "@inertiajs/inertia-vue3";
+import { router } from '@inertiajs/vue3';
 // import { notify } from "@kyvg/vue3-notification";
+
+const logout = () => {
+    router.post(route('logout'));
+};
 
 export default {
     data() {
@@ -55,11 +60,11 @@ export default {
 
 <template>
     <div>
-        <div class="min-h-screen pt-[60px] md:pt-0 bg-root">
+        <div class="min-h-screen pt-0 md:pt-0 bg-root">
             <Sidebar></Sidebar>
 
-            <header class="md:pl-28 md:pr-8">
-                <div class=" flex items-center justify-between pt-[4.4rem] md:pt-6">
+            <header class="px-4 md:pl-28 md:pr-8">
+                <div class="flex items-center justify-between pt-4 md:pt-6">
                     <div class="flex items-center justify-between w-full px-4 py-3 shadow-sm bg-primary rounded-xl">
                         <slot name="header" />
 
@@ -70,9 +75,7 @@ export default {
                                     <template #trigger>
                                         <button type="button"
                                             class="flex items-center justify-center gap-2 text-sm font-bold leading-4 text-white duration-200 rounded-full hover:bg-bgadm-light">
-                                            <img class="w-10 h-10 rounded-full"
-                                                :src="'/images/banner-1.webp'"
-                                                alt="" />
+                                            <img class="w-10 h-10 rounded-full" :src="'/images/banner-1.webp'" alt="" />
                                             Nome
                                             <ChevronDownIcon class="w-4 h-4 mr-1 stroke-black dark:stroke-white" />
                                         </button>
@@ -90,17 +93,31 @@ export default {
                                                 Sair
                                             </DropdownLink>
                                         </div> -->
+                                        <div class="flex flex-row">
+                                            <div class="w-full p-2">
+                                                <!-- <DropdownLink as="button"> -->
+                                                <button>
+                                                    <div class="flex flex-row">
+                                                        <UserCircleIcon class="w-5 h-5 mr-2 stroke-primary" />
+                                                        Minha Conta
+                                                    </div>
+                                                </button>
+                                                <!-- </DropdownLink> -->
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-row">
+                                            <div class="w-full p-2">
+                                                <!-- <DropdownLink @click="console.log('role')"> -->
+                                                <button @click="logout()">
+                                                    <div class="flex flex-row">
+                                                        <ArrowLeftStartOnRectangleIcon
+                                                            class="w-5 h-5 mr-2 stroke-primary" />
+                                                        Sair
+                                                    </div>
+                                                </button>
+                                                <!-- </DropdownLink> -->
+                                            </div>
 
-                                        <div >
-                                            <DropdownLink  as="button">
-                                                <UserCircleIcon class="w-5 h-5 mr-2 stroke-white" />
-                                                Minha Conta
-                                            </DropdownLink>
-
-                                            <DropdownLink method="post" as="button">
-                                                <ArrowLeftStartOnRectangleIcon class="w-5 h-5 mr-2 stroke-white" />
-                                                Sair
-                                            </DropdownLink>
                                         </div>
                                     </template>
                                 </Dropdown>
@@ -110,7 +127,7 @@ export default {
                 </div>
             </header>
 
-            <main class="my-4 mr-8 md:pl-28">
+            <main class="flex justify-center my-4 md:mr-8 lg:mr-8 sm:mr-8 md:pl-28">
                 <slot />
             </main>
         </div>
