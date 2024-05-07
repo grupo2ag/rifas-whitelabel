@@ -9,6 +9,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Participant
@@ -35,10 +36,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Participant extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
 	protected $table = 'participants';
-	public $timestamps = false;
+	public $timestamps = true;
 
 	protected $casts = [
 		'checked' => 'int',
@@ -47,7 +48,8 @@ class Participant extends Model
 		'paid' => 'int',
 		'reserved' => 'int',
 		'customer_id' => 'int',
-		'raffle_id' => 'int'
+		'raffle_id' => 'int',
+		'rafflepromotion_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -62,7 +64,9 @@ class Participant extends Model
 		'paid',
 		'reserved',
 		'customer_id',
-		'raffle_id'
+		'raffle_id',
+        'rafflepromotion_id',
+        'expired_at'
 	];
 
 	public function raffle()

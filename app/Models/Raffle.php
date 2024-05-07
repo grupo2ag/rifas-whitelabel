@@ -50,7 +50,7 @@ class Raffle extends Model
     use HasFactory;
 
 	protected $table = 'raffles';
-	public $timestamps = false;
+	public $timestamps = true;
 
 	protected $casts = [
 		'pix_expired' => 'int',

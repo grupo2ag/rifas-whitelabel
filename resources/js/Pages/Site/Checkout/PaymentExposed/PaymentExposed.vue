@@ -1,550 +1,323 @@
+<script setup>
+import * as func from '@/Helpers/functions';
+</script>
+
 <script>
-import {Tooltip} from 'daisyui-vue';
 import Button from '@/Components/Button/Button.vue'
+import Icon from '@/Components/Icon/Icon.vue'
 
 export default {
     name: "PaymentExposed",
     components: {
         Button,
-        Tooltip
+        Icon,
     },
     data() {
         return {
             data: [
                 {
                     number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 2,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 3,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 4,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 5,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 6,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 7,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 8,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 9,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 10,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 11,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 12,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 13,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 14,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 15,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 16,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 17,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 18,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 19,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 20,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 21,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
+                },
+                {
+                    number: 22,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 23,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 24,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 25,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 26,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    number: 27,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 28,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 29,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 30,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
+                },
+                {
+                    number: 31,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
+                },
+                {
+                    number: 32,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
+                },
+                {
+                    number: 33,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
+                    number: 34,
                     status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 35,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 36,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
+                    number: 37,
                     status: 'reserved',
-                    buyer: 'Luiz Meirelles',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    number: 38,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
+                    number: 39,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 40,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 41,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 42,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 43,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 44,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 45,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 46,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 47,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
+                    number: 48,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
                 },
                 {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
-                {
-                    number: 1,
-                    status: '',
-                    buyer: 'Luiz Meirelles',
-                },
+                    number: 49,
+                    status: 'available',
+                    buyer: 'Luiz Meirelles'
+                }
             ],
             items: [],
             selected: [],
-            showModal: true,
+            showModal: false,
+            value: 199,
+            total: 0
         }
     },
     methods: {
         filterItems(status) {
             if (status === 'all') {
-                this.items = this.data
+                document.querySelectorAll(".c-raffle__number").forEach(function(el) {
+                    el.style.display = 'block';
+                });
             } else {
-               /* this.items = this.data.filter((item) => {
-                    return item.status === status;
-                });*/
+                document.querySelectorAll(".c-raffle__number").forEach(function(el) {
+                    el.style.display = 'none';
+                });
 
-                this.data.filter((el) => el.status.includes(status))
-
-                console.log(this.data)
+                document.querySelectorAll(".c-raffle__number--" + status).forEach(function(el) {
+                    el.style.display = 'block';
+                });
             }
         },
-        addItem(pos, status) {
-            let active = this.$refs['numb_' + pos][0].getAttribute('active')
+        addItem(number, status) {
+            let active = this.$refs['numb_' + number][0].getAttribute('active')
 
-            if (status === '') {
+            if (status === 'available') {
                 if (active !== 'true') {
-                    this.selected.push(this.items[pos]);
-                    this.$refs['numb_' + pos][0].setAttribute('active', true)
+                    this.data.filter((item) =>
+                        item.number === number ? this.selected.push(item): '');
+
+                    this.$refs['numb_' + number][0].setAttribute('active', true)
+
+                    this.total = this.selected.length * this.value
+
+                    this.showModal = true
                 } else {
-                    this.selected.splice(pos);
-                    this.$refs['numb_' + pos][0].setAttribute('active', false)
+                    this.removeItem(number)
                 }
             }
+        },
+        removeItem(number){
+            for (let i = this.selected.length; i--;) {
+                if (this.selected[i].number === number) {
+                    this.selected.splice(i, 1);
+                }
+            }
+
+            if (this.selected.length <= 0){
+                this.showModal = false
+            }
+
+            this.total = this.selected.length * this.value
+
+            this.$refs['numb_' + number][0].setAttribute('active', false)
         }
-    }
+    },
 }
 </script>
 
@@ -553,22 +326,22 @@ export default {
         <p class="text-center font-bold text-neutral mb-6">Escolha seus números, e depois finalize a reserva/compra</p>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Button color="info" class="flex-1"
+            <Button type="button" color="info" class="flex-1"
                     @click="filterItems('all')">
                 Todos
             </button>
 
-            <Button color="outline-primary" class="flex-1"
-                    @click="filterItems('')">
+            <Button type="button" color="outline-primary" class="flex-1"
+                    @click="filterItems('available')">
                 Disponivel
             </button>
 
-            <Button color="warning" class="flex-1"
+            <Button type="button" color="warning" class="flex-1"
                     @click="filterItems('reserved')">
                 Reservado
             </button>
 
-            <Button color="success" class="flex-1"
+            <Button type="button" color="success" class="flex-1"
                     @click="filterItems('paid')">
                 Pago
             </button>
@@ -577,59 +350,46 @@ export default {
         <div class="border-t border-black/20">
             <div class="grid grid-cols-4 md:grid-cols-12 gap-2 md:gap-1 mt-5">
                 <template v-for="(item, index) in data" :key="index">
-                    <Tooltip variant="primary" content="Luiz Meirelles" placement="top">
-                        <button type="button" :ref="'numb_' + index"
-                                class="c-raffle__number"
-                                :class="item.status === 'paid' ? 'c-raffle__number--success' : item.status === 'reserved' ? 'c-raffle__number--reserved' : ''"
-                                @click="addItem(index, item.status)">
-                            {{ item.number }}
-                        </button>
-                    </Tooltip>
+                    <button type="button" :ref="'numb_' + item.number"
+                            class="c-raffle__number"
+                            :class="item.status === 'paid' ? 'c-raffle__number--paid' : item.status === 'reserved' ? 'c-raffle__number--reserved' : 'c-raffle__number--available'"
+                            @click="addItem(item.number, item.status)">
+                        {{ item.number }}
+                    </button>
                 </template>
             </div>
         </div>
     </div>
 
     <Transition :duration="{ enter: 600, leave: 200 }" name="slide-fade">
-        <div class="c-checkout " v-show="showModal">
-            <div class="c-boleta__content py-4 border-t border-black/30 bg-white w-full mx-auto inner">
-                <div class="container flex">
-                    <div class="py-3 px-4 bg-red flex items-center justify-between">
-                        <div class="flex items-start justify-center gap-1">
+        <div class="c-checkout" v-show="showModal">
+            <div class="w-full md:container inner">
+                <div class="w-full px-6 flex flex-col md:flex-row items-center gap-3 md:gap-8">
+                    <div class="w-full md:w-auto flex-1 pb-3 md:pb-0 flex items-start flex-wrap gap-1 border-b md:border-none border-base-100">
                             <template v-for="item in selected">
-                                <p class="text-xs border border-black px-2 py-1 rounded-md  uppercase font-bold text-black">
-                                    {{ item.number }}</p>
+                                <div class="bg-primary text-primary-bw px-3 py-1.5 flex items-center rounded-md gap-1">
+                                    <p class="text-xs uppercase text-primary-bw">
+                                        {{ item.number }}
+                                    </p>
+                                    <button type="" @click="removeItem(item.number)" aria-label="Excluir Número">
+                                        <Icon name="icon-trash" class="stroke-primary-bw h-[14px]"/>
+                                    </button>
+                                </div>
                             </template>
                         </div>
-                    </div>
 
-                    <div class="w-full">
-                        <div class="container flex justify-end items-center ">
-                            <div>
-                                <h5 class="text-black text-base md:text-lg font-bold">
-                                    R$ 100,00
-                                </h5>
-                                <p class="text-sm md:text-sm text-gray">form.game </p>
-                            </div>
+                    <div class="w-full md:w-6/12 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+                        <div class="w-full md:w-6/12">
+                            <p class="text-xs text-neutral/70">{{selected.length}} número(s) selecionado(s)</p>
 
-                            <button class="p-2"
-                                    title="Cancelar Aposta">
-                                <XMarkIcon class="w-6 h-6 stroke-gray"/>
-                            </button>
-
-                            <div class="bg-green-dark rounded-full p-2" @click="showModal = false"
-                                 id="aposta_concluida" title="Cancelar Aposta">
-                                <CheckIcon class="w-5 h-5 stroke-white"/>
-                            </div>
+                            <p class="text-sm md:text-sm text-neutral">Total <span class="text-2xl font-black">R$ {{ func.formatValue(this.total) }}</span>  </p>
                         </div>
-                    </div>
 
-                    <div class="w-full px-4">
-                        <form action="" class="w-full">
-                            <Button variant="success" class="w-full">
-                                Comprar
+                        <div class="w-full md:w-6/12">
+                            <Button color="success" class="w-full uppercase font-bold">
+                               Reserva
                             </Button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

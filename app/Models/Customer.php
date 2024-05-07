@@ -25,7 +25,7 @@ class Customer extends Model
     use HasFactory;
 
 	protected $table = 'customers';
-	public $timestamps = false;
+	public $timestamps = true;
 
 	protected $fillable = [
 		'name',

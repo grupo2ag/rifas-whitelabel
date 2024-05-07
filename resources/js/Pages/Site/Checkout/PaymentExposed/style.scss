@@ -1,5 +1,5 @@
 .c-checkout {
-    @apply w-full flex items-end overflow-hidden fixed left-0 bottom-0 z-50 drop-shadow-xl;
+    @apply w-full flex items-end overflow-hidden bg-content py-4 border-t border-base-100 fixed left-0 bottom-0 z-50 drop-shadow-xl;
 
     &__content {
         @apply w-full drop-shadow-xl bg-white pointer-events-auto;
@@ -86,7 +86,7 @@
           @apply bg-warning border-warning text-warning-bw;
         }
 
-        &--success{
+        &--paid{
             @apply bg-success border-success text-success-bw;
         }
 

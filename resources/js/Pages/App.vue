@@ -1,16 +1,16 @@
 <script>
 import {defineAsyncComponent, defineComponent} from "vue";
 import Header from "@/Components/Header/Header.vue";
-import FooterSing from "@/Components/FooterSing/FooterSing.vue";
+// import FooterSing from "@/Components/FooterSing/FooterSing.vue";
 // import AdsScript from "@/Components/AdsScript/AdsScript.vue";
-// const FooterSing = defineAsyncComponent(() => import('@/Components/FooterSing/FooterSing.vue'))
-// const AdsScript = defineAsyncComponent(() => import('@/Components/AdsScript/AdsScript.vue'))
+const FooterSing = defineAsyncComponent(() => import('@/Components/FooterSing/FooterSing.vue'))
+const AdsScript = defineAsyncComponent(() => import('@/Components/AdsScript/AdsScript.vue'))
 
 export default defineComponent(  {
     name: "AppSite",
     components: {
         Header,
-        // AdsScript,
+        AdsScript,
         FooterSing
     },
 });
@@ -25,7 +25,7 @@ export default defineComponent(  {
 
     <FooterSing/>
 
-<!--    <AdsScript/>-->
+    <AdsScript/>
 </template>
 
 

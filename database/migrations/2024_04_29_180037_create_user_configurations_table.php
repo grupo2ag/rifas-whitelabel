@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('user_configurations', function (Blueprint $table) {
-            $table->bigInteger('id')->primary();
+            $table->id();
             $table->string('primary_color')->nullable();
             $table->text('logo')->nullable();
             $table->text('meta_description')->nullable();

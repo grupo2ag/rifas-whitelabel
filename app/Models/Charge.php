@@ -35,6 +35,8 @@ class Charge extends Model
 
 	protected $table = 'charges';
 
+    public $timestamps = true;
+
 	protected $casts = [
 		'amount' => 'int',
 		'expired' => 'datetime',

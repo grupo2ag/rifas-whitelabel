@@ -1,0 +1,104 @@
+.c-checkout {
+    @apply w-full flex items-end overflow-hidden bg-content py-4 border-t border-base-100 fixed left-0 bottom-0 z-50 drop-shadow-xl;
+
+    &__content {
+        @apply w-full drop-shadow-xl bg-white pointer-events-auto;
+        //box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
+    }
+
+    &__label {
+        @apply text-sm text-white leading-none;
+    }
+
+    &__input {
+        @apply w-full px-2 text-4xl font-black bg-transparent text-center mb-2 leading-none outline-none;
+
+        /* @media (max-width: 768px) {
+             font-size: 32px;
+             text-align: center;
+         }*/
+
+        &::placeholder {
+            color: #54d462;
+        }
+    }
+
+    &__btn {
+        @apply w-full py-3 h-full rounded-lg text-base md:text-sm uppercase text-white bg-white font-black;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        outline: none;
+
+        &--deposit {
+            background: #fe8206;
+        }
+
+        &--processing {
+            background: #9b9b9b;
+        }
+
+        &--login {
+            background: #0f66e9;
+        }
+
+        span {
+            font-weight: 500;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        //padding: 0 20px;
+        //background: #fff;
+
+        &__content {
+            //border-radius: 0;
+        }
+        //bottom: 0;
+        //border-radius: 0;
+    }
+}
+
+.slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+    transform: translateY(30px);
+    opacity: 0;
+}
+
+
+.c-raffle{
+
+    &__number{
+        @apply py-2 px-3 border border-primary text-primary rounded-lg;
+
+        &--reserved{
+          @apply bg-warning border-warning text-warning-bw;
+        }
+
+        &--paid{
+            @apply bg-success border-success text-success-bw;
+        }
+
+        &[active='true']{
+            @apply border-primary bg-primary text-white;
+        }
+    }
+}
+
+.c-btn-count{
+    @apply flex items-center bg-primary justify-center w-7 h-7 rounded-full cursor-pointer;
+    svg{
+        @apply w-5 h-5 stroke-primary-bw;
+    }
+}

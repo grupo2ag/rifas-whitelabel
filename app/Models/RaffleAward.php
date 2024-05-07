@@ -34,6 +34,8 @@ class RaffleAward extends Model
 
 	protected $table = 'raffle_awards';
 
+    public $timestamps = true;
+
 	protected $casts = [
 		'order' => 'int',
 		'number_award' => 'int',

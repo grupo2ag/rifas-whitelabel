@@ -1,13 +1,19 @@
 <script setup>
 import {loadScript} from "vue-plugin-load-script";
-import {usePage} from '@inertiajs/inertia-vue3';
+// import { computed } from 'vue';
+// import {usePage} from '@inertiajs/inertia-vue3';
 import {onMounted} from "vue";
 
-const analytics = usePage().props.value.siteConfig.configurations[0].analyticsviewid;
-const facebookPixel = usePage().props.value.siteConfig.configurations[0].facebookpixel
+import { computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+
+const page = usePage()
+const config = computed(() => page.props)
+
+const analytics = config.value.siteconfig.google_analytics
+const facebookPixel = config.value.siteconfig.facebook_pixel
 
 onMounted(() => {
-
     setTimeout(() => {
         if (analytics) {
             loadScript("https://www.googletagmanager.com/gtag/js?id=" + analytics)
@@ -52,7 +58,7 @@ onMounted(() => {
             // End Meta Pixel Code
         }
 
-    }, 6000)
+    }, 5000)
 })
 </script>
 

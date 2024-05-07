@@ -1,24 +1,7 @@
-/*.c-nav {
-    @apply w-full flex items-center justify-center gap-10;
+.c-social {
+    @apply block transition duration-300 ease-in-out hover:scale-105;
 
-    &--vertical{
-        @apply gap-6 pl-10 md:pl-0 flex-col items-start
+    svg{
+        @apply w-8 h-8;
     }
-
-    &__item{
-        @apply text-3xl	text-colorprimary uppercase cursor-pointer relative hover:opacity-70;
-
-        &:before{
-            content: "";
-            @apply w-[0] h-[4px] absolute left-0 -bottom-0 bg-colorprimary;
-            transition: .5s;
-            -webkit-transition: .5s;
-        }
-
-        &:hover{
-            &:before{
-                @apply w-full;
-            }
-        }
-    }
-}*/
+}
