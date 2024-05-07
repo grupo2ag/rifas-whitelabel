@@ -43,9 +43,13 @@ Route::middleware(\App\Http\Middleware\LevelMiddleware::class)->group(function (
         return Inertia::render('Site/Home/Home');
     })->name('index');
 
-    Route::get('/checkout', function () {
-        return Inertia::render('Site/Checkout/Checkout');
-    })->name('checkout');
+    Route::get('/raffle', function () {
+        return Inertia::render('Site/Raffle/Raffle');
+    })->name('raffle');
+
+    Route::get('/response', function () {
+        return Inertia::render('Site/Payment/PaymentIndex');
+    })->name('response');
 });
 
 require 'admin/admin_web.php';

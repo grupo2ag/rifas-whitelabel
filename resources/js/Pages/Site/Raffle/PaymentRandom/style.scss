@@ -97,8 +97,8 @@
 }
 
 .c-btn-count{
-    @apply flex items-center bg-primary justify-center w-7 h-7 rounded-full cursor-pointer;
+    @apply flex items-center bg-primary justify-center w-6 h-6 rounded-full cursor-pointer;
     svg{
-        @apply w-5 h-5 stroke-primary-bw;
+        @apply w-4 h-4 stroke-primary-bw;
     }
 }

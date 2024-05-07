@@ -9,7 +9,7 @@ html{
 }
 
 .c-content{
-    @apply px-4 py-7 md:p-7 md:rounded-3xl bg-content border border-base-100/70;
+    @apply px-4 py-7 md:p-7 md:rounded-3xl bg-content border-t md:border border-base-100/70;
 }
 
 .pulsate-fwd {
@@ -23,8 +23,8 @@ html{
         transform: scale(1);
     }
     50% {
-        -webkit-transform: scale(1.05);
-        transform: scale(1.05);
+        -webkit-transform: scale(1.02);
+        transform: scale(1.02);
     }
     100% {
         -webkit-transform: scale(1);
@@ -34,4 +34,9 @@ html{
 
 .bedge{
     @apply py-3 rounded-md text-sm;
+}
+
+body.active {
+    overflow: hidden;
+    scroll-behavior: smooth;
 }
