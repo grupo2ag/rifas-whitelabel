@@ -4,9 +4,10 @@ import Icon from '@/Components/Icon/Icon.vue'
 import Tab from '@/Components/Tabs/Tab.vue'
 import Button from '@/Components/Button/Button.vue'
 import Badge from '@/Components/Badge/Badge.vue'
+import Modal from '@/Components/Modal/Modal.vue'
 import Progress from '@/Components/Progress/Progress.vue'
-import PaymentExposed from '@/Pages/Site/Checkout/PaymentExposed/PaymentExposed.vue'
-import PaymentRandom from '@/Pages/Site/Checkout/PaymentRandom/PaymentRandom.vue'
+import PaymentExposed from '@/Pages/Site/Raffle/PaymentExposed/PaymentExposed.vue'
+import PaymentRandom from '@/Pages/Site/Raffle/PaymentRandom/PaymentRandom.vue'
 import {Tooltip, TabPanel} from 'daisyui-vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
@@ -26,6 +27,7 @@ export default {
         PaymentExposed,
         PaymentRandom,
         Button,
+        Modal,
         Progress,
         Tooltip,
         TabPanel,
@@ -49,7 +51,8 @@ export default {
 
             ],
             isLargeScreen: useMediaQuery('(min-width: 768px)'),
-            purchaseType: 2
+            purchaseType: 2,
+            showModal: true
         }
     },
     methods: {
@@ -67,6 +70,13 @@ export default {
         },
         descricaoActive() {
             this.activeHeight = !this.activeHeight;
+        },
+        closeModal() {
+            this.showModal = false;
+            document.body.classList.toggle('active');
+        },
+        openModal(id) {
+            this.showModal = true;
         },
     },
 }

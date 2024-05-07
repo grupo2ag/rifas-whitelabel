@@ -271,15 +271,15 @@ export default {
     methods: {
         filterItems(status) {
             if (status === 'all') {
-                document.querySelectorAll(".c-raffle__number").forEach(function(el) {
+                document.querySelectorAll(".c-raffle__number").forEach(function (el) {
                     el.style.display = 'block';
                 });
             } else {
-                document.querySelectorAll(".c-raffle__number").forEach(function(el) {
+                document.querySelectorAll(".c-raffle__number").forEach(function (el) {
                     el.style.display = 'none';
                 });
 
-                document.querySelectorAll(".c-raffle__number--" + status).forEach(function(el) {
+                document.querySelectorAll(".c-raffle__number--" + status).forEach(function (el) {
                     el.style.display = 'block';
                 });
             }
@@ -290,7 +290,7 @@ export default {
             if (status === 'available') {
                 if (active !== 'true') {
                     this.data.filter((item) =>
-                        item.number === number ? this.selected.push(item): '');
+                        item.number === number ? this.selected.push(item) : '');
 
                     this.$refs['numb_' + number][0].setAttribute('active', true)
 
@@ -302,14 +302,14 @@ export default {
                 }
             }
         },
-        removeItem(number){
+        removeItem(number) {
             for (let i = this.selected.length; i--;) {
                 if (this.selected[i].number === number) {
                     this.selected.splice(i, 1);
                 }
             }
 
-            if (this.selected.length <= 0){
+            if (this.selected.length <= 0) {
                 this.showModal = false
             }
 
@@ -371,29 +371,32 @@ export default {
         <div class="c-checkout" v-show="showModal">
             <div class="w-full md:container inner">
                 <div class="w-full px-6 flex flex-col md:flex-row items-center gap-3 md:gap-8">
-                    <div class="w-full md:w-auto flex-1 pb-3 md:pb-0 flex items-start flex-wrap gap-1 border-b md:border-none border-base-100">
-                            <template v-for="item in selected">
-                                <div class="bg-primary text-primary-bw px-3 py-1.5 flex items-center rounded-md gap-1">
-                                    <p class="text-xs uppercase text-primary-bw">
-                                        {{ item.number }}
-                                    </p>
-                                    <button type="" @click="removeItem(item.number)" aria-label="Excluir Número">
-                                        <Icon name="icon-trash" class="stroke-primary-bw h-[14px]"/>
-                                    </button>
-                                </div>
-                            </template>
-                        </div>
+                    <div
+                        class="w-full md:w-auto flex-1 pb-3 md:pb-0 flex items-start flex-wrap gap-1 border-b md:border-none border-base-100">
+                        <template v-for="item in selected">
+                            <div class="bg-primary text-primary-bw px-3 py-1.5 flex items-center rounded-md gap-1">
+                                <p class="text-xs uppercase text-primary-bw">
+                                    {{ item.number }}
+                                </p>
+                                <button type="" @click="removeItem(item.number)" aria-label="Excluir Número">
+                                    <Icon name="icon-trash" class="stroke-primary-bw h-[14px]"/>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
 
                     <div class="w-full md:w-6/12 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
                         <div class="w-full md:w-6/12">
-                            <p class="text-xs text-neutral/70">{{selected.length}} número(s) selecionado(s)</p>
+                            <p class="text-xs text-neutral/70">{{ selected.length }} número(s) selecionado(s)</p>
 
-                            <p class="text-sm md:text-sm text-neutral">Total <span class="text-2xl font-black">R$ {{ func.formatValue(this.total) }}</span>  </p>
+                            <p class="text-sm md:text-sm text-neutral">Total <span
+                                class="text-2xl font-black">R$ {{ func.formatValue(this.total) }}</span></p>
                         </div>
 
                         <div class="w-full md:w-6/12">
                             <Button color="success" class="w-full uppercase font-bold pulsate-fwd">
-                                <Icon name="icon-check-circle" class="h-6 mr-2 stroke-success-bw"/> Reservar
+                                <Icon name="icon-check-circle" class="h-6 mr-2 stroke-success-bw"/>
+                                Reservar
                             </Button>
                         </div>
                     </div>

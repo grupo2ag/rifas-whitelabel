@@ -5,12 +5,14 @@ import * as func from '@/Helpers/functions';
 <script>
 import Button from '@/Components/Button/Button.vue'
 import Icon from '@/Components/Icon/Icon.vue'
+import Checkout from '@/Pages/Site/Raffle/Checkout/Checkout.vue'
 
 export default {
     name: "PaymentExposed",
     components: {
         Button,
         Icon,
+        Checkout,
     },
     data() {
         const value = 199
@@ -74,7 +76,15 @@ export default {
         addQuotas(quotas) {
             this.quantity += quotas
             this.total = this.quantity * this.value
-        }
+        },
+        openModal() {
+            this.showModal = true
+            document.body.classList.add('active');
+        },
+        closeModal() {
+            this.showModal = false
+            document.body.classList.remove('active');
+        },
     },
 }
 </script>
@@ -147,10 +157,12 @@ export default {
             </div>
 
             <Button type="button" color="success" size="lg" class="w-full uppercase font-bold pulsate-fwd"
-                    @click="filterItems('paid')">
+                    @click="openModal">
                 <Icon name="icon-check-circle" class="h-6 mr-2 stroke-success-bw"/> QUERO PARTICIPAR
             </button>
         </div>
+
+        <Checkout :open="showModal" @close="closeModal"/>
     </div>
 </template>
 

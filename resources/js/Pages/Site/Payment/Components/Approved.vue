@@ -22,7 +22,7 @@ export default {
     <div class="c-content flex flex-col justify-center flex-1 gap-3">
         <img src="/images/approved.svg" class="h-48" alt="">
 
-        <h2 class="text-xl font-semibold text-center text-neutral">
+        <h2 class="text-2xl font-semibold text-center text-neutral">
             Pagamento Aprovado!
         </h2>
     </div>

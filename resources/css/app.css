@@ -35,3 +35,8 @@ html{
 .bedge{
     @apply py-3 rounded-md text-sm;
 }
+
+body.active {
+    overflow: hidden;
+    scroll-behavior: smooth;
+}

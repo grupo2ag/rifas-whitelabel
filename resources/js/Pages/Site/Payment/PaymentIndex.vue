@@ -24,8 +24,8 @@ export default {
     },
     data() {
         return {
-            status: 'CANCELLED',
-            loading: false
+            status: 'PROCESSING',
+            loading: true
         }
     },
     methods: {
@@ -46,21 +46,14 @@ export default {
     <App>
         <section class="pt-16 md:pb-3 md:pt-24 w-full flex flex-col">
             <div class="md:container flex flex-wrap md:gap-5">
+                <Waiting v-if="status == 'PROCESSING' || status == 'CREATED'" :product="product" :sale="sale"/>
 
+                <Approved :product="product" :sale="sale" v-else-if="status == 'PAID'"/>
 
-                <template v-if="loading">
-                    <LoadingScreen :loading="true"/>
-                </template>
+                <Cancel :product="product" :sale="sale"
+                         v-else-if="status == 'CANCELLED' || status == 'REFUNDED' || status == 'CHARGEBACK'"/>
 
-                <template v-else>
-                    <Waiting v-if="status == 'PROCESSING' || status == 'CREATED'" :product="product" :sale="sale"/>
-
-                    <Approved :product="product" :sale="sale" v-else-if="status == 'PAID'"/>
-
-                    <Cancel :product="product" :sale="sale"
-                             v-else-if="status == 'CANCELLED' || status == 'REFUNDED' || status == 'CHARGEBACK'"/>
-
-                    <div class="w-full lg:w-5/12 flex flex-col items-start md:gap-5">
+                <div class="w-full lg:w-5/12 flex flex-col items-start md:gap-5">
                         <div class="c-content flex w-full items-center gap-3">
                             <figure class="h-20 aspect-square overflow-hidden">
                                 <img src="https://m.media-amazon.com/images/I/71Zfj6G7-VL._SY466_.jpg"
@@ -108,7 +101,6 @@ export default {
 
                         </div>
                     </div>
-                </template>
             </div>
         </section>
     </App>

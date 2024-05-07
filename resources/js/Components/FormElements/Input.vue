@@ -36,7 +36,7 @@ onMounted(() => {
                :value="modelValue"
                :ref="ref"
                @input="$emit('update:modelValue', $event.target.value)"
-               class="block px-3 pb-2 pt-3 text-base bg-content w-full text-neutral border rounded-md focus:outline-none focus:ring-0 focus:border-blue"
+               class="block px-3 pb-2 pt-3 text-base bg-content w-full text-neutral border rounded-xl focus:outline-none focus:ring-0 focus:border-blue"
                :class="[!!error ? 'border-red' :  'border-white-dark']"/>
 
         <div class="block w-6 h-6 border-2 rounded-full border-t-white border-gray-light animate-spin loading-icon" v-if="loading"></div>
