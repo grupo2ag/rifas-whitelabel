@@ -9,7 +9,6 @@ if(config('app.env') === 'local'){
     Route::get('/teste', [\App\Http\Controllers\TesteController::class, 'index']);
 }
 
-
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),

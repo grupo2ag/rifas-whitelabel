@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -41,7 +42,7 @@ class HandleInertiaRequests extends Middleware
         $configDataByURL = User::leftJoin('user_configurations', 'user_configurations.user_id', '=', 'users.id')
                                ->where(['users.domain' => $host])
                                ->firstOrFail(['user_configurations.*', 'users.domain', 'users.email', 'users.phone']);
-
+        //session(['siteconfig' => $configDataByURL]);
         return array_merge(parent::share($request), [
             'siteconfig' => $configDataByURL
         ]);

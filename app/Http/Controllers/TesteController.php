@@ -2,26 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\Pixcred;
 use App\Models\Customer;
 use App\Models\Raffle;
 use App\Models\RafflePromotion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TesteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         //dd(numbers_generate(100000));
         //$request = new Request();
         //$request->merge(["raffle_id"=>1]);
         //dd($this->simulacao_compra($request));
+        //dd($request->session());
+
+        /*$pix_data = [
+            "value" => 2565,
+            "payer_name" => "John Doe",
+            "payer_doc" => "62799354505",
+            "expiration_time" => 86400,
+            "description" => "deposit",
+            "url_notify" => "https://webhook.site/61e7d93f-c2a4-4f8f-aa25-25466cdb8a14",
+            "order_id" => UUID::uuid4()
+        ];
+        $esse = pixcred_generate(1, $pix_data);
+        dd($esse);
+        $teste = new Pixcred(['raffle_id' => 1]);
+        //dd($teste);
+        $result = $teste->pix_generate();
+        $aqui = QrCode::size(250)->generate($result['pix_link']);*/
+
         $registration_data = [
             'name' => 'Sebastião Barbosa Silva',
             'phone' => '55 (53) 91831-8081'
         ];
-        dd(numbers_reserve(1, 2, 1, $registration_data, false, ['00000', '00003']));
+        dd(numbers_reserve(1, 2, 1, $registration_data, false));
         //dd(numbers_available(1));
     }
 
