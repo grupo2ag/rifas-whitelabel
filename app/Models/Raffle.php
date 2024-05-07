@@ -49,6 +49,10 @@ class Raffle extends Model
 {
     use HasFactory;
 
+    public const TYPE_AUTOMATIC = 'automatico';
+    public const TYPE_MANUAL = 'manual';
+    public const TOLERANCIA_PAGAMENTO = 3;//3 minutos adicionais a expiracao aguardando o webhook do gateway
+
 	protected $table = 'raffles';
 	public $timestamps = true;
 

@@ -9,7 +9,6 @@ if(config('app.env') === 'local'){
     Route::get('/teste', [\App\Http\Controllers\TesteController::class, 'index']);
 }
 
-
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -46,6 +45,8 @@ Route::middleware(\App\Http\Middleware\LevelMiddleware::class)->group(function (
     Route::get('/checkout', function () {
         return Inertia::render('Site/Checkout/Checkout');
     })->name('checkout');
+
+
 });
 
 require 'admin/admin_web.php';

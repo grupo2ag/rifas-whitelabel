@@ -139,6 +139,7 @@ if(!function_exists('numbers_reserve')) {
             }
 
             $minutes = !empty($rifa->pix_expired) ? $rifa->pix_expired : 5;
+            $expired_part =  Carbon::now()->addMinutes($minutes+Raffle::TOLERANCIA_PAGAMENTO);
             $expired = Carbon::now()->addMinutes($minutes);
 
             $participant = Participant::create([
@@ -153,7 +154,7 @@ if(!function_exists('numbers_reserve')) {
                 'customer_id' => $customerId,
                 'raffle_id' => $raffleId,
                 'raffle_promotion_id' => $promotion_id,
-                'expired_at' => $expired
+                'expired_at' => $expired_part
             ]);
 
             if(empty($participant->id)){
@@ -187,7 +188,7 @@ if(!function_exists('numbers_reserve')) {
                 'pix_code' => $generate['pix_link'],
                 'amount' => $amount,
                 'json' => json_encode($generate),
-                'expired' => $expired_time,
+                'expired' => $expired,
                 'participant_id' => $participant->id
             ]);
 
