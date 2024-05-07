@@ -46,6 +46,10 @@ Route::middleware(\App\Http\Middleware\LevelMiddleware::class)->group(function (
     Route::get('/checkout', function () {
         return Inertia::render('Site/Checkout/Checkout');
     })->name('checkout');
+
+    Route::get('/response', function () {
+        return Inertia::render('Site/Payment/PaymentIndex');
+    })->name('response');
 });
 
 require 'admin/admin_web.php';

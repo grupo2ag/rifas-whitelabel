@@ -18,6 +18,8 @@
         --warning-bw: {{luminosity('255 194 45')}};
         --info: 0 179 240;
         --info-bw: {{luminosity('0 179 240')}};
+        --error: 255 51 51;
+        --error-bw: {{luminosity('255 51 51')}};
     }
 
     [theme=dark]{
@@ -34,5 +36,7 @@
         --warning-bw: {{luminosity('255 194 45')}};
         --info: 0 179 240;
         --info-bw: {{luminosity('0 179 240')}};
+        --error: 255 51 51;
+        --error-bw: {{luminosity('255 51 51')}};
     }
 </style>
