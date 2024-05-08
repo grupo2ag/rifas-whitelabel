@@ -39,61 +39,40 @@ const updatePassword = () => {
 
 <template>
     <FormSection @submitted="updatePassword">
-        <template #title>
-            Update Password
-        </template>
-
-        <template #description>
-            Ensure your account is using a long, random password to stay secure.
-        </template>
 
         <template #form>
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="current_password" value="Current Password" />
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
-                    v-model="form.current_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="current-password"
-                />
-                <InputError :message="form.errors.current_password" class="mt-2" />
-            </div>
-
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password" value="New Password" />
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-                <InputError :message="form.errors.password" class="mt-2" />
-            </div>
-
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-                <InputError :message="form.errors.password_confirmation" class="mt-2" />
+            <div class="flex flex-row flex-wrap">
+                <div class="flex w-full mb-4">
+                    <div class="text-primary card-title">Alterar Senha</div>
+                </div>
+                <div class="w-full px-2 mb-2 xl:w-4/12">
+                    <InputLabel for="current_password" value="Senha Atual" />
+                    <TextInput id="current_password" ref="currentPasswordInput" v-model="form.current_password"
+                        type="password" class="block w-full mt-1" autocomplete="current-password" />
+                    <InputError :message="form.errors.current_password" class="mt-2" />
+                </div>
+                <div class="w-full px-2 mb-2 xl:w-4/12">
+                    <InputLabel for="password" value="Nova Senha" />
+                    <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
+                        class="block w-full mt-1" autocomplete="new-password" />
+                    <InputError :message="form.errors.password" class="mt-2" />
+                </div>
+                <div class="w-full px-2 mb-2 xl:w-4/12">
+                    <InputLabel for="password_confirmation" value="Confirmar Nova Senha" />
+                    <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
+                        class="block w-full mt-1" autocomplete="new-password" />
+                    <InputError :message="form.errors.password_confirmation" class="mt-2" />
+                </div>
             </div>
         </template>
 
         <template #actions>
             <ActionMessage :on="form.recentlySuccessful" class="me-3">
-                Saved.
+                Pronto
             </ActionMessage>
 
             <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                Save
+                Salvar
             </PrimaryButton>
         </template>
     </FormSection>

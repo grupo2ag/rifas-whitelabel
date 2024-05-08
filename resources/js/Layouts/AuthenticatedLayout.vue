@@ -11,6 +11,11 @@ import {
     UserCircleIcon,
     ArrowLeftStartOnRectangleIcon
 } from '@heroicons/vue/24/outline'
+
+const props = defineProps({
+    user: Object
+})
+
 </script>
 <script>
 import { usePage } from "@inertiajs/inertia-vue3";
@@ -20,6 +25,10 @@ import { router } from '@inertiajs/vue3';
 const logout = () => {
     router.post(route('logout'));
 };
+
+const myAccount = () => {
+    window.location.href = "/user/profile"
+}
 
 export default {
     data() {
@@ -63,7 +72,7 @@ export default {
         <div class="min-h-screen pt-0 md:pt-0 bg-root">
             <Sidebar></Sidebar>
 
-            <header class="px-4 md:pl-28 md:pr-8">
+            <header class="px-2 md:pl-28 md:pr-8">
                 <div class="flex items-center justify-between pt-4 md:pt-6">
                     <div class="flex items-center justify-between w-full px-4 py-3 shadow-sm bg-primary rounded-xl">
                         <slot name="header" />
@@ -74,40 +83,29 @@ export default {
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <button type="button"
-                                            class="flex items-center justify-center gap-2 text-sm font-bold leading-4 text-white duration-200 rounded-full hover:bg-bgadm-light">
-                                            <img class="w-10 h-10 rounded-full" :src="'/images/banner-1.webp'" alt="" />
-                                            Nome
+                                            class="flex items-center justify-center gap-2 text-sm font-bold leading-4 duration-200 rounded-full text-primary-bw hover:bg-bgadm-light">
+
+                                            <img :src="user?.profile_photo_url" :alt="user?.name"
+                                                class="object-cover w-10 h-10 rounded-full">
+
+                                            {{ user?.name }}
                                             <ChevronDownIcon class="w-4 h-4 mr-1 stroke-black dark:stroke-white" />
                                         </button>
                                     </template>
 
                                     <template #content>
-                                        <!-- <div v-if="$page?.props?.auth?.is_admin">
-                                             <DropdownLink as="button">
-                                                <UserCircleIcon class="w-5 h-5 mr-2 stroke-white" />
-                                                Minha Conta
-                                            </DropdownLink>
-
-                                            <DropdownLink  method="post" as="button">
-                                                <ArrowLeftStartOnRectangleIcon class="w-5 h-5 mr-2 stroke-white" />
-                                                Sair
-                                            </DropdownLink>
-                                        </div> -->
                                         <div class="flex flex-row">
                                             <div class="w-full p-2">
-                                                <!-- <DropdownLink as="button"> -->
-                                                <button>
+                                                <button @click="myAccount()">
                                                     <div class="flex flex-row">
                                                         <UserCircleIcon class="w-5 h-5 mr-2 stroke-primary" />
                                                         Minha Conta
                                                     </div>
                                                 </button>
-                                                <!-- </DropdownLink> -->
                                             </div>
                                         </div>
                                         <div class="flex flex-row">
                                             <div class="w-full p-2">
-                                                <!-- <DropdownLink @click="console.log('role')"> -->
                                                 <button @click="logout()">
                                                     <div class="flex flex-row">
                                                         <ArrowLeftStartOnRectangleIcon
@@ -115,9 +113,7 @@ export default {
                                                         Sair
                                                     </div>
                                                 </button>
-                                                <!-- </DropdownLink> -->
                                             </div>
-
                                         </div>
                                     </template>
                                 </Dropdown>

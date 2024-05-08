@@ -1,8 +1,7 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue';
 import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue';
-import SectionBorder from '@/Components/SectionBorder.vue';
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue';
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
@@ -14,44 +13,64 @@ defineProps({
 </script>
 
 <template>
-    <AppLayout title="Profile">
+    <AuthenticatedLayout :user="$page.props.auth.user">
+        <!-- <AppLayout title="Profile"></AppLayout> -->
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Profile
             </h2>
         </template>
-
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-                    <UpdateProfileInformationForm :user="$page.props.auth.user" />
-
-                    <SectionBorder />
+        <div class="w-full">
+            <div class="flex flex-row flex-wrap xl:flex-nowrap">
+                <div class="w-full px-2 mb-4 lg:w-6/12">
+                    <div class="items-center h-full rounded-lg bg-content">
+                        <div v-if="$page.props.jetstream.canUpdateProfileInformation">
+                            <UpdateProfileInformationForm :user="$page.props.auth.user" />
+                        </div>
+                    </div>
                 </div>
-
-                <div v-if="$page.props.jetstream.canUpdatePassword">
-                    <UpdatePasswordForm class="mt-10 sm:mt-0" />
-
-                    <SectionBorder />
+                <div class="w-full mb-4 lg:w-6/12">
+                    <div class="flex flex-row flex-wrap px-2">
+                        <div class="w-full mb-4">
+                            <!-- twofactor -->
+                            <div class="items-center h-full rounded-lg bg-content">
+                                <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
+                                    <TwoFactorAuthenticationForm :requires-confirmation="confirmsTwoFactorAuthentication" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-fulls xl:mb-0">
+                            <!-- multSessions -->
+                            <div class="items-center h-full rounded-lg bg-content">
+                                <LogoutOtherBrowserSessionsForm :sessions="sessions" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
-                    <TwoFactorAuthenticationForm
-                        :requires-confirmation="confirmsTwoFactorAuthentication"
-                        class="mt-10 sm:mt-0"
-                    />
-
-                    <SectionBorder />
+            </div>
+            <div class="flex flex-row flex-wrap xl:flex-nowrap">
+                <div class="w-full px-2 mb-4 lg:w-6/12">
+                    <div class="items-center h-full rounded-lg bg-content">
+                        <div v-if="$page.props.jetstream.canUpdatePassword">
+                            <UpdatePasswordForm />
+                        </div>
+                    </div>
                 </div>
-
-                <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
 
                 <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-                    <SectionBorder />
-
-                    <DeleteUserForm class="mt-10 sm:mt-0" />
+                    <div class="w-full px-2 mb-4 lg:w-6/12">
+                        <div class="flex items-center h-full rounded-lg bg-content">
+                            <DeleteUserForm class="lg:h-auto" />
+                        </div>
+                    </div>
                 </template>
             </div>
         </div>
-    </AppLayout>
+    </AuthenticatedLayout>
 </template>
+
+<!-- <div v-if="$page.props.jetstream.canUpdatePassword">
+    <UpdatePasswordForm class="mt-10 sm:mt-0" />
+
+    <SectionBorder />
+</div> -->

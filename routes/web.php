@@ -1,15 +1,8 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-if(config('app.env') === 'local'){
-    Route::get('/teste', [\App\Http\Controllers\TesteController::class, 'index']);
-}
-
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -26,12 +19,12 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-       return (new DashboardController())->index();
-        // return Inertia::render('Panel/User/Dashboard');
+        return Inertia::render('Panel/User/Dashboard');
     })->name('dashboard');
     Route::get('/campaign', function () {
         return Inertia::render('Panel/User/Campaign');
     })->name('campaign');
+
 });
 
 Route::get('/account', function () {
@@ -46,4 +39,5 @@ Route::get('/checkout', function () {
     return Inertia::render('Site/Checkout/Checkout');
 })->name('checkout');
 
-
+require 'admin/admin_web.php';
+require 'raffle/raffle_web.php';
