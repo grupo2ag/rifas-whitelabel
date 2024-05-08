@@ -19,9 +19,10 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        Event::dispatch(new PixPayment('1234'));
-        //PixPayment::dispatch('1234');
-        dd('ok');
+        $resp = numbers_devolution(1, 5);
+        dd($resp);
+        //Event::dispatch(new PixPayment('1234'));
+        //dd('ok');
         //dd(numbers_generate(100000));
         //$request = new Request();
         //$request->merge(["raffle_id"=>1]);
