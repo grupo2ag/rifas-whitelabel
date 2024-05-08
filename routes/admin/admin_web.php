@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Middleware\LevelAdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
 Route::prefix('/super')
-    ->middleware( \App\Http\Middleware\LevelAdminMiddleware::class)
+    ->middleware( LevelAdminMiddleware::class)
     ->group(function()
 {
     /* ROTAS AUTENTICADAS ADMIN AQUI */

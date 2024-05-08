@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\TesteController;
+use App\Http\Middleware\LevelMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
-    Route::get('/teste', [\App\Http\Controllers\TesteController::class, 'index']);
+    Route::get('/teste', [TesteController::class, 'index']);
 }
 
 Route::get('/', function () {
@@ -18,7 +20,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(\App\Http\Middleware\LevelMiddleware::class)->group(function (){
+Route::middleware(LevelMiddleware::class)->group(function (){
 
     /* ROTAS AUTENTICADAS AQUI */
     Route::middleware([
@@ -31,25 +33,23 @@ Route::middleware(\App\Http\Middleware\LevelMiddleware::class)->group(function (
             return Inertia::render('Dashboard');
         })->name('dashboard');
     });
-
-
-    /* ROTAS NAO AUTENTICADAS AQUI*/
-    Route::get('/account', function () {
-        return Inertia::render('Site/Account/Account');
-    })->name('account');
-
-    Route::get('/', function () {
-        return Inertia::render('Site/Home/Home');
-    })->name('index');
-
-    Route::get('/raffle', function () {
-        return Inertia::render('Site/Raffle/Raffle');
-    })->name('raffle');
-
-    Route::get('/response', function () {
-        return Inertia::render('Site/Payment/PaymentIndex');
-    })->name('response');
 });
 
+/* ROTAS NAO AUTENTICADAS AQUI*/
+Route::get('/account', function () {
+    return Inertia::render('Site/Account/Account');
+})->name('account');
+
+Route::get('/', function () {
+    return Inertia::render('Site/Home/Home');
+})->name('index');
+
+Route::get('/raffle', function () {
+    return Inertia::render('Site/Raffle/Raffle');
+})->name('raffle');
+
+Route::get('/response', function () {
+    return Inertia::render('Site/Payment/PaymentIndex');
+})->name('response');
+
 require 'admin/admin_web.php';
-require 'raffle/raffle_web.php';

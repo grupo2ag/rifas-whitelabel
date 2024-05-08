@@ -9,16 +9,16 @@ export default {
         total_numeros: Number,
         total_vendido: Number,
         total_participantes: Number,
-        uuid: String
+        //uuid: String
     },
     data() {
     },
-    created(){
+    /*created(){
         //console.log(`payment.${this.uuid}`)
         Echo.channel(`Processed.Pix.${this.uuid}`).listen('PixPayment', (e) => {
             console.log('websocket', e)
         });
-    }
+    }*/
 }
 </script>
 
