@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Broadcast;
 });*/
 
 Broadcast::channel('Processed.Pix.{id}', function ($order_id) {
-    info(__METHOD__.' Hit! User: '.json_encode(compact($order_id)));
+    //info(__METHOD__.' Hit! User: '.json_encode(compact($order_id)));
     //return \App\Models\LogSales::where('id_charge', $uuid)->first()->clients_id;
     return true;
 });

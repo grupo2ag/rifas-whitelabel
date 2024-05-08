@@ -39,11 +39,11 @@ class PixPaymentController extends Controller
                              'customers.cpf as customer_cpf', 'customers.phone as customer_phone']);
 
                 $expire = Carbon::parse($participant->expired_at)->lte($agora);
+
                 if(!empty($participant->deleted_at) || $expire){
-                    //expire foi por atraso, fazer regra pra ver o tempo de atraso e avisa por email
-                    //dd('parada');
-                    //VERIFICAR DEVOLUCAO DOS VALORES DEVIDO A ATRASO NO WEBHOOK DO GATEWAY
-                    return false;
+                    $cancela = numbers_devolution($participant->raffle_id, $participant->id);
+                    if(!$cancela)  setLogErros('PixPayment->cancela', [$participant, $charge, $response]);
+                    return true;
                 }
 
                 DB::beginTransaction();

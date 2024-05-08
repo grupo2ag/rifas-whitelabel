@@ -14,11 +14,9 @@ class PixPayment implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $uuid;
-
-    public function __construct(string $uuid)
+    public function __construct(public string $uuid)
     {
-        $this->uuid = $uuid;
+
     }
 
     public function broadcastOn()
@@ -26,17 +24,4 @@ class PixPayment implements ShouldBroadcast
         return new Channel("Processed.Pix.{$this->uuid}");
     }
 
-    public function broadcastAs()
-    {
-        return 'PixConfirmed';
-    }
-
-    public function broadcastWith()
-    {
-        return [
-            'uuid' => $this->uuid,
-            'status' => 1,
-            'payed' => true
-        ];
-    }
 }

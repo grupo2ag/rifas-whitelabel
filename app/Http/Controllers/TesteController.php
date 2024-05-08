@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PixPayment;
 use App\Libraries\Pixcred;
 use App\Models\Customer;
 use App\Models\Raffle;
 use App\Models\RafflePromotion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
@@ -17,6 +19,10 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
+        $resp = numbers_devolution(1, 5);
+        dd($resp);
+        //Event::dispatch(new PixPayment('1234'));
+        //dd('ok');
         //dd(numbers_generate(100000));
         //$request = new Request();
         //$request->merge(["raffle_id"=>1]);

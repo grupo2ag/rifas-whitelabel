@@ -1,13 +1,25 @@
 <script setup>
 import AdminLayout from '@/Layouts/AdminLayout.vue';
-
-defineProps({
-    //total_affiliates: Number,
-    total_rifas: Number,
-    total_numeros: Number,
-    total_vendido: Number,
-    total_participantes: Number
-})
+</script>
+<script>
+export default {
+    name: "Header",
+    props:{
+        total_rifas: Number,
+        total_numeros: Number,
+        total_vendido: Number,
+        total_participantes: Number,
+        uuid: String
+    },
+    data() {
+    },
+    created(){
+        //console.log(`payment.${this.uuid}`)
+        Echo.channel(`Processed.Pix.${this.uuid}`).listen('PixPayment', (e) => {
+            console.log('websocket', e)
+        });
+    }
+}
 </script>
 
 <template>
