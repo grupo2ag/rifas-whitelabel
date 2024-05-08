@@ -52,6 +52,5 @@ Route::middleware(LevelMiddleware::class)->group(function (){
 
     Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
     Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
-});
 
 require 'admin/admin_web.php';
