@@ -28,8 +28,8 @@
         --base-100: 29 35 42;
         --base-200: 25 30 36;
         --base-300: 21 25 30;
-        --neutral: 228 228 231;
-        --neutral-bw: {{luminosity('228 228 231')}};
+        --neutral: 255 255 255;
+        --neutral-bw: {{luminosity('255 255 255')}};
         --success: 0 169 111;
         --success-bw: {{luminosity('0 169 111')}};
         --warning: 255 194 45;

@@ -4,12 +4,16 @@ import * as func from '@/Helpers/functions';
 
 <script>
 import Modal from '@/Components/Modal/Modal.vue'
+import * as func from '@/Helpers/functions';
 import Icon from '@/Components/Icon/Icon.vue'
 import Input from '@/Components/FormElements/Input.vue'
 import Button from '@/Components/Button/Button.vue'
 import * as yup from "yup";
 import {pt} from 'yup-locale-pt';
 import {Inertia} from "@inertiajs/inertia";
+import {useForm} from "@inertiajs/inertia-vue3";
+import { PhoneInput } from '@lbgm/phone-number-input';
+import '@lbgm/phone-number-input/style';
 
 export default {
     name: "Checkout",
@@ -20,7 +24,8 @@ export default {
         Modal,
         Icon,
         Input,
-        Button
+        Button,
+        PhoneInput
     },
     data() {
         return {
@@ -48,77 +53,165 @@ export default {
                 }
             ],
             total: 4500,
-            form: {
-                name: '',
-                email: '',
+            formVerify: {
+                phone: '',
+                processing: false,
             },
-            validator: {
+            formPurchase: {
+                name: '',
+                phone: '',
+                confirmPhone: '',
+                email: '',
+                cpf: '',
+            },
+            schemaVerify: {},
+            schemaPurchase: {},
+            validateVerify: {
+                phone: '',
+            },
+            validatePurchase: {
                 name: '',
                 phone: '',
                 email: '',
-                city: '',
-                state: '',
-                message: '',
-                date_show: '',
-                time_show: ''
+                cpf: '',
             },
+            step: 'VERIFY',
+            customer: []
         }
     },
     mounted() {
         yup.setLocale(pt);
-        this.schema = yup.object().shape({
+        this.schemaPurchase = yup.object().shape({
             name: yup.string().min(3, 'Digite ao menos 3 caracteres').required('Obrigatório'),
+            phone: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
             email: yup.string().email('Informe um E-mail válido').min(8, 'E-mail incompleto').required('Obrigatório')
                 .matches(func.emailRegex, "E-mail inválido"),
+            client_document: yup.string().required('Obrigatório'),
+        })
+
+        this.schemaVerify = yup.object().shape({
             phone: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
-
-            message: yup.string().required('Obrigatório'),
-            city: yup.string().required('Obrigatório'),
-            state: yup.string().required('Obrigatório'),
-            departament_id: yup.string().required('Obrigatório'),
-            date_show: yup.string().when("departament_id", {
-                is: () => this.isShow === true,
-                then: (schema) => schema.required('Obrigatório'),
-            }),
-
-            time_show: yup.string().when("departament_id", {
-                is: () => this.isShow === true,
-                then: (schema) => schema.required('Obrigatório'),
-            }),
-            place: yup.string().when("departament_id", {
-                is: () => this.isShow === true,
-                then: (schema) => schema.required('Obrigatório'),
-            }),
         })
     },
     methods: {
         closeModal() {
             this.$emit('close')
         },
-        validate($attribute) {
-            Object.keys(this.validator).forEach(key => {
+        link() {
+            Inertia.visit(route('response'))
+        },
+
+        onVerify() {
+           // const form = useForm(this.formVerify);
+
+            this.validatorVerify();
+
+            this.schemaVerify
+                .validate(this.formVerify, { abortEarly: false }).then(() => {
+                    this.formVerify.processing = true;
+
+                    fetch(route('verify',this.formVerify.phone)).then(
+                        resp => {
+                            if(resp.json()){
+                                this.customer = resp.json()
+                                this.formPurchase.name = this.customer.name
+                                this.formPurchase.phone = this.customer.phone
+                                this.formPurchase.email = this.customer.email
+                                this.formPurchase.cpf = this.customer.cpf
+
+                                this.step = 'CONFIRM'
+                            } else {
+                                this.step = 'PURCHASE'
+                            }
+                            this.formVerify.processing = false;
+                            this.clearVerify()
+                    });
+                }).catch((err) => {
+                    this.formVerify.processing = false;
+
+                    err.inner.forEach((error) => {
+                        this.validateVerify = { ...this.validateVerify, [error.path]: error.message };
+                    });
+                });
+        },
+        onPurchase(){
+            const form = useForm(this.formPurchase);
+
+            this.validatorPurchase();
+
+            this.schemaPurchase
+                .validate(this.formPurchase, { abortEarly: false }).then(() => {
+                this.formPurchase.processing = true;
+
+                form.post(route('purchase'), {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        this.form.processing = false;
+                    },
+                    onError: (errors) => {
+                        this.form.processing = false;
+                        this.errors = errors;
+                    }
+                });
+            }).catch((err) => {
+                this.formVerify.processing = false;
+
+                err.inner.forEach((error) => {
+                    this.validateVerify = { ...this.validateVerify, [error.path]: error.message };
+                });
+            });
+        },
+        clearVerify() {
+            this.formVerify = {
+                phone: ''
+            };
+        },
+        validatorVerify($attribute) {
+            Object.keys(this.validateVerify).forEach(key => {
                 if ($attribute === key) {
-                    this.validator[key] = ''
+                    this.validateVerify[key] = ''
                 }
             });
 
-            this.schema
-                .validate(this.form, {abortEarly: false})
+            this.schemaVerify
+                .validate(this.formVerify, { abortEarly: false })
                 .then(() => {
-                    //   this.errors.user = {};
+                   // this.errors.user = {};
                 })
                 .catch(err => {
-                    //  this.errors.user = {};
+                 //   this.errors.user = {};
 
                     err.inner.forEach((error) => {
                         if ($attribute === error.path) {
-                            this.validator = {...this.validator, [error.path]: error.message};
+                            this.validateVerify = { ...this.validateVerify, [error.path]: error.message };
                         }
                     });
                 });
         },
-        link() {
-            Inertia.visit(route('response'))
+        validatorPurchase($attribute) {
+            Object.keys(this.validatePurchase).forEach(key => {
+                if ($attribute === key) {
+                    this.validatePurchase[key] = ''
+                }
+            });
+
+            this.schemaPurchase
+                .validate(this.formPurchase, { abortEarly: false })
+                .then(() => {
+                   // this.errors.user = {};
+                })
+                .catch(err => {
+                 //   this.errors.user = {};
+
+                    err.inner.forEach((error) => {
+                        if ($attribute === error.path) {
+                            this.validatePurchase = { ...this.validatePurchase, [error.path]: error.message };
+                        }
+                    });
+                });
+        },
+        returnVerify(){
+            this.step = 'VERIFY';
         }
     }
 }
@@ -172,114 +265,126 @@ export default {
 
                     <div class="">
                         <p class="text-sm text-primary-bw">Valor Total</p>
-                        <span class="text-2xl font-bold text-primary-bw">{{ func.formatValue(this.total) }}</span>
+                        <span class="text-2xl font-bold text-primary-bw">{{ func.formatValue(total) }}</span>
                     </div>
                 </div>
             </div>
 
-            <form @submit.prevent="onSubmit" class="pt-3 mt-3 border-t border-base-100">
+            <template v-if="step === 'VERIFY'">
+                <form @submit.prevent="onVerify" class="pt-3 mt-3 border-t border-base-100">
 
-                <div class="w-full">
-                    <Input type="tel" label="Telefone" name="form.phone" placeholder="(00) 00000-0000"
-                           autocomplete="tel" :error="validator.phone"
-                           v-mask="['(##) #####-####', '(##) ####-####']" @validate="validate('phone')"/>
-                </div>
+<!--                    <VuePhoneNumberInput v-model="v-model="formVerify.phone"" />-->
 
-                <div class="p-2 bg-warning/20 rounded-xl mb-3">
-                    <p class="flex items-center gap-2 text-sm text-warning-bw/60">
-                    <div class="rounded-full bg-warning/50 w-5 h-5 flex items-center justify-center text-warning-bw">!
+<!--                    <phone-input
+                        @phone="phone = $event"
+                        @country="country = $event"
+                        @phoneData="phoneData = $event"
+                        name="phone-number-input"
+                        label="Enter your phone"
+                        required
+                        :value="formVerify.phone"
+                    />-->
+
+                    <div class="w-full">
+                        <Input type="tel" label="Telefone" :name="formVerify.phone" placeholder="(00) 00000-0000"
+                               autocomplete="tel" :error="validateVerify.phone" v-model="formVerify.phone"
+                               v-mask="['(##) #####-####', '(##) ####-####']" @validate="validatorVerify('phone')"/>
                     </div>
-                    Informe seu telefone para continuar.</p>
-                </div>
 
-                <p class="text-xs text-neutral/70 mb-2">
-                    Reservando seu(s) número(s), você declara que leu e concorda com nossos <a
-                    href="" target="_blank" class="text-blue">Termos de Uso.</a>
-                </p>
+                    <div class="p-2 bg-warning rounded-xl mb-3">
+                        <p class="flex items-center gap-2 text-sm text-warning-bw/70">
+                        <span class="rounded-full bg-warning-bw/20 w-5 h-5 flex items-center justify-center text-warning-bw">!
+                        </span>
+                        Informe seu telefone para continuar.</p>
+                    </div>
 
-                <Button type="submit" color="info" class="w-full" @click="link">
-                    Continuar
-                </Button>
-            </form>
+                    <p class="text-xs text-neutral/70 mb-2">
+                        Reservando seu(s) número(s), você declara que leu e concorda com nossos <a
+                        href="" target="_blank" class="text-blue">Termos de Uso.</a>
+                    </p>
 
-            <form @submit.prevent="onSubmit" class="pt-3 mt-3 border-t border-base-100">
+                    <Button type="submit" color="info" class="w-full" :disabled="formVerify.processing" :loading="formVerify.processing">
+                        Continuar
+                    </Button>
+                </form>
+            </template>
+
+            <template v-if="step === 'CONFIRM'">
+                <form @submit.prevent="onSubmit" class="pt-3 mt-3 border-t border-base-100">
 
                 <div class="my-2 p-2 border border-base-100 rounded-xl flex w-full items-center gap-3">
                     <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                         <span class="font-bold text-lg text-primary-bw">LM</span>
                     </div>
 
-                    <p class="text-neutral font-bold">Luiz Henrique Meirelles</p>
+                    <p class="text-neutral font-bold">{{ customer.name }}</p>
                 </div>
 
                 <Button type="submit" color="success" class="w-full mb-3" @click="link">
                     Concluir Reserva
                 </Button>
 
-                <Button type="submit" color="outline-primary" class="w-full" @click="link">
+                <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
                     Outra Conta
                 </Button>
             </form>
+            </template>
 
-            <form @submit.prevent="onSubmit" class="pt-3 mt-3 border-t border-base-100">
-                <div class="w-full">
-                    <Input type="text" label="Nome Completo" :name="form.name" placeholder="Digite o nome"
-                           autocomplete="name" :error="validator.name" v-model="form.name"
-                           @validate="validate('name')"/>
-                </div>
+            <template v-if="step === 'PURCHASE'">
+                <form @submit.prevent="onPurchase" class="pt-3 mt-3 border-t border-base-100">
+                    <div class="w-full">
+                        <Input type="text" label="Nome Completo" :name="formPurchase.name" placeholder="Digite o nome"
+                               autocomplete="name" :error="validatePurchase.name" v-model="formPurchase.name"
+                               @validate="validatorPurchase('name')"/>
+                    </div>
 
-                <div class="w-full">
-                    <Input type="tel" label="Telefone" name="form.phone" placeholder="(00) 00000-0000"
-                           autocomplete="tel" :error="validator.phone"
-                           v-mask="['(##) #####-####', '(##) ####-####']" @validate="validate('phone')"/>
-                </div>
+                    <div class="w-full">
+                        <Input type="tel" label="Telefone" :name="formPurchase.phone" placeholder="(00) 00000-0000"
+                               autocomplete="tel" :error="validatePurchase.phone" v-model="formPurchase.phone"
+                               v-mask="['(##) #####-####', '(##) ####-####']" @validate="validatorPurchase('phone')"/>
+                    </div>
 
-                <div class="w-full">
-                    <Input type="tel" label="Confirme o Telefone" name="form.phone" placeholder="(00) 00000-0000"
-                           autocomplete="tel" :error="validator.phone"
-                           v-mask="['(##) #####-####', '(##) ####-####']" @validate="validate('phone')"/>
-                </div>
+                    <div class="w-full">
+                        <Input type="tel" label="Confirme o Telefone" :name="formPurchase.confirmPhone" placeholder="(00) 00000-0000"
+                               autocomplete="tel" :error="validatePurchase.phone" v-model="formPurchase.confirmPhone"
+                               v-mask="['(##) #####-####', '(##) ####-####']" @validate="validatorPurchase('confirmPhone')"/>
+                    </div>
 
-                <div class="w-full">
-                    <Input type="text" label="E-mail" :name="form.email" placeholder="email@email.com"
-                           autocomplete="email" @validate="validate('email')"
-                           v-model="form.email" :error="validator.email"/>
-                </div>
+                    <div class="w-full">
+                        <Input type="text" label="E-mail" :name="formPurchase.email" placeholder="email@email.com"
+                               autocomplete="email" @validate="validatorPurchase('email')"
+                               v-model="formPurchase.email" :error="validatePurchase.email"/>
+                    </div>
 
-                <div class="w-full">
-                    <Input type="text" label="Data de Nascimento" :name="form.email" placeholder="__/__/____"
-                           autocomplete="email" @validate="validate('email')"
-                           v-model="form.email" :error="validator.email"/>
-                </div>
+                    <div class="w-full">
+                        <Input type="text" label="CPF" :name="formPurchase.cpf" placeholder="000.000.000-00"
+                               autocomplete="email" @validate="validatorPurchase('email')"
+                               v-model="formPurchase.cpf" :error="validatePurchase.email"/>
+                    </div>
 
-                <div class="w-full">
-                    <Input type="text" label="CPF" :name="form.email" placeholder="000.000.000-00"
-                           autocomplete="email" @validate="validate('email')"
-                           v-model="form.email" :error="validator.email"/>
-                </div>
-
-                <div class="p-2 bg-warning/20 rounded-xl mb-3">
-                    <p class="flex items-center gap-2 text-sm text-warning-bw/60">
+                    <div class="p-2 bg-warning/20 rounded-xl mb-3">
+                        <p class="flex items-center gap-2 text-sm text-warning-bw/60">
                         <span class="rounded-full bg-warning/50 w-5 h-5 flex items-center justify-center text-warning-bw">
                         !
                         </span>
-                        Informe seus dados corretamente.
+                            Informe seus dados corretamente.
+                        </p>
+                    </div>
+
+                    <p class="text-xs text-neutral/70 mb-2">
+                        Reservando seu(s) número(s), você declara que leu e concorda com nossos
+                        <a href="" target="_blank" class="text-blue">Termos de Uso.</a>
                     </p>
-                </div>
 
-                <p class="text-xs text-neutral/70 mb-2">
-                    Reservando seu(s) número(s), você declara que leu e concorda com nossos
-                    <a href="" target="_blank" class="text-blue">Termos de Uso.</a>
-                </p>
+                    <Button type="submit" color="success" class="w-full mb-3" @click="link">
+                        Concluir Reserva
+                    </Button>
 
-                <Button type="submit" color="success" class="w-full mb-3" @click="link">
-                    Concluir Reserva
-                </Button>
-
-                <Button type="submit" color="outline-primary" class="w-full" @click="link">
-                    Outra Conta
-                </Button>
-            </form>
+                    <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
+                        Outra Conta
+                    </Button>
+                </form>
+            </template>
 
             <!--            <form @submit.prevent="onSubmit">
                             <div class="flex flex-col items-start md:gap-4 md:flex-row">
@@ -384,10 +489,6 @@ export default {
                                 </Button>
                             </div>
                         </form>-->
-        </template>
-
-        <template #footer>
-
         </template>
     </Modal>
 </template>

@@ -81,9 +81,11 @@ const loadingClasses = computed(() => {
     if (props.loading) {
         switch (props.color) {
             case 'primary':
-                return 'is-loading before:text-gray before:border-r-primary';
+                return 'is-loading before:text-primary-bw before:border-r-primary';
             case 'black':
                 return 'is-loading before:text-white/90 before:border-r-black';
+            case 'info':
+                return 'is-loading before:text-info-bw before:border-r-info hover:before:border-r-info/10';
             default:
                 return '';
         }

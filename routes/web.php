@@ -5,6 +5,8 @@ use App\Http\Middleware\LevelMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Site\HomeController;
+use App\Http\Controllers\Site\RaffleController;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
@@ -35,21 +37,21 @@ Route::middleware(LevelMiddleware::class)->group(function (){
     });
 });
 
-/* ROTAS NAO AUTENTICADAS AQUI*/
-Route::get('/account', function () {
-    return Inertia::render('Site/Account/Account');
-})->name('account');
+    /* ROTAS NAO AUTENTICADAS AQUI*/
+    Route::get('/account', function () {
+        return Inertia::render('Site/Account/Account');
+    })->name('account');
 
-Route::get('/', function () {
-    return Inertia::render('Site/Home/Home');
-})->name('index');
+   /* Route::get('/', function () {
+        return Inertia::render('Site/Home/Home');
+    })->name('index');*/
 
-Route::get('/raffle', function () {
-    return Inertia::render('Site/Raffle/Raffle');
-})->name('raffle');
+    Route::get('/',[HomeController::class, 'index'])->name('index');
+    Route::get('/raffle',[RaffleController::class, 'index'])->name('raffle');
+    Route::get('/pay/{url}',[RaffleController::class, 'pay'])->name('pay');
 
-Route::get('/response', function () {
-    return Inertia::render('Site/Payment/PaymentIndex');
-})->name('response');
+    Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
+    Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
+});
 
 require 'admin/admin_web.php';
