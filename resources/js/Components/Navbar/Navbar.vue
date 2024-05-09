@@ -12,7 +12,7 @@ import {
 <template>
     <ul class=" menu menu-horizontal bg-primary rounded-box flex-nowrap">
         <li class="px-1">
-            <NavLink :href="route('dashboard')" :active="route().current('seller.dashboard')">
+            <NavLink >
                 <Squares2X2Icon class="w-5 h-5 text-content" />
             </NavLink>
         </li>
