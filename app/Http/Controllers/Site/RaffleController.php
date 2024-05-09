@@ -11,10 +11,12 @@ class RaffleController extends Controller
 {
     public function index()
     {
+        if(!empty(inertia()->getShared('siteconfig')->user_id)){
 
+            return Inertia::render('Site/Raffle/Raffle');
+        }
 
-        return Inertia::render('Site/Raffle/Raffle');
-
+        return Inertia::render('Welcome');
     }
 
     public function pay($url)

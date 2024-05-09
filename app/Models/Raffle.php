@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,6 +52,9 @@ class Raffle extends Model
 
     public const TYPE_AUTOMATIC = 'automatico';
     public const TYPE_MANUAL = 'manual';
+    public const STATUS_ATIVO = 'Ativo';
+    public const STATUS_FINALIZADO = 'Finalizado';
+
     public const TOLERANCIA_PAGAMENTO = 3;//3 minutos adicionais a expiracao aguardando o webhook do gateway
 
 	protected $table = 'raffles';
@@ -83,6 +87,7 @@ class Raffle extends Model
 		'numbers',
 		'type',
 		'highlight',
+		'highlight_order',
 		'minimum_purchase',
 		'maximum_purchase',
 		'visible',
@@ -109,11 +114,6 @@ class Raffle extends Model
 		return $this->hasMany(Participant::class);
 	}
 
-    public function scopeActivateRaffles()
-    {
-        return $this->where('status', '=', 'Ativo');
-    }
-
 	public function affiliates()
 	{
 		return $this->belongsToMany(Affiliate::class, 'affiliate_raffles')
@@ -136,5 +136,15 @@ class Raffle extends Model
 		return $this->hasMany(RafflePromotion::class);
 	}
 
+    /* SCOPES AQUI */
+    public function scopeUserID(Builder $query, string $value): Builder
+    {
+        return $query->where('user_id', $value);
+    }
+
+    public function scopeStatus(Builder $query, string $value): Builder
+    {
+        return $query->where('status', $value);
+    }
 
 }

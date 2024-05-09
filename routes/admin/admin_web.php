@@ -20,6 +20,4 @@ Route::prefix('/super')
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     });
 
-    /* ROTAS NAO AUTENTICADAS AQUI*/
-
 });

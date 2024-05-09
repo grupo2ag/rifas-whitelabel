@@ -21,45 +21,42 @@ Route::get('/', function () {
     ]);
 });
 
-// Route::middleware(LevelMiddleware::class)->group(function (){
+Route::middleware(LevelMiddleware::class)->group(function (){
 
-//     Route::prefix('/campaign')->name('campaign.')->group(function () {
-//         Route::get('/index', function () {
-//             return Inertia::render('Panel/User/Campaign/Campaign');
-//         })->name('index');
+    /* ROTAS AUTENTICADAS AQUI */
+    Route::middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+    ])->group(function () {
+        Route::get('/dashboard', function () {
+            //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
+            return Inertia::render('Dashboard');
+        })->name('dashboard');
 
-//         Route::get('/create', function () {
-//             return Inertia::render('Panel/User/Campaign/CampaignCreate');
-//         })->name('create');
-//     });
-// });
 
-    /* ROTAS NAO AUTENTICADAS AQUI*/
-    Route::get('/account', function () {
-        return Inertia::render('Site/Account/Account');
-    })->name('account');
+        Route::get('/raffles', function () {
+            //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
+            return Inertia::render('Seller/Raffle/RaffleIndex');
+        })->name('raffles');
 
-   /* Route::get('/', function () {
-       return Inertia::render('Site/Home/Home');
-    })->name('index');*/
-    require 'admin/admin_web.php';
+        Route::get('/raffle/create', function () {
+            //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
+            return Inertia::render('Seller/Raffle/RaffleCreate');
+        })->name('rafflecreated');
+    });
+});
 
-    Route::get('/',[HomeController::class, 'index'])->name('index');
-   Route::get('/raffle',[RaffleController::class, 'index'])->name('raffle');
-    Route::get('/pay/{url}',[RaffleController::class, 'pay'])->name('pay');
-
-    Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
-    Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
-
+/* ROTAS NAO AUTENTICADAS AQUI*/
 Route::get('/account', function () {
     return Inertia::render('Site/Account/Account');
 })->name('account');
 
-Route::get('/', function () {
-    return Inertia::render('Site/Home/Home');
-})->name('index');
+Route::get('/',[HomeController::class, 'index'])->name('index');
+Route::get('/raffle',[RaffleController::class, 'index'])->name('raffle');
+Route::get('/pay/{url}',[RaffleController::class, 'pay'])->name('pay');
+Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
+Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 
-Route::get('/checkout', function () {
-    return Inertia::render('Site/Checkout/Checkout');
-})->name('checkout');
+require 'admin/admin_web.php';
 

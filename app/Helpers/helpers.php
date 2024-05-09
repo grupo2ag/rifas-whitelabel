@@ -299,7 +299,7 @@ if(!function_exists('setLogErros')) {
     function setLogErros($table, $exception = null, $payload = null, $comment = null, $id_reference = null)
     {
         $log = [
-            'users_id' => !empty(session()->get('site_config')->user_id) ? session()->get('site_config')->user_id : null,
+            'users_id' => !empty(inertia()->getShared('siteconfig')->user_id) ? inertia()->getShared('siteconfig')->user_id : null,
             'exception' => json_encode($exception),
             'payload'  => json_encode($payload),
             'table'  => $table,
