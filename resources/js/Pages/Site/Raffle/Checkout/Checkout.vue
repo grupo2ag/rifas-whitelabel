@@ -75,7 +75,7 @@ export default {
                 email: '',
                 cpf: '',
             },
-            step: 'VERIFY',
+            step: 'PURCHASE',
             customer: []
         }
     },
@@ -84,9 +84,10 @@ export default {
         this.schemaPurchase = yup.object().shape({
             name: yup.string().min(3, 'Digite ao menos 3 caracteres').required('Obrigatório'),
             phone: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
+            phone_confirmation: yup.string().min(14, 'invalido').oneOf([yup.ref('phone'), null], 'Telefone diferente').required(''),
             email: yup.string().email('Informe um E-mail válido').min(8, 'E-mail incompleto').required('Obrigatório')
                 .matches(func.emailRegex, "E-mail inválido"),
-            client_document: yup.string().required('Obrigatório'),
+            cpf: yup.string().required('Obrigatório'),
         })
 
         this.schemaVerify = yup.object().shape({
@@ -100,10 +101,7 @@ export default {
         link() {
             Inertia.visit(route('response'))
         },
-
         onVerify() {
-           // const form = useForm(this.formVerify);
-
             this.validatorVerify();
 
             this.schemaVerify
@@ -161,11 +159,6 @@ export default {
                 });
             });
         },
-        clearVerify() {
-            this.formVerify = {
-                phone: ''
-            };
-        },
         validatorVerify($attribute) {
             Object.keys(this.validateVerify).forEach(key => {
                 if ($attribute === key) {
@@ -209,6 +202,11 @@ export default {
                         }
                     });
                 });
+        },
+        clearVerify() {
+            this.formVerify = {
+                phone: ''
+            };
         },
         returnVerify(){
             this.step = 'VERIFY';
@@ -345,9 +343,9 @@ export default {
                     </div>
 
                     <div class="w-full">
-                        <Input type="tel" label="Confirme o Telefone" :name="formPurchase.confirmPhone" placeholder="(00) 00000-0000"
-                               autocomplete="tel" :error="validatePurchase.phone" v-model="formPurchase.confirmPhone"
-                               v-mask="['(##) #####-####', '(##) ####-####']" @validate="validatorPurchase('confirmPhone')"/>
+                        <Input type="tel" label="Confirme o Telefone" :name="formPurchase.phone_confirmation" placeholder="(00) 00000-0000"
+                               autocomplete="tel" :error="validatePurchase.phone_confirmation" v-model="formPurchase.phone_confirmation"
+                               v-mask="['(##) #####-####', '(##) ####-####']" @validate="validatorPurchase('phone_confirmation')"/>
                     </div>
 
                     <div class="w-full">
