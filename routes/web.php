@@ -1,8 +1,16 @@
 <?php
 
+use App\Http\Controllers\TesteController;
+use App\Http\Middleware\LevelMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Site\HomeController;
+use App\Http\Controllers\Site\RaffleController;
 use Inertia\Inertia;
+
+if(config('app.env') === 'local'){
+    Route::get('/teste', [TesteController::class, 'index']);
+}
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -13,14 +21,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Panel/User/Dashboard');
-    })->name('dashboard');
+Route::middleware(LevelMiddleware::class)->group(function (){
 
     Route::prefix('/campaign')->name('campaign.')->group(function () {
         Route::get('/index', function () {
@@ -32,6 +33,22 @@ Route::middleware([
         })->name('create');
     });
 });
+
+    /* ROTAS NAO AUTENTICADAS AQUI*/
+    Route::get('/account', function () {
+        return Inertia::render('Site/Account/Account');
+    })->name('account');
+
+   /* Route::get('/', function () {
+        return Inertia::render('Site/Home/Home');
+    })->name('index');*/
+
+    Route::get('/',[HomeController::class, 'index'])->name('index');
+    Route::get('/raffle',[RaffleController::class, 'index'])->name('raffle');
+    Route::get('/pay/{url}',[RaffleController::class, 'pay'])->name('pay');
+
+    Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
+    Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 
 Route::get('/account', function () {
     return Inertia::render('Site/Account/Account');
@@ -46,4 +63,3 @@ Route::get('/checkout', function () {
 })->name('checkout');
 
 require 'admin/admin_web.php';
-require 'raffle/raffle_web.php';

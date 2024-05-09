@@ -4,9 +4,10 @@ import Icon from '@/Components/Icon/Icon.vue'
 import Tab from '@/Components/Tabs/Tab.vue'
 import Button from '@/Components/Button/Button.vue'
 import Badge from '@/Components/Badge/Badge.vue'
+import Modal from '@/Components/Modal/Modal.vue'
 import Progress from '@/Components/Progress/Progress.vue'
-import PaymentExposed from '@/Pages/Site/Checkout/PaymentExposed/PaymentExposed.vue'
-import PaymentRandom from '@/Pages/Site/Checkout/PaymentRandom/PaymentRandom.vue'
+import PaymentExposed from '@/Pages/Site/Raffle/PaymentExposed/PaymentExposed.vue'
+import PaymentRandom from '@/Pages/Site/Raffle/PaymentRandom/PaymentRandom.vue'
 import {Tooltip, TabPanel} from 'daisyui-vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
@@ -26,6 +27,7 @@ export default {
         PaymentExposed,
         PaymentRandom,
         Button,
+        Modal,
         Progress,
         Tooltip,
         TabPanel,
@@ -48,13 +50,10 @@ export default {
                 {img: 'https://swiperjs.com/demos/images/nature-6.jpg'},
 
             ],
-            isLargeScreen: useMediaQuery('(min-width: 768px)')
-
-            //loading: true,
+            isLargeScreen: useMediaQuery('(min-width: 768px)'),
+            purchaseType: 2,
+            showModal: true
         }
-    },
-    mounted() {
-        // console.log(this.isLargeScreen)
     },
     methods: {
         setThumbsSwiper(swiper) {
@@ -71,6 +70,13 @@ export default {
         },
         descricaoActive() {
             this.activeHeight = !this.activeHeight;
+        },
+        closeModal() {
+            this.showModal = false;
+            document.body.classList.toggle('active');
+        },
+        openModal(id) {
+            this.showModal = true;
         },
     },
 }
@@ -199,8 +205,8 @@ export default {
         <section id="purchase" class="md:py-3">
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
-                    <PaymentExposed v-if="true"/>
-                    <PaymentRandom v-if="false"/>
+                    <PaymentExposed v-if="purchaseType === 1"/>
+                    <PaymentRandom v-else/>
                 </div>
             </div>
         </section>
@@ -269,26 +275,7 @@ export default {
     </App>
 </template>
 
-
 <style lang="scss" scoped>
-.c-tab {
-    &__header {
-        @apply flex items-center justify-center border-b border-black/30;
-
-        button {
-            @apply flex-1 text-center;
-
-            &.active {
-                @apply border-b-2 border-primary -mb-[1px]
-            }
-        }
-    }
-
-    &__content {
-        @apply p-4 text-base text-black/70
-    }
-}
-
 .c-regulation__content {
     @apply relative h-[380px] text-neutral/70 overflow-hidden;
     transition: all 1s ease-out;

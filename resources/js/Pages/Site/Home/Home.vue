@@ -54,7 +54,7 @@ export default {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         <template v-for="i in 4">
-                            <a href="/checkout" class="c-card__item">
+                            <a href="/raffle" class="c-card__item">
                                 <figure class="aspect-square overflow-hidden">
                                     <img src="https://m.media-amazon.com/images/I/71Zfj6G7-VL._SY466_.jpg"
                                          class="w-full h-full object-cover rounded-xl" alt="">
@@ -62,7 +62,7 @@ export default {
                                 <div class="flex flex-col justify-between">
                                     <p class="text-neutral/60">VITAMINI C GUMMY</p>
                                     <p class="text-neutral font-bold text-xl">R$ 115,00</p>
-                                    <Button color="primary" class="mt-2">Clique e Participe</Button>
+                                    <Button type="button" color="primary" class="mt-2">Clique e Participe</Button>
                                 </div>
                             </a>
                         </template>
@@ -78,7 +78,7 @@ export default {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                         <template v-for="i in 8">
-                            <a href="/checkout" class="c-card__item">
+                            <a href="/raffle" class="c-card__item">
                                 <figure class="aspect-square overflow-hidden">
                                     <img src="https://m.media-amazon.com/images/I/71Zfj6G7-VL._SY466_.jpg"
                                          class="w-full h-full object-cover rounded-xl" alt="">

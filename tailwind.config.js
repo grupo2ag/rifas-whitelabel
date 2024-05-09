@@ -44,6 +44,10 @@ export default {
                     DEFAULT: 'rgb(var(--info) / <alpha-value>)',
                     'bw': 'rgb(var(--info-bw) / <alpha-value>)'
                 },
+                'error': {
+                    DEFAULT: 'rgb(var(--error) / <alpha-value>)',
+                    'bw': 'rgb(var(--error-bw) / <alpha-value>)'
+                },
                 'white': {
                     light: '#F7F7F7',
                     DEFAULT: '#ffffff',
