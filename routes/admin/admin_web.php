@@ -20,6 +20,16 @@ Route::prefix('/super')
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     });
 
+    Route::prefix('/campaign')->name('campaign.')->group(function () {
+        Route::get('/index', function () {
+            return Inertia::render('Panel/User/Campaign/Campaign');
+        })->name('index');
+
+        Route::get('/create', function () {
+            return Inertia::render('Panel/User/Campaign/CampaignCreate');
+        })->name('create');
+    });
+
     /* ROTAS NAO AUTENTICADAS AQUI*/
 
 });
