@@ -21,10 +21,16 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Panel/User/Dashboard');
     })->name('dashboard');
-    Route::get('/campaign', function () {
-        return Inertia::render('Panel/User/Campaign');
-    })->name('campaign');
 
+    Route::prefix('/campaign')->name('campaign.')->group(function () {
+        Route::get('/index', function () {
+            return Inertia::render('Panel/User/Campaign/Campaign');
+        })->name('index');
+
+        Route::get('/create', function () {
+            return Inertia::render('Panel/User/Campaign/CampaignCreate');
+        })->name('create');
+    });
 });
 
 Route::get('/account', function () {

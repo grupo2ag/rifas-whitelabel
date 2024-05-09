@@ -1,6 +1,7 @@
 <script setup>
 import Sidebar from '@/Components/Sidebar/Sidebar.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import Navbar from '@/Components/Navbar/Navbar.vue';
 // import DropdownLink from '@/Components/DropdownLink.vue';
 // import {
 //     PhUserCircle,
@@ -75,8 +76,10 @@ export default {
             <header class="px-2 md:pl-28 md:pr-8">
                 <div class="flex items-center justify-between pt-4 md:pt-6">
                     <div class="flex items-center justify-between w-full px-4 py-3 shadow-sm bg-primary rounded-xl">
-                        <slot name="header" />
-
+                        <div class="hidden sm:block ">
+                            <slot name="header" />
+                        </div>
+                        <Navbar class="sm:hidden md:hidden lg:hidden xl:hidden"></Navbar>
                         <div class="items-center md:flex">
 
                             <div class="relative flex items-center gap-3">
