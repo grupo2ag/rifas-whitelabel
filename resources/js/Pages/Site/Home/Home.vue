@@ -29,13 +29,14 @@ export default {
         Link
     },
     props: {
-      raffles: Array
+      raffles: Array,
+      rafflesFinish: Array
     },
     data() {
         return {
             destaques: this.filteredRafflesStatus('Ativo', true),
             ativas: this.filteredRafflesStatus('Ativo', false),
-            finalizadas: this.filteredRafflesStatus('Finalizado', null),
+            finalizadas: this.rafflesFinish,
         }
     },
     methods: {
@@ -43,10 +44,7 @@ export default {
             let tempRaffles = this.raffles
 
             tempRaffles = tempRaffles.filter((item) => {
-                if(highlight != null){
-                    return (item.status == status && item.highlight == highlight)
-                }
-                return (item.status == status)
+                return (item.status == status && item.highlight == highlight)
             })
 
             return tempRaffles;

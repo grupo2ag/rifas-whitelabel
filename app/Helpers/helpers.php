@@ -209,7 +209,7 @@ if(!function_exists('numbers_reserve')) {
     }
 }
 
-if(!function_exists('numbers_reserve')) {
+if(!function_exists('numbers_premium')) {
     /**
      * @param int $raffleId - codigo da rifa
      * @param int $qttNumbers - quantidade de numeros reservados/comprados
@@ -217,7 +217,7 @@ if(!function_exists('numbers_reserve')) {
      * @param bool $automatic - compra automatica ou manual
      * @return array
      */
-    function numbers_reserve(int $raffleId, int $qttNumbers, int $customerId, array $registration_data, bool $paid = false,  array $numbers = []): array
+    function numbers_premium(int $ParticipantId, ): array
     {
 
         $rifa = Raffle::find($raffleId);
