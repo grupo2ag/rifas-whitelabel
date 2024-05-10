@@ -7,6 +7,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import VueTheMask from 'vue-the-mask';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+import CKEditor from '@ckeditor/ckeditor5-vue';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -15,6 +16,7 @@ createInertiaApp({
         const application = createApp({render: () => h(App, props)})
             .use(plugin)
             .use(VueTheMask)
+            .use(CKEditor)
             .use(ZiggyVue)
             .mount(el);
 
