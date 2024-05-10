@@ -67,6 +67,7 @@ export default {
                 id: '',
                 title: '',
                 subtitle: '',
+                price: 0,
                 image: '',
                 description: '',
                 url: '',
@@ -238,13 +239,13 @@ export default {
         <div class="py-5 container w-5/12">
             <form @submit.prevent="onSubmit">
                 <div class="c-content my-4">
-                    <div class="flex items-center">
+                    <div class="pb-2 flex items-center border-b border-base-100">
                         <DocumentTextIcon class="h-5 stroke-neutral mr-1"/>
 
                         <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
                     </div>
 
-                    <div class="pt-6 mt-2 border-t border-gray-light dark:border-bgadm-light">
+                    <div class="w-full pt-3">
 
                         <div class="flex flex-col md:flex-row gap-4">
                             <!--                            <div class="w-full md:w-3/12 relative">-->
@@ -256,18 +257,27 @@ export default {
                             <!--                                             :accept="'image/png,image/jpg,image/jpeg,image/webp'"/>-->
                             <!--                            </div>-->
 
-                            <div class="w-full relative">
-                                <div class="w-full">
-                                    <Input label="Título:" v-model="form.title"
-                                           type="text" name="title" :value="form.title"
-                                           :maxlength="80"
-                                           v-on:keyup="countdown"
-                                           :error="validator.title || $page.props.errors.title"
-                                           placeholder="Insira o título"/>
+                            <div class="w-full">
+                                <div class="flex gap-4">
+                                    <div class="w-6/12">
+                                        <Input label="Título:" v-model="form.title"
+                                               type="text" name="title" :value="form.title"
+                                               :maxlength="80"
+                                               v-on:keyup="countdown"
+                                               :error="validator.title || $page.props.errors.title"
+                                               placeholder="Insira o título"/>
 
-                                    <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
-                                        {{ characterLenght }} de 80
-                                        caracteres</p>
+                                        <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
+                                            {{ characterLenght }} de 80
+                                            caracteres</p>
+                                    </div>
+
+                                    <div class="w-6/12">
+                                        <Input label="Valor:" v-model="form.price"
+                                               type="tel" name="title" :value="form.price"
+                                               :error="validator.price || $page.props.errors.price"
+                                               placeholder="R$ 0,00"/>
+                                    </div>
                                 </div>
 
                                 <div class="w-full ">
@@ -325,7 +335,7 @@ export default {
                 </div>
 
                 <div class="c-content my-4">
-                    <div class="flex justify-between w-full">
+                    <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <PhotoIcon class="h-5 stroke-neutral mr-1"/>
 
@@ -333,52 +343,49 @@ export default {
                         </div>
                     </div>
 
-                    <div ref="galery" class="w-full">
-                        <div class="pt-6 mt-2 border-t border-gray-light dark:border-bgadm-light">
-                            <div class="flex flex-col md:flex-row gap-4 pb-4">
-                                <div class="w-full">
-                                    <div class="flex flex-col md:flex-row md:gap-4">
-                                        <div class="w-3/12 flex flex-col items-center relative">
-                                            <UploadImage imgCurrent=""
-                                                         label="Imagem"
-                                                         size="aspect-1"
-                                                         class="mt-1"
-                                                         v-model="imageGallery"
-                                                         formats="JPEG ou PNG" filesize="2MB" name="image-galery"/>
+                    <div class="w-full pt-3">
+                        <div class="flex flex-col md:flex-row gap-4 pb-4">
+                            <div class="w-full">
+                                <div class="flex flex-col md:flex-row md:gap-4">
+                                    <div class="w-3/12 flex flex-col items-center relative">
+                                        <UploadImage imgCurrent=""
+                                                     label="Imagem"
+                                                     size="aspect-1"
+                                                     class="mt-1"
+                                                     v-model="imageGallery"
+                                                     recommended="500x500"
+                                                     filesize="2MB" name="image-galery"/>
 
-                                            <Button type="button" @click="addImageOn(currentGallery)" class="w-full mt-2"
-                                                    size="sm" color="primary">Adicionar Imagem
-                                            </Button>
-                                        </div>
-                                        <div class="flex-1">
-                                            <p class="font-medium text-sm w-full text-neutral rounded-md">
-                                                Galeria:</p>
+                                        <Button type="button" @click="addImageOn(currentGallery)" class="w-full mt-2"
+                                                size="sm" color="primary">Adicionar Imagem
+                                        </Button>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-sm w-full text-neutral rounded-md">
+                                            Galeria:</p>
 
-                                            <div
-                                                class="pt-3 grid grid-cols-5 gap-2 flex-wrap border-t border-gray-light dark:border-bgadm-light">
+                                        <div
+                                            class="pt-3 grid grid-cols-5 gap-2 flex-wrap border-t border-gray-light dark:border-bgadm-light">
 
-                                                <button type="button"
-                                                        class="px-3 border w-full aspect-[4/4] border border-neutral/60 text-neutral text-xs uppercase rounded-lg">
-                                                    Nova Imagem
-                                                </button>
+                                            <button type="button"
+                                                    class="px-3 border w-full aspect-[4/4] border border-neutral/60 text-neutral text-xs uppercase rounded-lg">
+                                                Nova Imagem
+                                            </button>
 
-                                                <div v-for="(image, index) in currentGallery.images" :key="index"
-                                                     class="relative">
-                                                    <div @click="setEditImage(image)"
-                                                         class="cover-remove absolute w-full h-full opacity-0 hover:opacity-100 transition-all cursor-pointer">
-                                                        <button type="button"
-                                                                @click="removeImgOnGallery(currentGallery.images, index)"
-                                                                class="p-1 m-2 bg-red rounded-full block ml-auto hover:bg-red-dark">
-                                                            <TrashIcon class="stroke-white w-4 h-4"/>
-                                                        </button>
-                                                    </div>
-                                                    <img class="object-cover w-full h-full" :src="image.image" alt="">
+                                            <div v-for="(image, index) in currentGallery.images" :key="index"
+                                                 class="relative">
+                                                <div @click="setEditImage(image)"
+                                                     class="cover-remove absolute w-full h-full opacity-0 hover:opacity-100 transition-all cursor-pointer">
+                                                    <button type="button"
+                                                            @click="removeImgOnGallery(currentGallery.images, index)"
+                                                            class="p-1 m-2 bg-red rounded-full block ml-auto hover:bg-red-dark">
+                                                        <TrashIcon class="stroke-white w-4 h-4"/>
+                                                    </button>
                                                 </div>
+                                                <img class="object-cover w-full h-full" :src="image.image" alt="">
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
                         </div>
@@ -421,13 +428,16 @@ export default {
                         <h3 class="text-neutral font-semibold text-base">Informações de Destaque</h3>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-6 mt-2">
+                    <div class="w-full pt-3 flex flex-col md:flex-row gap-6">
                         <div class="w-full md:w-6/12 relative">
                             <UploadImage :imgCurrent="form.image"
-                                         size="aspect-56" v-model="form.image"
+                                         name="image-notice"
+                                         v-model="form.image"
                                          label="Banner de Destaque"
+                                         size="aspect-56"
                                          formats="JPEG ou PNG"
-                                         filesize="2MB" name="image-notice"
+                                         recommended="768x560"
+                                         filesize="2MB"
                                          :accept="'image/png,image/jpg,image/jpeg,image/webp'"/>
                         </div>
 
@@ -459,14 +469,13 @@ export default {
     </AppLayout>
 </template>
 
-
 <style>
 :root {
     --ck-border-radius: 10px;
 }
 
 .ck.ck-editor {
-    @apply text-neutral
+    @apply text-black
 }
 
 .ck-editor__editable {

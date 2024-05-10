@@ -46,7 +46,7 @@ export default {
             </label>
 
             <p class="text-neutral/70 text-xs mt-3">Obs: A dimensão ideal é
-                <strong>768x580</strong>, JPEG, PNG, WEBP de no máximo de <strong>2 MB.</strong></p>
+                <strong>{{ recommended }}</strong>, JPEG, PNG, WEBP de no máximo de <strong>{{ filesize }}.</strong></p>
 
             <div class="hidden w-full md:w-7/12 border border-success mt-3 md:mt-0 p-3 rounded-md md:ml-6 min-h-[95px]">
                 <p class="text-white-dark font-normal text-sm py-1 leading-tight">
