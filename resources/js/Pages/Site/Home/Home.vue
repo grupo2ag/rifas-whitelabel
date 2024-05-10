@@ -38,8 +38,6 @@ export default {
         filteredRafflesStatus(status, highlight) {
             let tempRaffles = this.raffles
 
-            console.log(status);
-
             tempRaffles = tempRaffles.filter((item) => {
                 if(highlight != null){
                     return (item.status == status && item.highlight == highlight)
@@ -51,11 +49,7 @@ export default {
         }
     },
     mounted() {
-        /*let high = this.filteredRafflesStatus('Ativo', true);
-        let nohigh = this.filteredRafflesStatus('Ativo', false);
-        let finish = this.filteredRafflesStatus('Finalizado', null);
-        console.log(high, nohigh, finish)*/
-        console.log(this.destaques, this.ativas, this.finalizadas)
+        /*console.log(this.destaques, this.ativas, this.finalizadas)*/
     }
 }
 

@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.9",
         "laravellegends/pt-br-validator": "^11.0",
         "league/flysystem-aws-s3-v3": "^3.27",
+        "predis/predis": "^2.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-webhook-client": "^3.3",
         "tightenco/ziggy": "^2.0"
