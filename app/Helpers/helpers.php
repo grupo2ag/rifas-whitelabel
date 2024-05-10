@@ -209,6 +209,161 @@ if(!function_exists('numbers_reserve')) {
     }
 }
 
+if(!function_exists('numbers_reserve')) {
+    /**
+     * @param int $raffleId - codigo da rifa
+     * @param int $qttNumbers - quantidade de numeros reservados/comprados
+     * @param int $customerId - codigo do customer
+     * @param bool $automatic - compra automatica ou manual
+     * @return array
+     */
+    function numbers_reserve(int $raffleId, int $qttNumbers, int $customerId, array $registration_data, bool $paid = false,  array $numbers = []): array
+    {
+
+        $rifa = Raffle::find($raffleId);
+
+        if(!empty($rifa)){
+            $disponiveis = explode(",", $rifa->numbers); //pega os numeros disponiveis da rifa
+
+            if(empty($registration_data['name']) || empty($registration_data['phone'])) {
+                return ['errors' => true, 'message' => 'Informe corretamente o nome e telefone.'];
+            }
+
+            //valida os disponiveis com a quantidade solicitada
+            if(count($disponiveis) == 0){
+                $texto = $rifa->type == 'automatico' ? 'vendidos' : 'vendidos/reservados';
+                return ['errors' => true, 'message' => 'Todos '.$texto];
+            }
+            if (count($disponiveis) < $qttNumbers) {
+                return ['errors' => true, 'message' => 'Quantidade indisponível para a rifa selecionada. A quantidade disponível é: ' . count($disponiveis)];
+            }
+
+            $resutlNumbers = []; //array retorno numeros aleatorios ou manuais
+
+            if(!empty($numbers)){ //se for manual envia os numeros em um array
+                $intersect = array_intersect($numbers, $disponiveis); //verifica se estao disponiveis
+                $diff = array_diff($numbers, $intersect); //verifica se estao disponiveis
+
+                if(!empty($diff)){
+                    $texto = 'O numero está indisponível: '.implode(',', $diff);
+                    if(count($diff) > 1) $texto = 'Os numeros estão indisponíveis: '.implode(',', $diff);
+
+                    return ['errors' => true, 'message' => $texto];
+                }
+
+                sort($numbers); //organiza os numeros
+                $selecionados = $numbers;
+
+                foreach ($selecionados as $resultNumber) { //retira os numeros do array da rifa
+                    $resutlNumbers[] = $resultNumber;
+                    $idx = array_search($resultNumber, $disponiveis);
+                    unset($disponiveis[$idx]);
+                }
+            }else{ //numeros aleatorios
+                shuffle($disponiveis);
+                $selecionados = array_slice($disponiveis, 0, $qttNumbers); //pega a quantidade aleatoria
+
+                foreach ($selecionados as $key => $resultNumber) { //retira os numeros do array da rifa
+                    $resutlNumbers[] = $resultNumber;
+                    unset($disponiveis[$key]);
+                }
+            }
+
+            sort($disponiveis); //organiza os arrays
+            sort($resutlNumbers); //organiza os arrays
+
+            $updateNumbers = implode(',', $disponiveis);  //transforma o array em string
+            $updateReservedNumbers = implode(',', $resutlNumbers); //transforma o array em string
+
+            DB::beginTransaction(); //inicia a transaction no banco
+            try {
+                //Raffle::where('id', $raffleId)->update(['numbers' => $updateNumbers]);
+                $rifa->numbers = $updateNumbers;//atualiza a rifa com os novos numeros disponiveis
+                $rifa->save();
+
+                //pega o total
+                $amount = $rifa->price * $qttNumbers;
+                $totalNotDiscount = 0;
+                $discount = 0;
+
+                //Verifica se tem promocao
+                $promotion_id = null;
+                $promotion = raffle_promotion($raffleId, $qttNumbers);
+                if(!empty($promotion)){
+                    $totalNotDiscount = $amount;
+                    $discount = $promotion['discount'];
+                    $amount = $promotion['total'];
+                    $promotion_id = $promotion['id'];
+                }
+
+                $minutes = !empty($rifa->pix_expired) ? $rifa->pix_expired : 5;
+                $expired_part =  Carbon::now()->addMinutes($minutes+Raffle::TOLERANCIA_PAGAMENTO);
+                $expired = Carbon::now()->addMinutes($minutes);
+
+                $participant = Participant::create([
+                    'name' => $registration_data['name'],
+                    'phone'=> $registration_data['phone'],
+                    'email' => !empty($registration_data['email']) ? $registration_data['email'] : null,
+                    'document' => !empty($registration_data['cpf']) ? $registration_data['cpf'] : null,
+                    'amount' => $amount,
+                    'numbers' => $updateReservedNumbers,
+                    'paid' => $paid ? count($resutlNumbers) : 0,
+                    'reserved' => $paid ? 0 : count($resutlNumbers),
+                    'customer_id' => $customerId,
+                    'raffle_id' => $raffleId,
+                    'raffle_promotion_id' => $promotion_id,
+                    'expired_at' => $expired_part
+                ]);
+
+                if(empty($participant->id)){
+                    //throw new Exception('Erro geração do pix');
+                    setLogErros('HELPERS->numbers_reserve', 'Erro inserir participant', $participant, 'catch', $raffleId);
+                    return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente.'];
+                    DB::rollBack();
+                }
+
+                $expired_time = (int)$minutes*60;
+                $pix_data = [
+                    "value" => $amount,
+                    "payer_name" => $registration_data['name'],
+                    "payer_doc" => !empty($registration_data['cpf']) ? $registration_data['cpf'] : null,
+                    "expiration_time" => $expired_time,
+                    "description" => $rifa->title.'-'.$raffleId,
+                    "order_id" => UUID::uuid4(),
+                    "participant" => $participant->id
+                ];
+                $generate = pixcred_generate($raffleId, $pix_data);
+
+                if(!$generate){
+                    //throw new Exception('Erro geração do pix');
+                    setLogErros('HELPERS->pixcred_generate', 'Erro geração do pix', $pix_data, 'catch', $raffleId);
+                    return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente.'];
+                    DB::rollBack();
+                }
+
+                Charge::create([
+                    'pix_id' => $generate['order_id'],
+                    'pix_code' => $generate['pix_link'],
+                    'amount' => $amount,
+                    'json' => json_encode($generate),
+                    'expired' => $expired,
+                    'participant_id' => $participant->id
+                ]);
+
+                DB::commit();
+            }catch (QueryException $e){
+                setLogErros('HELPERS->numbers_reserve', $e->getMessage(), [$raffleId, $qttNumbers, $customerId, $registration_data, $paid,  $numbers], 'catch', $raffleId);
+                return ['errors' => true, 'message' => 'Problema ao efetuar reserva, tente novamente.'];
+                DB::rollBack();
+            }
+
+            return ['errors' => false, 'numbers' => $resutlNumbers, 'amount' => $amount, 'totalNotDiscount' => $totalNotDiscount, 'discount' => $discount, 'pix' => $generate];
+        }
+
+        return ['errors' => true, 'message' => 'Rifa não encontrada.'];
+    }
+}
+
 if(!function_exists('numbers_devolution')) {
     function numbers_devolution(int $raffleId, int $participantId)
     {
