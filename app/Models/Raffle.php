@@ -156,12 +156,16 @@ class Raffle extends Model
         return $query->where('status', $value);
     }
 
-    /**
-     * Exclude an array of elements from the result.
-     * @param $query
-     * @param $columns
-     * @return mixed
-     */
+    public function scopeSlug(Builder $query, string $value): Builder
+    {
+        return $query->where('link', $value);
+    }
+
+    public function scopeVisible(Builder $query, string $value): Builder
+    {
+        return $query->where('visible', $value);
+    }
+
     public function scopeExclude($query, $columns)
     {
         return $query->select(array_diff($this->getTableColumns(), (array) $columns));
