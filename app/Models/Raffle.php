@@ -96,7 +96,8 @@ class Raffle extends Model
 		'description',
 		'video',
 		'gateway_id',
-		'total'
+		'total',
+        'banner'
 	];
 
 	public function user()
@@ -135,6 +136,11 @@ class Raffle extends Model
 	{
 		return $this->hasMany(RafflePromotion::class);
 	}
+
+    public function raffle_premium_numbers()
+    {
+        return $this->hasMany(RafflePremiumNumber::class);
+    }
 
     /* SCOPES AQUI */
     public function scopeUserID(Builder $query, string $value): Builder

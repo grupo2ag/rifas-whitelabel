@@ -19,8 +19,9 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        $resp = numbers_devolution(1, 5);
-        dd($resp);
+        dd('teste');
+        //$resp = numbers_devolution(1, 5);
+        //dd($resp);
         //Event::dispatch(new PixPayment('1234'));
         //dd('ok');
         //dd(numbers_generate(100000));

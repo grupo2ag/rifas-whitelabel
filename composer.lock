@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.306.2",
+            "version": "3.306.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "0de11adba8f174a76346c9dbb175c2030ff5c8f2"
+                "reference": "d340c5e7fc151d59f71e8c3bf7c5eafa911bcebd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0de11adba8f174a76346c9dbb175c2030ff5c8f2",
-                "reference": "0de11adba8f174a76346c9dbb175c2030ff5c8f2",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/d340c5e7fc151d59f71e8c3bf7c5eafa911bcebd",
+                "reference": "d340c5e7fc151d59f71e8c3bf7c5eafa911bcebd",
                 "shasum": ""
             },
             "require": {
@@ -151,9 +151,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.306.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.306.3"
             },
-            "time": "2024-05-08T18:07:54+00:00"
+            "time": "2024-05-09T18:32:58+00:00"
         },
         {
             "name": "bacon/bacon-qr-code",
@@ -4029,20 +4029,20 @@
         },
         {
             "name": "psr/http-factory",
-            "version": "1.0.2",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-factory.git",
-                "reference": "e616d01114759c4c489f93b099585439f795fe35"
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/e616d01114759c4c489f93b099585439f795fe35",
-                "reference": "e616d01114759c4c489f93b099585439f795fe35",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.0.0",
+                "php": ">=7.1",
                 "psr/http-message": "^1.0 || ^2.0"
             },
             "type": "library",
@@ -4066,7 +4066,7 @@
                     "homepage": "https://www.php-fig.org/"
                 }
             ],
-            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "description": "PSR-17: Common interfaces for PSR-7 HTTP message factories",
             "keywords": [
                 "factory",
                 "http",
@@ -4078,9 +4078,9 @@
                 "response"
             ],
             "support": {
-                "source": "https://github.com/php-fig/http-factory/tree/1.0.2"
+                "source": "https://github.com/php-fig/http-factory"
             },
-            "time": "2023-04-10T20:10:41+00:00"
+            "time": "2024-04-15T12:06:14+00:00"
         },
         {
             "name": "psr/http-message",
@@ -8715,16 +8715,16 @@
         },
         {
             "name": "lucascudo/laravel-pt-br-localization",
-            "version": "v2.2.0",
+            "version": "v2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucascudo/laravel-pt-BR-localization.git",
-                "reference": "7a282e7f47ed1198ec579832dd8120b82ff5a1ee"
+                "reference": "60c28db1d959f3d8b2c842393dc6eabb5d6e2fe5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucascudo/laravel-pt-BR-localization/zipball/7a282e7f47ed1198ec579832dd8120b82ff5a1ee",
-                "reference": "7a282e7f47ed1198ec579832dd8120b82ff5a1ee",
+                "url": "https://api.github.com/repos/lucascudo/laravel-pt-BR-localization/zipball/60c28db1d959f3d8b2c842393dc6eabb5d6e2fe5",
+                "reference": "60c28db1d959f3d8b2c842393dc6eabb5d6e2fe5",
                 "shasum": ""
             },
             "type": "library",
@@ -8754,7 +8754,7 @@
             "homepage": "https://github.com/lucascudo/laravel-pt-br-localization",
             "support": {
                 "issues": "https://github.com/lucascudo/laravel-pt-BR-localization/issues",
-                "source": "https://github.com/lucascudo/laravel-pt-BR-localization/tree/v2.2.0"
+                "source": "https://github.com/lucascudo/laravel-pt-BR-localization/tree/v2.2.1"
             },
             "funding": [
                 {
@@ -8770,7 +8770,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-25T11:18:02+00:00"
+            "time": "2024-05-09T13:57:11+00:00"
         },
         {
             "name": "mockery/mockery",
@@ -10210,16 +10210,16 @@
         },
         {
             "name": "reliese/laravel",
-            "version": "v1.3.0",
+            "version": "v1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reliese/laravel.git",
-                "reference": "4438db1b1e9bc76c24f642d86bfb68e136943d03"
+                "reference": "7f8f3770512ffcc6bbce257d0e529dbc22ca52db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reliese/laravel/zipball/4438db1b1e9bc76c24f642d86bfb68e136943d03",
-                "reference": "4438db1b1e9bc76c24f642d86bfb68e136943d03",
+                "url": "https://api.github.com/repos/reliese/laravel/zipball/7f8f3770512ffcc6bbce257d0e529dbc22ca52db",
+                "reference": "7f8f3770512ffcc6bbce257d0e529dbc22ca52db",
                 "shasum": ""
             },
             "require": {
@@ -10269,7 +10269,7 @@
                 "issues": "https://github.com/reliese/laravel/issues",
                 "source": "https://github.com/reliese/laravel"
             },
-            "time": "2024-04-12T13:55:07+00:00"
+            "time": "2024-05-10T11:56:37+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -11686,5 +11686,5 @@
         "php": "^8.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

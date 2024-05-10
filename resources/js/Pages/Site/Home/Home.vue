@@ -24,9 +24,13 @@ export default {
         Swiper, SwiperSlide,
         Link
     },
+    props: {
+      data: Array
+    },
     data() {
         return {
             music: [],
+            data: this.data,
             items: [
                 {
                     title: 'teste1',
@@ -41,6 +45,7 @@ export default {
         }
     },
 }
+//console.log(this.data)
 </script>
 
 <template>
