@@ -1,3 +1,7 @@
+<script setup>
+import * as func from '@/Helpers/functions';
+</script>
+
 <script>
 import App from '@/Pages/App.vue'
 import HeroSection from '@/Pages/Site/Home/HeroSection/HeroSection.vue'
@@ -58,66 +62,61 @@ export default {
         console.log(this.destaques, this.ativas, this.finalizadas)
     }
 }
-
 </script>
 
 <template>
     <App>
-        <HeroSection/>
+        <HeroSection :highlight="destaques"/>
 
         <section class="pt-10 pb-5">
             <div class="container">
-                <div class="">
-                    <h2 class="o-title">Próximos Sorteios</h2>
+                <h2 class="o-title">Próximos Sorteios</h2>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <template v-for="i in 4">
-                            <a href="/raffle" class="c-card__item">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <template v-for="(item, index) in ativas" :key="index">
+                            <a :href="route('raffle', item.link)" class="c-card__item">
                                 <figure class="aspect-square overflow-hidden">
-                                    <img src="https://m.media-amazon.com/images/I/71Zfj6G7-VL._SY466_.jpg"
-                                         class="w-full h-full object-cover rounded-xl" alt="">
+                                    <img :src="item.raffle_images[0]"
+                                         class="w-full h-full object-cover rounded-xl" :alt="item.title">
                                 </figure>
-                                <div class="flex flex-col justify-between">
-                                    <p class="text-neutral/60">VITAMINI C GUMMY</p>
-                                    <p class="text-neutral font-bold text-xl">R$ 115,00</p>
+                                <div class="flex flex-col justify-between flex-1">
+                                    <p class="text-neutral/60">{{ item.title }}</p>
+                                    <p class="text-neutral font-bold text-xl">{{ func.formatValue(item.price) }}</p>
                                     <Button type="button" color="primary" class="mt-2">Clique e Participe</Button>
                                 </div>
                             </a>
                         </template>
                     </div>
-                </div>
             </div>
         </section>
 
-        <section id="drawn" class="py-5">
+        <section v-if="finalizadas.length > 0" id="drawn" class="py-5" >
             <div class="container">
-                <div class="">
-                    <h2 class="o-title">Últimos Sorteios</h2>
+                <h2 class="o-title">Últimos Sorteios</h2>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <template v-for="i in 8">
-                            <a href="/raffle" class="c-card__item">
-                                <figure class="aspect-square overflow-hidden">
-                                    <img src="https://m.media-amazon.com/images/I/71Zfj6G7-VL._SY466_.jpg"
-                                         class="w-full h-full object-cover rounded-xl" alt="">
-                                </figure>
-                                <div class="flex flex-col justify-between">
-                                    <p class="text-neutral">Sorteado: <span class="font-bold">N 21</span></p>
-                                    <p class="text-neutral">Ganhador: <span class="font-bold">Luiz Henrique Meirelles - SP</span></p>
-                                    <Button type="button" color="primary" class="mt-2">Ver Resultado</Button>
-                                </div>
-                            </a>
-                        </template>
-                    </div>
-                    <div class="mt-5 w-full flex justify-center">
-                        <a type="button" class="text-neutral">ver mais</a>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <template v-for="(item, index) in finalizadas" :key="index">
+                        <a :href="route('raffle', item.link)" class="c-card__item">
+                            <figure class="aspect-square overflow-hidden">
+                                <img :src="item.raffle_images[0]"
+                                     class="w-full h-full object-cover rounded-xl" :alt="item.title">
+                            </figure>
+                            <div class="flex flex-col justify-between">
+                                <p class="text-neutral">{{ item.title}}</p>
+                                <p class="text-neutral">Sorteado: <span class="font-bold">N 21</span></p>
+                                <p class="text-neutral">Ganhador: <span class="font-bold">Luiz Henrique Meirelles - SP</span></p>
+                                <Button type="button" color="primary" class="mt-2">Ver Resultado</Button>
+                            </div>
+                        </a>
+                    </template>
+                </div>
+                <div class="mt-5 w-full flex justify-center">
+                    <a type="button" class="text-neutral">ver mais</a>
                 </div>
             </div>
         </section>
     </App>
 </template>
-
 
 <style lang="scss" scoped>
 .c-card__item {

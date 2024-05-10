@@ -16,6 +16,9 @@ export default {
         Swiper,
         SwiperSlide,
     },
+    props: {
+        highlight: Object,
+    },
     data() {
         return {
             slide: [
@@ -62,7 +65,12 @@ export default {
     <section id="hero" class="c-hero">
         <div class="container flex">
             <div class="w-full">
-                <swiper ref="swiper" :keyboard="true" :slidesPerView="1"  :spaceBetween="15" loop="true" :autoplay="{
+                <swiper ref="swiper"
+                        :keyboard="true"
+                        :slidesPerView="1"
+                        :preventClicks="false"
+                        :spaceBetween="15"
+                        loop="true" :autoplay="{
                 delay: 4500,
                 disableOnInteraction: false,
             }" :breakpoints="{
@@ -80,17 +88,17 @@ export default {
                         :allowTouchMove="false" :grabCursor="false" :centeredSlides="true" :modules="modules"
                         class="swiper-hero">
 
-                    <swiper-slide v-for="(item, key) in slide" :key="key">
+                    <swiper-slide v-for="(item, key) in highlight" :key="key">
                         <div class="w-full h-full md:rounded-2xl border-base-200 overflow-hidden ">
                             <div class="aspect-[2/3] md:aspect-[4/1.8]" :aria-label="item.name">
-                                <img :src="item.image"
-                                     class="w-full h-full object-cover pointer-events-none hidden md:block" :alt="item.name">
-                                <img :src="item.imageMobile"
-                                     class="w-full h-full object-cover pointer-events-none md:hidden" :alt="item.name">
+                                <img :src="item.banner"
+                                     class="w-full h-full object-cover pointer-events-none hidden md:block" :alt="item.title">
+                                <img :src="item.banner"
+                                     class="w-full h-full object-cover pointer-events-none md:hidden" :alt="item.title">
                             </div>
 
                             <div class="box-banner">
-                                <Button type="button" color="primary" class="pulsate-fwd">Adiquira e concorra</Button>
+                                <Button type="a" :href="route('raffle', item.link)" color="primary" class="pulsate-fwd">Adiquira e concorra</Button>
                             </div>
                         </div>
                     </swiper-slide>
