@@ -73,7 +73,8 @@ class Raffle extends Model
 		'user_id' => 'int',
 		'partial' => 'int',
 		'gateway_id' => 'int',
-		'total' => 'int'
+		'total' => 'int',
+		'finish_at' => 'datetime'
 	];
 
 	protected $fillable = [
@@ -98,7 +99,8 @@ class Raffle extends Model
 		'video',
 		'gateway_id',
 		'total',
-        'banner'
+        'banner',
+        'finish_at'
 	];
 
 	public function user()

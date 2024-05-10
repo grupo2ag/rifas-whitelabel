@@ -8,6 +8,8 @@ use App\Jobs\SendMail;
 use App\Models\Charge;
 use App\Models\ChargePaid;
 use App\Models\Participant;
+use App\Models\Raffle;
+use App\Models\RafflePremiumNumber;
 use Carbon\Carbon;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -34,9 +36,10 @@ class PixPaymentController extends Controller
                     ->join('customers', 'customers.id', '=', 'participants.customer_id')
                     ->where('charges.pix_id', $order_id)
                     ->withTrashed()
-                    ->first(['participants.*', 'raffles.title as raffle_title', 'customers.name as customer_name',
-                             'customers.name as customer_name', 'customers.email as customer_email',
-                             'customers.cpf as customer_cpf', 'customers.phone as customer_phone']);
+                    ->first(['participants.*', 'raffles.title as raffle_title', 'raffles.type as raffle_type',
+                             'customers.name as customer_name', 'customers.name as customer_name',
+                             'customers.email as customer_email', 'customers.cpf as customer_cpf',
+                             'customers.phone as customer_phone']);
 
                 $expire = Carbon::parse($participant->expired_at)->lte($agora);
 
@@ -79,6 +82,13 @@ class PixPaymentController extends Controller
                             'numbers' => $participant->numbers,
                             'mail' => 'numbers'];
                         SendMail::dispatch($emailSend)->onQueue('emails');
+                    }
+
+                    if($participant->raffle_type == Raffle::TYPE_AUTOMATIC){
+                        $numberPremium = RafflePremiumNumber::where('raffle_id', $participant->raffle_id)->whereNull('customer_id')->first();
+                        if(!empty($numberPremium)){
+                            numbers_premium($participant->id, $participant->raffle_id);
+                        }
                     }
 
                     DB::commit();

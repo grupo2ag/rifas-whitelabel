@@ -17,7 +17,6 @@ class HomeController extends Controller
             $raffles = Raffle::UserID($user_id)
                 ->orderBy('highlight', 'DESC')
                 ->orderBy('highlight_order', 'ASC')
-                ->orderBy('status', 'ASC')
                 ->with(['raffle_images' => function ($query) {
                     $query->whereRaw('raffle_images.id IN (SELECT MAX(a2.id) FROM raffle_images AS a2 WHERE a2.id = raffle_images.id AND highlight = 1)');
                 }])
@@ -26,9 +25,7 @@ class HomeController extends Controller
                 ->get();
 
             $rafflesFinish = Raffle::UserID($user_id)
-                ->orderBy('highlight', 'DESC')
-                ->orderBy('highlight_order', 'ASC')
-                ->orderBy('status', 'ASC')
+                ->orderBy('finish_at', 'DESC')
                 ->with(['raffle_images' => function ($query) {
                     $query->whereRaw('raffle_images.id IN (SELECT MAX(a2.id) FROM raffle_images AS a2 WHERE a2.id = raffle_images.id AND highlight = 1)');
                 }])
