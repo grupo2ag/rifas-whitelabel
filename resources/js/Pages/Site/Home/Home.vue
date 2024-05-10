@@ -25,27 +25,40 @@ export default {
         Link
     },
     props: {
-      data: Array
+      raffles: Array
     },
     data() {
         return {
-            music: [],
-            data: this.data,
-            items: [
-                {
-                    title: 'teste1',
-                    name: '1'
-                },
-                {
-                    title: 'teste',
-                    name: '2'
-                }
-            ]
-            //loading: true,
+            destaques: this.filteredRafflesStatus('Ativo', true),
+            ativas: this.filteredRafflesStatus('Ativo', false),
+            finalizadas: this.filteredRafflesStatus('Finalizado', null),
         }
     },
+    methods: {
+        filteredRafflesStatus(status, highlight) {
+            let tempRaffles = this.raffles
+
+            console.log(status);
+
+            tempRaffles = tempRaffles.filter((item) => {
+                if(highlight != null){
+                    return (item.status == status && item.highlight == highlight)
+                }
+                return (item.status == status)
+            })
+
+            return tempRaffles;
+        }
+    },
+    mounted() {
+        /*let high = this.filteredRafflesStatus('Ativo', true);
+        let nohigh = this.filteredRafflesStatus('Ativo', false);
+        let finish = this.filteredRafflesStatus('Finalizado', null);
+        console.log(high, nohigh, finish)*/
+        console.log(this.destaques, this.ativas, this.finalizadas)
+    }
 }
-//console.log(this.data)
+
 </script>
 
 <template>

@@ -6,6 +6,7 @@
 
 namespace App\Models;
 
+use App\Traits\Excludable;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -48,7 +49,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Raffle extends Model
 {
-    use HasFactory;
+    use HasFactory, Excludable;
 
     public const TYPE_AUTOMATIC = 'automatico';
     public const TYPE_MANUAL = 'manual';
@@ -151,6 +152,17 @@ class Raffle extends Model
     public function scopeStatus(Builder $query, string $value): Builder
     {
         return $query->where('status', $value);
+    }
+
+    /**
+     * Exclude an array of elements from the result.
+     * @param $query
+     * @param $columns
+     * @return mixed
+     */
+    public function scopeExclude($query, $columns)
+    {
+        return $query->select(array_diff($this->getTableColumns(), (array) $columns));
     }
 
 }

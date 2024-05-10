@@ -12,15 +12,6 @@ if(config('app.env') === 'local'){
     Route::get('/teste', [TesteController::class, 'index']);
 }
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
-
 Route::middleware(LevelMiddleware::class)->group(function (){
 
     /* ROTAS AUTENTICADAS AQUI */

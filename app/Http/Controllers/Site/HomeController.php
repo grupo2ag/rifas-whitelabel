@@ -24,21 +24,11 @@ class HomeController extends Controller
                 ->with(['raffle_awards' => function ($query) {
                     $query->whereRaw('raffle_awards.id IN (SELECT MAX(a2.id) FROM raffle_awards AS a2 WHERE a2.id = raffle_awards.id AND raffle_awards.order = 1)');
                 }])
+                ->Exclude(['numbers', 'video'])
                 ->get();
 
-            $raffles->each(function ($each){
-                $each->load(['raffle_images' => function ($q) {
-                    return $q->latest();
-                }]);
-            });
-
-            $raffles->each(function ($each){
-                $each->load(['raffle_awards' => function ($q) {
-                    return $q->first();
-                }]);
-            });
-
-            return Inertia::render('Site/Home/Home', ['data' => $raffles]);
+            //dd($raffles);
+            return Inertia::render('Site/Home/Home', ['raffles' => $raffles]);
         }
 
         return Inertia::render('Welcome');
