@@ -1,12 +1,10 @@
-<script setup>
-import * as func from '@/Helpers/functions';
-</script>
 
 <script>
 import App from '@/Pages/App.vue'
 import HeroSection from '@/Pages/Site/Home/HeroSection/HeroSection.vue'
 import Button from '@/Components/Button/Button.vue';
-import { Link } from '@inertiajs/inertia-vue3';
+import {Link} from '@inertiajs/inertia-vue3';
+import {reactive, toRefs, onBeforeMount, ref, watchEffect} from 'vue';
 
 import {Progress, Tooltip, Tabs, TabPanel} from 'daisyui-vue';
 import {Swiper, SwiperSlide} from 'swiper/vue';
@@ -15,6 +13,8 @@ import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
 
 export default {
     components: {
@@ -26,11 +26,12 @@ export default {
         Tabs,
         TabPanel,
         Swiper, SwiperSlide,
-        Link
+        Link,
+        InfiniteLoading
     },
     props: {
-      raffles: Array,
-      rafflesFinish: Array
+        raffles: Object,
+        rafflesFinish: Object
     },
     data() {
         return {
@@ -52,7 +53,48 @@ export default {
     },
     mounted() {
         /*console.log(this.destaques, this.ativas, this.finalizadas)*/
-    }
+    },
+    setup(props) {
+       console.log(props.rafflesFinish)
+        /* console.log('aqui')*/
+
+      // let finish = ref(props.rafflesFinish);
+
+        const finish = ref([]);
+
+        finish.value.push(...props.rafflesFinish.data)
+
+        // console.log(finish)
+
+        let page = 2;
+        const load = async $state => {
+            console.log("loading...");
+            try {
+                const response = await fetch("http://127.0.0.1:8000?page=2").then(r => r);
+
+                // const json = response.body;
+                console.log(response);
+                // const json = await response;
+                if (response.length < 10) $state.complete();
+                else {
+                    finish.value.push(...response);
+
+                    console.log(finish);
+                    $state.loaded();
+                }
+                page++;
+            } catch (error) {
+                console.log(error)
+                $state.error();
+            }
+        };
+
+        return {
+            load,
+            finish,
+            page,
+        };
+    },
 }
 </script>
 
@@ -65,38 +107,46 @@ export default {
                 <h2 class="o-title">Próximos Sorteios</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                        <template v-for="(item, index) in ativas" :key="index">
-                            <a :href="route('raffle', item.link)" class="c-card__item">
-                                <figure class="aspect-square overflow-hidden">
-                                    <img :src="item.raffle_images[0].path"
-                                         class="w-full h-full object-cover rounded-xl" :alt="item.title">
-                                </figure>
-                                <div class="flex flex-col justify-between flex-1">
-                                    <p class="text-neutral/60">{{ item.title }}</p>
-                                    <p class="text-neutral font-bold text-xl">{{ func.formatValue(item.price) }}</p>
-                                    <Button type="button" color="primary" class="mt-2">Clique e Participe</Button>
-                                </div>
-                            </a>
-                        </template>
-                    </div>
+                    <template v-for="(item, index) in ativas" :key="index">
+                        <a :href="route('raffle', item.link)" class="c-card__item">
+                            <figure class="aspect-square overflow-hidden">
+                                <img :src="item.raffle_images[0].path"
+                                     class="w-full h-full object-cover rounded-xl" :alt="item.title">
+                            </figure>
+                            <div class="flex flex-col justify-between flex-1">
+                                <p class="text-neutral/60">{{ item.title }}</p>
+                                <p class="text-neutral font-bold text-xl">{{ item.price }}</p>
+                                <Button type="button" color="primary" class="mt-2">Clique e Participe</Button>
+                            </div>
+                        </a>
+                    </template>
+                </div>
             </div>
         </section>
 
-        <section v-if="finalizadas.length > 0" id="drawn" class="py-5" >
+        <section id="drawn" class="py-5">
             <div class="container">
                 <h2 class="o-title">Últimos Sorteios</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <template v-for="(item, index) in finalizadas" :key="index">
+                    <template v-for="(item, index) in finish" :key="index">
                         <a :href="route('raffle', item.link)" class="c-card__item">
                             <figure class="aspect-square overflow-hidden">
                                 <img :src="item.raffle_images[0].path"
                                      class="w-full h-full object-cover rounded-xl" :alt="item.title">
                             </figure>
                             <div class="flex flex-col justify-between">
-                                <p class="text-neutral">{{ item.title}}</p>
-                                <p class="text-neutral">Sorteado: <span class="font-bold">N 21</span></p>
-                                <p class="text-neutral">Ganhador: <span class="font-bold">Luiz Henrique Meirelles - SP</span></p>
+                                <p class="text-lg font-semibold text-neutral">{{ item.title }}</p>
+
+                                <p class="text-neutral">
+                                    Sorteado: <span class="font-bold">N°</span>
+                                </p>
+
+                                <p class="text-neutral leading-tight">
+                                    Ganhador:
+                                    <span class="font-bold"></span>
+                                </p>
+
                                 <Button type="button" color="primary" class="mt-2">Ver Resultado</Button>
                             </div>
                         </a>
@@ -107,6 +157,14 @@ export default {
                 </div>
             </div>
         </section>
+
+<!--        <pre>{{finish.data}}</pre>-->
+
+        <InfiniteLoading @infinite="load">
+            <template #complete>
+                <span></span>
+            </template>
+        </InfiniteLoading>
     </App>
 </template>
 

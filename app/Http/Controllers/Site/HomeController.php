@@ -9,8 +9,10 @@ use Inertia\Inertia;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+
+//        dd($request->all());
         if(!empty(inertia()->getShared('siteconfig')->user_id)){
             $user_id = inertia()->getShared('siteconfig')->user_id;
 
@@ -37,9 +39,9 @@ class HomeController extends Controller
                 }])
                 ->Exclude(['numbers', 'video'])
                 ->Status('Finalizado')
-                ->paginate();
+                ->paginate(5);
 
-            //dd($raffles);
+          //  dd($rafflesFinish);
             return Inertia::render('Site/Home/Home', ['raffles' => $raffles, 'rafflesFinish' => $rafflesFinish]);
         }
 
