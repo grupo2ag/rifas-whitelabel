@@ -73,7 +73,8 @@ class Raffle extends Model
 		'user_id' => 'int',
 		'partial' => 'int',
 		'gateway_id' => 'int',
-		'total' => 'int'
+		'total' => 'int',
+		'finish_at' => 'datetime'
 	];
 
 	protected $fillable = [
@@ -98,7 +99,8 @@ class Raffle extends Model
 		'video',
 		'gateway_id',
 		'total',
-        'banner'
+        'banner',
+        'finish_at'
 	];
 
 	public function user()
@@ -154,12 +156,16 @@ class Raffle extends Model
         return $query->where('status', $value);
     }
 
-    /**
-     * Exclude an array of elements from the result.
-     * @param $query
-     * @param $columns
-     * @return mixed
-     */
+    public function scopeSlug(Builder $query, string $value): Builder
+    {
+        return $query->where('link', $value);
+    }
+
+    public function scopeVisible(Builder $query, string $value): Builder
+    {
+        return $query->where('visible', $value);
+    }
+
     public function scopeExclude($query, $columns)
     {
         return $query->select(array_diff($this->getTableColumns(), (array) $columns));

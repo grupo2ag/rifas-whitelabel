@@ -19,7 +19,7 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        dd('teste');
+        //dd(numbers_premium(25, 1, ['00001', '00002']));
         //$resp = numbers_devolution(1, 5);
         //dd($resp);
         //Event::dispatch(new PixPayment('1234'));
@@ -46,11 +46,11 @@ class TesteController extends Controller
         $result = $teste->pix_generate();
         $aqui = QrCode::size(250)->generate($result['pix_link']);*/
 
-        $registration_data = [
+       /* $registration_data = [
             'name' => 'Sebastião Barbosa Silva',
             'phone' => '55 (53) 91831-8081'
         ];
-        dd(numbers_reserve(1, 2, 1, $registration_data, false));
+        dd(numbers_reserve(1, 2, 1, $registration_data, false));*/
         //dd(numbers_available(1));
     }
 
