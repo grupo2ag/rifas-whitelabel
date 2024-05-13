@@ -18,7 +18,7 @@ export default {
 
 <template>
      <Head title="Campanhas"></Head>
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :user="$page.props.auth.user">
         <template #header>
             <h2 class="flex items-center font-semibold text-white lg:text-xl">
                 <TicketIcon class="w-5 h-5 mr-2 text-white lg:w-6 lg:h-6" />

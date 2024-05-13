@@ -57,6 +57,11 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             return Inertia::render('Seller/Raffle/RaffleIndex');
         })->name('raffles');
 
+        Route::get('/raffles/view', function () {
+            //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
+            return Inertia::render('Seller/Raffle/RaffleView');
+        })->name('raffles');
+
         Route::get('/raffle/create', function () {
             //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
             return Inertia::render('Seller/Raffle/RaffleCreate');
@@ -71,6 +76,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
 
     Route::get('/',[HomeController::class, 'index'])->name('index');
     Route::get('/raffle',[RaffleController::class, 'index'])->name('raffle');
+
     Route::get('/pay/{url}',[RaffleController::class, 'pay'])->name('pay');
     Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
     Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
