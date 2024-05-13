@@ -1,5 +1,6 @@
 <script setup>
 import * as func from '@/Helpers/functions';
+import Badge from "@/Components/Badge/Badge.vue";
 </script>
 
 <script>
@@ -14,34 +15,26 @@ export default {
         Icon,
         Checkout,
     },
+    props:{
+      quotas: Array,
+      min: Number,
+      max: Number,
+      value: Number
+    },
     data() {
-        const value = 199
+        const value = this.value
         return {
-            quotas: [
-                {
-                    quantity: 10
-                },
-                {
-                    quantity: 20
-                },
-                {
-                    quantity: 30
-                },
-                {
-                    quantity: 40
-                },
-                {
-                    quantity: 50
-                },
-                {
-                    quantity: 60
-                },
+            quotas: this.quotas.length ? this.quotas : [
+                {'quantity_numbers': 10, 'popular': false},
+                {'quantity_numbers': 30, 'popular': false},
+                {'quantity_numbers': 50, 'popular': true},
+                {'quantity_numbers': 100, 'popular': false},
             ],
             items: [],
             selected: [],
             showModal: false,
             value: value,
-            quantity: 1,
+            quantity: this.min,
             total: value
         }
     },
@@ -62,20 +55,23 @@ export default {
             }
         },
         removeItem() {
-            if (this.quantity > 1) {
+            if (this.quantity > this.min) {
                 this.quantity--
                 this.total = this.quantity * this.value
             }
         },
         addItem() {
-            // if (this.quantity < 7) {
-            this.quantity++
-            this.total = this.quantity * this.value
-            // }
+            if (this.quantity < this.max) {
+                this.quantity++
+                this.total = this.quantity * this.value
+            }
         },
         addQuotas(quotas) {
-            this.quantity += quotas
-            this.total = this.quantity * this.value
+            if (this.quantity < this.max) {
+                this.quantity += quotas
+                if(this.quantity > this.max) this.quantity = this.max
+                this.total = this.quantity * this.value
+            }else this.quantity = this.max
         },
         openModal() {
             this.showModal = true
@@ -86,6 +82,9 @@ export default {
             document.body.classList.remove('active');
         },
     },
+    mounted() {
+
+    }
 }
 </script>
 
@@ -125,9 +124,10 @@ export default {
             <div class="grid gap-3 grid-cols-2 mb-3"
                  :class="'md:grid-cols-' + (quotas.length > 2 ? quotas.length / 2 : 'DA')">
                 <template v-for="(item, index) in quotas" :key="index">
-                    <Button type="button" color="outline-light" @click="addQuotas(item.quantity)" class="flex-col">
-                        <span class="text-3xl font-bold">+ {{ item.quantity }}</span>
+                    <Button type="button" color="outline-light" @click="addQuotas(item.quantity_numbers)" class="flex-col">
+                        <span class="text-3xl font-bold">+ {{ item.quantity_numbers }}</span>
                         <span class="text-xs">Selecionar</span>
+                        <Badge color="primary" class="mb-2 hidden md:block">{{ item.popular ? 'Popular' : '' }}</Badge>
                     </Button>
                 </template>
             </div>

@@ -1,5 +1,5 @@
 <template>
-    <p class="text-primary text-sm mb-0.5">Progresso da Rifa {{ value }}/ {{ max }}</p>
+    <p class="text-primary text-sm mb-0.5">Progresso da Rifa {{ value }}%</p>
     <progress :value="value" :max="max"></progress>
 </template>
 

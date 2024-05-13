@@ -13,6 +13,8 @@ import {Swiper, SwiperSlide} from 'swiper/vue';
 import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
 import {useMediaQuery} from '@vueuse/core'
 
+import { format } from "date-fns";
+
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
@@ -33,23 +35,19 @@ export default {
         TabPanel,
         Swiper, SwiperSlide
     },
+    props: {
+      raffle: Array
+    },
     data() {
         return {
+            format,
             thumbsSwiper: null,
             setThumbsSwiper: null,
             activeHeight: false,
             url: window.location.href,
             modules: [FreeMode, Navigation, Thumbs],
+            galery: this.raffle?.galery,
             direction: 'vertical',
-            galery: [
-                {img: 'https://swiperjs.com/demos/images/nature-1.jpg'},
-                {img: 'https://swiperjs.com/demos/images/nature-2.jpg'},
-                {img: 'https://swiperjs.com/demos/images/nature-3.jpg'},
-                {img: 'https://swiperjs.com/demos/images/nature-4.jpg'},
-                {img: 'https://swiperjs.com/demos/images/nature-5.jpg'},
-                {img: 'https://swiperjs.com/demos/images/nature-6.jpg'},
-
-            ],
             isLargeScreen: useMediaQuery('(min-width: 768px)'),
             purchaseType: 2,
             showModal: true
@@ -79,6 +77,10 @@ export default {
             this.showModal = true;
         },
     },
+    mounted() {
+        console.log(this.raffle);
+        /*console.log(this.destaques, this.ativas, this.finalizadas)*/
+    }
 }
 </script>
 
@@ -88,7 +90,7 @@ export default {
             <div class="md:container">
                 <div class="c-content flex flex-col md:flex-row gap-8">
                     <div class="w-full md:w-7/12 flex flex-col items-start">
-                        <h1 class="text-3xl text-neutral font-bold uppercase mb-1 md:hidden">VITAMINI C GUMMY</h1>
+                        <h1 class="text-3xl text-neutral font-bold uppercase mb-1 md:hidden">{{ this.raffle.title }}</h1>
                         <p class="text-xs px-3 py-1 bg-primary text-primary-bw rounded-md mb-4 md:hidden">Corra</p>
 
                         <div class="w-full flex flex-col gap-6">
@@ -96,9 +98,9 @@ export default {
                                 <div class="w-full md:w-10/12 order-1 md:order-2">
                                     <swiper
                                         :style="{
-          '--swiper-navigation-color': '#fff',
-          '--swiper-pagination-color': '#fff',
-        }"
+                                          '--swiper-navigation-color': '#fff',
+                                          '--swiper-pagination-color': '#fff',
+                                        }"
                                         :spaceBetween="10"
                                         :navigation="true"
                                         :thumbs="{ swiper: thumbsSwiper }"
@@ -131,39 +133,39 @@ export default {
                     <div class="w-full md:w-5/12 ">
                         <div class="flex flex-col items-start gap-3 relative">
                             <div class="flex flex-col items-start">
-                                <h1 class="text-2xl md:text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">VITAMINI C GUMMY</h1>
+                                <h1 class="text-2xl md:text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">{{ this.raffle.title }}</h1>
 
                                 <Badge color="primary" class="mb-2 hidden md:block">Corra</Badge>
 
                                 <p class="text-neutral/70">
-                                    Gominhas de morango, de manga e de maçã-verde, com 150mg de Vit C por unidade. Pensada
-                                    especialmente para crianças. Sem açúcar, glúten, lactose, conservantes, corantes e
-                                    aromas artificiais.
+                                    {{ this.raffle?.subtitle }}
                                 </p>
                             </div>
 
                             <div class="flex justify-between items-end">
                                 <p class="text-sm text-neutral">
-                                    Por apenas<br> <span class="text-3xl font-bold">R$ 115,00</span>
+                                    Por apenas<br> <span class="text-3xl font-bold">{{ parseFloat( (this.raffle.price/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span>
                                 </p>
                             </div>
 
                             <div class="w-full">
-                                <Progress value="90" max="100"/>
+                                <Progress :value="this.raffle.percent" max="100"/>
                             </div>
 
-                            <Button type="button" color="primary" class="pulsate-fwd w-full"  @click="goto('purchase', 75)">Adquira Já</Button>
+                            <Button type="button" color="primary" class="pulsate-fwd w-full"  @click="goto('purchase', 75)">
+                                {{ this.raffle.status === 'Ativo' ? 'Adquira Já' : 'Finalizada' }}
+                            </Button>
 
                             <ul class="w-full flex flex-col md:flex-row gap-3">
                                 <li class="w-full md:w-auto text-sm text-neutral flex-1">
-                                    Data do sorteio:
-                                    <p class="text-base font-bold">A Definir</p>
+                                    Data prevista do sorteio:
+                                    <p class="text-base font-bold">{{ !!this.raffle.expected_date ? format(new Date(this.raffle.expected_date), "dd/MM/yyy") : 'A Definir' }}</p>
                                 </li>
 
-                                <li class="w-full md:w-auto text-sm text-neutral flex-1">
+                            <!--<li class="w-full md:w-auto text-sm text-neutral flex-1">
                                     Sorteio será realizado:
                                     <p class="text-base font-bold">Loteria Federal</p>
-                                </li>
+                                </li>-->
                             </ul>
 
                             <div class="w-full">
@@ -206,7 +208,7 @@ export default {
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
                     <PaymentExposed v-if="purchaseType === 1"/>
-                    <PaymentRandom v-else/>
+                    <PaymentRandom :promotion="this.raffle.raffle_promotions" :value="this.raffle.price" :min="this.raffle.minimum_purchase" :max="this.raffle.maximum_purchase" :quotas="this.raffle?.raffle_popular_numbers" v-else/>
                 </div>
             </div>
         </section>
@@ -216,10 +218,8 @@ export default {
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Prêmios</p>
 
-                    <ul>
-                        <li class="text-neutral/70 font-bold">1 Prêmio - ED. 09 - IPHONE 14 128GB LACRADO OU 4000 NO PIX</li>
-                        <li class="text-neutral/70">2 Prêmio - ED. 09 - IPHONE 14 128GB LACRADO OU 4000 NO PIX</li>
-                        <li class="text-neutral/70">3 Prêmio - ED. 09 - IPHONE 14 128GB LACRADO OU 4000 NO PIX</li>
+                    <ul v-for="(item, index) in this.raffle.raffle_awards" :key="index">
+                        <li class="text-neutral/70 font-bold">{{item.order}} {{item.description}}</li>
                     </ul>
                 </div>
             </div>
@@ -230,38 +230,7 @@ export default {
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold mb-2 text-neutral">Regulamento</p>
                     <div id="regulation" class="c-regulation__content" :class="activeHeight ? 'active' : ''">
-                        <p>As leis e regras podem variar dependendo do país ou região onde a campanha será
-                            realizada, então é importante verificar as normas locais antes de organizar uma
-                            campanha.
-                            No Brasil 🇧🇷, O SECAP (Secretaria de Avaliação, Planejamento, Energia e Loteria do
-                            Ministério da Economia) é o órgão que atua na fiscalização e autorização de campanhas
-                            promocionais. Regularizar uma campanha promocional exige alguns critérios que você deve
-                            seguir para conseguir essa regularização. O pedido de autorização deverá ser formulado
-                            por intermédio do Sistema de Controle de Promoção Comercial (SCPC). Em caso de dúvidas
-                            consulte os canais de atendimento do SCPC que funcionam 24 horas por dia, nos 7 dias da
-                            semana na Central de Atendimento Telefônico 0800-978 2332.</p>
-                        <br>
-                        <p>As leis e regras podem variar dependendo do país ou região onde a campanha será
-                            realizada, então é importante verificar as normas locais antes de organizar uma
-                            campanha.
-                            No Brasil 🇧🇷, O SECAP (Secretaria de Avaliação, Planejamento, Energia e Loteria do
-                            Ministério da Economia) é o órgão que atua na fiscalização e autorização de campanhas
-                            promocionais. Regularizar uma campanha promocional exige alguns critérios que você deve
-                            seguir para conseguir essa regularização. O pedido de autorização deverá ser formulado
-                            por intermédio do Sistema de Controle de Promoção Comercial (SCPC). Em caso de dúvidas
-                            consulte os canais de atendimento do SCPC que funcionam 24 horas por dia, nos 7 dias da
-                            semana na Central de Atendimento Telefônico 0800-978 2332.</p>
-                        <br>
-                        <p>As leis e regras podem variar dependendo do país ou região onde a campanha será
-                            realizada, então é importante verificar as normas locais antes de organizar uma
-                            campanha.
-                            No Brasil 🇧🇷, O SECAP (Secretaria de Avaliação, Planejamento, Energia e Loteria do
-                            Ministério da Economia) é o órgão que atua na fiscalização e autorização de campanhas
-                            promocionais. Regularizar uma campanha promocional exige alguns critérios que você deve
-                            seguir para conseguir essa regularização. O pedido de autorização deverá ser formulado
-                            por intermédio do Sistema de Controle de Promoção Comercial (SCPC). Em caso de dúvidas
-                            consulte os canais de atendimento do SCPC que funcionam 24 horas por dia, nos 7 dias da
-                            semana na Central de Atendimento Telefônico 0800-978 2332.</p>
+                        {{ this.raffle.description }}
                     </div>
 
                     <button v-if="!activeHeight" type="button"

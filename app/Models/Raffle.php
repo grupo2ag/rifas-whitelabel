@@ -74,7 +74,8 @@ class Raffle extends Model
 		'partial' => 'int',
 		'gateway_id' => 'int',
 		'total' => 'int',
-		'finish_at' => 'datetime'
+		'finish_at' => 'datetime',
+		'expected_date' => 'datetime'
 	];
 
 	protected $fillable = [
@@ -100,7 +101,8 @@ class Raffle extends Model
 		'gateway_id',
 		'total',
         'banner',
-        'finish_at'
+        'finish_at',
+        'expected_date'
 	];
 
 	public function user()
@@ -143,6 +145,11 @@ class Raffle extends Model
     public function raffle_premium_numbers()
     {
         return $this->hasMany(RafflePremiumNumber::class);
+    }
+
+    public function raffle_popular_numbers()
+    {
+        return $this->hasMany(RafflePopularNumber::class);
     }
 
     /* SCOPES AQUI */
