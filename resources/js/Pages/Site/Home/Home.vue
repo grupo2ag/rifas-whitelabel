@@ -3,16 +3,8 @@
 import App from '@/Pages/App.vue'
 import HeroSection from '@/Pages/Site/Home/HeroSection/HeroSection.vue'
 import Button from '@/Components/Button/Button.vue';
-import {Link} from '@inertiajs/inertia-vue3';
-import {reactive, toRefs, onBeforeMount, ref, watchEffect} from 'vue';
+import {ref} from 'vue';
 
-import {Progress, Tooltip, Tabs, TabPanel} from 'daisyui-vue';
-import {Swiper, SwiperSlide} from 'swiper/vue';
-import {FreeMode, Navigation, Thumbs} from 'swiper/modules';
-
-import 'swiper/css/free-mode';
-import 'swiper/css/navigation';
-import 'swiper/css/thumbs';
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
 
@@ -21,12 +13,6 @@ export default {
         App,
         HeroSection,
         Button,
-        Progress,
-        Tooltip,
-        Tabs,
-        TabPanel,
-        Swiper, SwiperSlide,
-        Link,
         InfiniteLoading
     },
     props: {
@@ -114,7 +100,7 @@ export default {
                                      class="w-full h-full object-cover rounded-xl" :alt="item.title">
                             </figure>
                             <div class="flex flex-col justify-between flex-1">
-                                <p class="text-neutral/60">{{ item.title }}</p>
+                                <p class="text-neutral/60 line-clamp-3">{{ item.title }}</p>
                                 <p class="text-neutral font-bold text-xl">{{ item.price }}</p>
                                 <Button type="button" color="primary" class="mt-2">Clique e Participe</Button>
                             </div>
@@ -131,12 +117,12 @@ export default {
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                     <template v-for="(item, index) in finish" :key="index">
                         <a :href="route('raffle', item.link)" class="c-card__item">
-                            <figure class="aspect-square overflow-hidden">
+                            <figure>
                                 <img :src="item.raffle_images[0].path"
-                                     class="w-full h-full object-cover rounded-xl" :alt="item.title">
+                                     class="w-full h-full object-cover" :alt="item.title">
                             </figure>
-                            <div class="flex flex-col justify-between">
-                                <p class="text-lg font-semibold text-neutral">{{ item.title }}</p>
+                            <div class="flex-1 flex flex-col justify-between">
+                                <p class="text-lg font-semibold text-neutral line-clamp-2" :title="item.title">{{ item.title }}</p>
 
                                 <p class="text-neutral">
                                     Sorteado: <span class="font-bold">N°</span>
@@ -152,18 +138,14 @@ export default {
                         </a>
                     </template>
                 </div>
-                <div class="mt-5 w-full flex justify-center">
-                    <a type="button" class="text-neutral">ver mais</a>
-                </div>
             </div>
         </section>
 
 <!--        <pre>{{finish.data}}</pre>-->
 
         <InfiniteLoading @infinite="load">
-            <template #complete>
-                <span></span>
-            </template>
+            <template #complete><span></span></template>
+            <template #error><span></span></template>
         </InfiniteLoading>
     </App>
 </template>
@@ -171,6 +153,22 @@ export default {
 <style lang="scss" scoped>
 .c-card__item {
     @apply flex flex-col gap-4 border border-base-100 bg-content p-4 rounded-2xl;
+
+    figure{
+        @apply aspect-square overflow-hidden rounded-xl;
+
+        img{
+            transition: .2s ease-in-out;
+        }
+    }
+
+    &:hover{
+        figure{
+            img{
+                transform: scale(1.03);
+            }
+        }
+    }
 }
 
 .o-title {
