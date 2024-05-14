@@ -16,15 +16,11 @@ export default {
         Checkout,
     },
     props:{
-      quotas: Array,
-      min: Number,
-      max: Number,
-      value: Number
+      raffle: Object
     },
     data() {
-        const value = this.value
         return {
-            quotas: this.quotas.length ? this.quotas : [
+            quotas: this.raffle.raffle_popular_numbers.length ? this.raffle.raffle_popular_numbers : [
                 {'quantity_numbers': 10, 'popular': false},
                 {'quantity_numbers': 30, 'popular': false},
                 {'quantity_numbers': 50, 'popular': true},
@@ -33,9 +29,11 @@ export default {
             items: [],
             selected: [],
             showModal: false,
-            value: value,
-            quantity: this.min,
-            total: value*this.min
+            min: this.raffle.minimum_purchase,
+            max: this.raffle.maximum_purchase,
+            quantity: this.raffle.minimum_purchase,
+            value: this.raffle.price,
+            total: this.raffle.price*this.raffle.minimum_purchase
         }
     },
     methods: {
@@ -162,7 +160,7 @@ export default {
             </button>
         </div>
 
-        <Checkout :quantity="quantity" :total="total" :open="showModal" @close="closeModal"/>
+        <Checkout :raffle="raffle" :unit="value" :quantity="quantity" :total="total" :open="showModal" @close="closeModal"/>
     </div>
 </template>
 

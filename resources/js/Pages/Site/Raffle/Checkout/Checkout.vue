@@ -64,17 +64,14 @@ const getInitials = function (string) {
     return initials;
 };
 
-const ocultingString = function (string, initialDigits = 2, centerDigits = 5, finalDigits = 3){
-    return string.slice(0, initialDigits) + "*".repeat(string.length - centerDigits) + string.slice(-finalDigits)
-}
-
 export default {
     name: "Checkout",
     props: {
         open: Boolean,
         quantity: Number,
         total: Number,
-        numbers: Array
+        numbers: Array,
+        raffle: Object
     },
     components: {
         Modal,
@@ -119,6 +116,8 @@ export default {
                 email: '',
                 cpf: '',
                 buyer: '',
+                raffle_id: this.raffle.id,
+                user_id: this.raffle.user_id
             },
             schemaVerify: {},
             schemaPurchase: {},
@@ -131,7 +130,7 @@ export default {
                 email: '',
                 cpf: '',
             },
-            step: 'PURCHASE',
+            step: 'VERIFY',
             customer: {}
         }
     },
@@ -153,9 +152,6 @@ export default {
     methods: {
         closeModal() {
             this.$emit('close')
-        },
-        link() {
-            Inertia.visit(route('response'))
         },
         onVerify() {
             this.validatorVerify();
@@ -205,12 +201,16 @@ export default {
                     preserveScroll: true,
                     onSuccess: () => {
                         this.form.processing = false;
+                        console.log('success');
+                        //Inertia.visit(route('pay'))
                     },
                     onError: (errors) => {
+                        console.log('errors', errors);
                         this.form.processing = false;
                         this.errors = errors;
                     }
                 });
+
             }).catch((err) => {
                 this.formVerify.processing = false;
 
@@ -373,26 +373,26 @@ export default {
             </template>
 
             <template v-if="step === 'CONFIRM'">
-                <form @submit.prevent="onSubmit" class="pt-3 mt-3 border-t border-base-100">
+                <form @submit.prevent="onPurchase" class="pt-3 mt-3 border-t border-base-100">
 
-                <div class="my-2 p-2 border border-base-100 rounded-xl flex w-full items-center gap-3">
-                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                        <span class="font-bold text-lg text-primary-bw">{{ getInitials(this.formPurchase.name) }}</span>
+                    <div class="my-2 p-2 border border-base-100 rounded-xl flex w-full items-center gap-3">
+                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                            <span class="font-bold text-lg text-primary-bw">{{ getInitials(this.formPurchase.name) }}</span>
+                        </div>
+
+                        <p class="text-neutral font-bold">{{ this.formPurchase.name }}</p>
+                        <p class="text-neutral font-bold">{{ this.formPurchase.phone }}</p>
+                        <p class="text-neutral font-bold">{{ this.formPurchase.email }}</p>
                     </div>
 
-                    <p class="text-neutral font-bold">{{ this.formPurchase.name }}</p>
-                    <p class="text-neutral font-bold">{{ this.formPurchase.phone }}</p>
-                    <p class="text-neutral font-bold">{{ this.formPurchase.email }}</p>
-                </div>
+                    <Button type="submit" color="success" class="w-full mb-3">
+                        Concluir Reserva
+                    </Button>
 
-                <Button type="submit" color="success" class="w-full mb-3" @click="link">
-                    Concluir Reserva
-                </Button>
-
-                <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
-                    Outra Conta
-                </Button>
-            </form>
+                    <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
+                        Outra Conta
+                    </Button>
+                </form>
             </template>
 
             <template v-if="step === 'PURCHASE'">
@@ -441,7 +441,7 @@ export default {
                         <a href="" target="_blank" class="text-blue">Termos de Uso.</a>
                     </p>
 
-                    <Button type="submit" color="success" class="w-full mb-3" @click="link">
+                    <Button type="submit" color="success" class="w-full mb-3">
                         Concluir Reserva
                     </Button>
 

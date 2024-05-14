@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use function Laravel\Prompts\select;
 
@@ -105,16 +107,13 @@ class RaffleController extends Controller
         return redirect('/');
     }
 
-    public function pay($url)
+    public function pay()
     {
-
-
-        if($url){
-
+        //if($url){
             return Inertia::render('Site/Payment/PaymentIndex');
-        } else {
+        /*} else {
             abort(404);
-        }
+        }*/
     }
 
 
@@ -124,24 +123,51 @@ class RaffleController extends Controller
 
         $data = Customer::where('phone', $phone)->first();
 
-        $phone = str_replace('55 ', '', $phone);
-        $return = [
-            'buyer' => $data->id,
-            'name' => $data->name,
-            'cpf' => hideString($data->cpf, 3,3),
-            'phone' => hideString($phone, 8, 3),
-            'email' => hideString($data->email, 3,8),
-        ];
+        $return = [];
+        if(!empty($data->id)){
+            $phone = str_replace('55 ', '', $phone);
+            $return = [
+                'buyer' => $data->id,
+                'name' => $data->name,
+                'cpf' => !empty($data->cpf) ? hideString($data->cpf, 3,3) : '',
+                'phone' => !empty($phone) ? hideString($phone, 8, 3) : '',
+                'email' => !empty($data->email) ? hideString($data->email, 3,8) : '',
+            ];
+        }
 
         return response()->json($return, 200);
     }
 
     public function purchase(Request $request)
     {
+        return response()->json(['message' => '123qweqweq'], 403);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+            'email' => 'required|string|email|max:255',
+            'cpf' => 'required|string|max:14',
+            'raffle_id' => 'required',
+            'user_id' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()], 403);
+        }
 
-//        dd($phone);
+        $return = Customer::updateOrCreate(
+            [
+                'cpf'   => Str::trim($request->cpf),
+            ],
+            [
+                'name'  => Str::trim($request->name),
+                'phone' => '55 '.Str::trim($request->phone),
+                'email' => Str::trim(Str::lower($request->email))
+            ]
+        );
 
-        return Inertia::render('Site/Raffle/Raffle');
+        $return['raffle_id'] = $request->raffle_id;
+        $return['user_id'] = $request->user_id;
+
+        return Inertia::render('Site/Raffle/RafflePurchase', $return);
     }
 
 }
