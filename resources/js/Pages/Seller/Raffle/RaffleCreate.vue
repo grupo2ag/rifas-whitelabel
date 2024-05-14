@@ -26,6 +26,7 @@ import {
     TrophyIcon,
     TicketIcon,
     AdjustmentsHorizontalIcon,
+    ReceiptPercentIcon
 } from '@heroicons/vue/24/outline';
 import UploadImage from "@/Components/UploadImage/UploadImage.vue";
 
@@ -66,7 +67,8 @@ export default {
         InformationCircleIcon,
         TrophyIcon,
         TicketIcon,
-        AdjustmentsHorizontalIcon
+        AdjustmentsHorizontalIcon,
+        ReceiptPercentIcon
     },
     props: {
         raffle: Object
@@ -384,24 +386,6 @@ export default {
                                 </div>
                             </div>
                         </template>
-
-                        <template v-if="form.status === 'Finalizado'">
-                            <div class="flex flex-col md:flex-row gap-4">
-                                <div class="w-full md:w-6/12">
-                                    <Input label="Ganhador:" v-model="form.title"
-                                           type="text" :name="form.title"
-                                           :error="validator.title || $page.props.errors.title"
-                                           placeholder="Digite o nome do ganhador"/>
-                                </div>
-
-                                <div class="w-full md:w-6/12">
-                                    <Input label="Número do Ganhador:" v-model="form.title"
-                                           type="text" :name="form.title"
-                                           :error="validator.title || $page.props.errors.title"
-                                           placeholder="Digite o número do ganhador"/>
-                                </div>
-                            </div>
-                        </template>
                     </div>
                 </div>
 
@@ -410,12 +394,12 @@ export default {
                         <div class="flex items-center">
                             <TrophyIcon class="h-5 stroke-neutral mr-1"/>
 
-                            <h3 class="text-neutral font-semibold text-base">Prêmios</h3>
+                            <h3 class="text-neutral font-semibold text-base">{{form.status === 'Ativo' ? 'Prêmios' : 'Ganhadores' }} </h3>
                         </div>
                     </div>
 
                     <div class="w-full pt-3">
-                        <div class="flex flex-col items-end md:flex-row gap-4">
+                        <div v-if="form.status === 'Ativo'" class="flex flex-col items-end md:flex-row gap-4">
                             <div class="w-full grid grid-cols-1 ">
                                 <div v-for="(item, index) in awards" :key="index" class="flex items-center gap-3">
                                     <span class="w-6 text-neutral text-right text-lg">{{ index + 1 }}˚</span>
@@ -441,13 +425,71 @@ export default {
                                 </div>
                             </div>
                         </div>
+
+                        <template v-if="form.status === 'Finalizado'">
+
+                            <template v-for="(item, index) in awards" :key="index">
+                            <div class="flex flex-col items-center md:flex-row gap-4">
+                                <p class="text-neutral text-right">{{ index + 1 }}˚ Prêmio</p>
+
+                                <div class="flex-1">
+                                    <Input label="Ganhador:" v-model="form.title"
+                                           type="text" :name="form.title"
+                                           :error="validator.title || $page.props.errors.title"
+                                           placeholder="Digite o nome do ganhador"/>
+                                </div>
+
+                                <div class=" md:w-3/12">
+                                    <Input label="Número do Ganhador:" v-model="form.title"
+                                           type="text" :name="form.title"
+                                           :error="validator.title || $page.props.errors.title"
+                                           placeholder="Digite o número"/>
+                                </div>
+                            </div>
+                            </template>
+                        </template>
                     </div>
                 </div>
 
+                <div class="c-content my-4">
+                    <div class="pb-2 flex items-center border-b border-base-100">
+                        <div class="flex items-center">
+                            <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
 
+                            <h3 class="text-neutral font-semibold text-base">Promoção</h3>
+                        </div>
+                    </div>
 
+                    <div class="w-full pt-3">
 
+                        <div class="flex flex-col md:flex-row md:gap-4">
+                            <div class="w-full md:w-6/12">
+                                <Input label="Qtd de números:" v-model="form.minimum_purchase"
+                                       type="number" :name="form.minimum_purchase"
+                                       :error="validator.minimum_purchase || $page.props.errors.minimum_purchase"
+                                       placeholder="0"/>
+                            </div>
 
+                            <div class="w-full md:w-6/12">
+                                <CurrencyInput label="% de Desconto" :precision="0" :prefix="' '" :suffix="' %'" v-model="form.price" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-content my-4">
+                    <div class="pb-2 flex items-center border-b border-base-100">
+                        <div class="flex items-center">
+                            <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
+
+                            <h3 class="text-neutral font-semibold text-base">Quota Premiada</h3>
+                        </div>
+                    </div>
+
+                    <div class="w-full pt-3">
+
+                    </div>
+                </div>
 
                 <div class="c-content my-4 hidden">
                     <div class="flex justify-between w-full">

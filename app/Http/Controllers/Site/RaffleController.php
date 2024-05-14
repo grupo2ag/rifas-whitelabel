@@ -17,16 +17,9 @@ class RaffleController extends Controller
 
     }
 
-    public function pay($url)
+    public function pay()
     {
-
-
-        if($url){
-
-            return Inertia::render('Site/Payment/PaymentIndex');
-        } else {
-            abort(404);
-        }
+        return Inertia::render('Site/Payment/PaymentIndex');
     }
 
 
