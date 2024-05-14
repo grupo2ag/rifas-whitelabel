@@ -374,3 +374,17 @@ if (!function_exists('luminosity')) {
         return 0;
     }
 }
+
+if (!function_exists('hideString')) {
+    function hideString($text, $initial = 8, $final = 2){
+
+        $number = strlen($text);
+        $esconde = $number - $initial - $final;
+        $star = str_repeat("*", $esconde);
+
+        $mask_number =  substr_replace($text, $star, $initial, ($final*(-1)));
+
+        return $mask_number;
+    }
+}
+

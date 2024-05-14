@@ -25,7 +25,6 @@ class CreateParticipantsTable extends Migration
             $table->text('numbers')->comment("numeros da compra");
             $table->integer('paid')->nullable()->comment("pagos");
             $table->integer('reserved')->nullable()->comment("reservados");
-            $table->integer('customer_id')->nullable();
             $table->bigInteger('raffle_id');
 
             $table->foreign('raffle_id', 'participants_raffle_id_fkey')->references('id')->on('raffles');

@@ -15,10 +15,66 @@ import {useForm} from "@inertiajs/inertia-vue3";
 import { PhoneInput } from '@lbgm/phone-number-input';
 import '@lbgm/phone-number-input/style';
 
+const cpfIsValid = function (cpf) {
+
+    cpf = cpf.replace(/[^\d]+/g, '');
+    if (cpf == '') return false;
+    // Elimina CPFs invalidos conhecidos
+    if (cpf.length != 11 ||
+        cpf == "00000000000" ||
+        cpf == "11111111111" ||
+        cpf == "22222222222" ||
+        cpf == "33333333333" ||
+        cpf == "44444444444" ||
+        cpf == "55555555555" ||
+        cpf == "66666666666" ||
+        cpf == "77777777777" ||
+        cpf == "88888888888" ||
+        cpf == "99999999999")
+        return false;
+    // Valida 1o digito
+    let add = 0;
+    for (var i = 0; i < 9; i++)
+        add += parseInt(cpf.charAt(i)) * (10 - i);
+    let rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11)
+        rev = 0;
+    if (rev != parseInt(cpf.charAt(9)))
+        return false;
+    // Valida 2o digito
+    add = 0;
+    for (var i = 0; i < 10; i++)
+        add += parseInt(cpf.charAt(i)) * (11 - i);
+    rev = 11 - (add % 11);
+    if (rev == 10 || rev == 11)
+        rev = 0;
+    if (rev != parseInt(cpf.charAt(10)))
+        return false;
+
+    return true;
+}
+
+const getInitials = function (string) {
+    var names = string.split(' '),
+        initials = names[0].substring(0, 1).toUpperCase();
+
+    if (names.length > 1) {
+        initials += names[names.length - 1].substring(0, 1).toUpperCase();
+    }
+    return initials;
+};
+
+const ocultingString = function (string, initialDigits = 2, centerDigits = 5, finalDigits = 3){
+    return string.slice(0, initialDigits) + "*".repeat(string.length - centerDigits) + string.slice(-finalDigits)
+}
+
 export default {
     name: "Checkout",
     props: {
-        open: Boolean
+        open: Boolean,
+        quantity: Number,
+        total: Number,
+        numbers: Array
     },
     components: {
         Modal,
@@ -52,7 +108,6 @@ export default {
                     buyer: 'Luiz Meirelles'
                 }
             ],
-            total: 4500,
             formVerify: {
                 phone: '',
                 processing: false,
@@ -63,6 +118,7 @@ export default {
                 confirmPhone: '',
                 email: '',
                 cpf: '',
+                buyer: '',
             },
             schemaVerify: {},
             schemaPurchase: {},
@@ -76,7 +132,7 @@ export default {
                 cpf: '',
             },
             step: 'PURCHASE',
-            customer: []
+            customer: {}
         }
     },
     mounted() {
@@ -85,9 +141,9 @@ export default {
             name: yup.string().min(3, 'Digite ao menos 3 caracteres').required('Obrigatório'),
             phone: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
             phone_confirmation: yup.string().min(14, 'invalido').oneOf([yup.ref('phone'), null], 'Telefone diferente').required(''),
-            email: yup.string().email('Informe um E-mail válido').min(8, 'E-mail incompleto').required('Obrigatório')
-                .matches(func.emailRegex, "E-mail inválido"),
-            cpf: yup.string().required('Obrigatório'),
+            email: yup.string().email('Informe um E-mail válido').min(8, 'E-mail incompleto').required('Obrigatório').matches(func.emailRegex, "E-mail inválido"),
+            cpf: yup.string().min(13, 'CPF incompleto').required('Obrigatório').test('test-invalid-cpf', 'CPF Inválido', value => cpfIsValid(value))
+                .required('CPF é obrigatório'),
         })
 
         this.schemaVerify = yup.object().shape({
@@ -108,19 +164,23 @@ export default {
                 .validate(this.formVerify, { abortEarly: false }).then(() => {
                     this.formVerify.processing = true;
 
-                    fetch(route('verify',this.formVerify.phone)).then(
+                    fetch(route('verify', this.formVerify.phone)).then(
                         resp => {
-                            if(resp.json()){
-                                this.customer = resp.json()
-                                this.formPurchase.name = this.customer.name
-                                this.formPurchase.phone = this.customer.phone
-                                this.formPurchase.email = this.customer.email
-                                this.formPurchase.cpf = this.customer.cpf
+                            resp.json().then((data) => {
+                                if(!!data.phone){
+                                    this.customer = data;
 
-                                this.step = 'CONFIRM'
-                            } else {
-                                this.step = 'PURCHASE'
-                            }
+                                    this.formPurchase.name = this.customer.name
+                                    this.formPurchase.phone = this.customer.phone
+                                    this.formPurchase.email = this.customer.email
+                                    this.formPurchase.buyer = this.customer.buyer
+                                    //this.formPurchase.cpf = this.customer.cpf
+
+                                    this.step = 'CONFIRM'
+                                }else this.step = 'PURCHASE'
+                            }).catch(error => {
+                                console.error(error);
+                            });
                             this.formVerify.processing = false;
                             this.clearVerify()
                     });
@@ -211,6 +271,11 @@ export default {
         returnVerify(){
             this.step = 'VERIFY';
         }
+    },
+    watch: {
+        'formPurchase.name': function() {
+            if(!!this.formPurchase.name) this.formPurchase.name = this.formPurchase.name.toUpperCase()
+        }
     }
 }
 </script>
@@ -258,12 +323,12 @@ export default {
                 <div class="flex-1 grid grid-cols-2">
                     <div class="">
                         <p class="text-sm text-primary-bw">Quantidade</p>
-                        <p class="text-2xl text-primary-bw">{{ data.length }}</p>
+                        <p class="text-2xl text-primary-bw">{{ quantity }}</p>
                     </div>
 
                     <div class="">
                         <p class="text-sm text-primary-bw">Valor Total</p>
-                        <span class="text-2xl font-bold text-primary-bw">{{ func.formatValue(total) }}</span>
+                        <span class="text-2xl font-bold text-primary-bw">{{ func.formatValue(this.total) }}</span>
                     </div>
                 </div>
             </div>
@@ -312,10 +377,12 @@ export default {
 
                 <div class="my-2 p-2 border border-base-100 rounded-xl flex w-full items-center gap-3">
                     <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                        <span class="font-bold text-lg text-primary-bw">LM</span>
+                        <span class="font-bold text-lg text-primary-bw">{{ getInitials(this.formPurchase.name) }}</span>
                     </div>
 
-                    <p class="text-neutral font-bold">{{ customer.name }}</p>
+                    <p class="text-neutral font-bold">{{ this.formPurchase.name }}</p>
+                    <p class="text-neutral font-bold">{{ this.formPurchase.phone }}</p>
+                    <p class="text-neutral font-bold">{{ this.formPurchase.email }}</p>
                 </div>
 
                 <Button type="submit" color="success" class="w-full mb-3" @click="link">
@@ -356,8 +423,8 @@ export default {
 
                     <div class="w-full">
                         <Input type="text" label="CPF" :name="formPurchase.cpf" placeholder="000.000.000-00"
-                               autocomplete="email" @validate="validatorPurchase('email')"
-                               v-model="formPurchase.cpf" :error="validatePurchase.email"/>
+                               autocomplete="cpf" @validate="validatorPurchase('cpf')"
+                               v-model="formPurchase.cpf" :error="validatePurchase.cpf" v-mask="'###.###.###-##'" />
                     </div>
 
                     <div class="p-2 bg-warning/20 rounded-xl mb-3">

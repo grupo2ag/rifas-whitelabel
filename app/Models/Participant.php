@@ -6,14 +6,14 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Participant
- *
+ * 
  * @property int $id
  * @property int $checked
  * @property int|null $msg_paid_sent
@@ -25,21 +25,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $numbers
  * @property int|null $paid
  * @property int|null $reserved
- * @property int|null $customer_id
  * @property int $raffle_id
- *
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
+ * @property Carbon|null $expired_at
+ * @property int|null $customer_id
+ * 
  * @property Raffle $raffle
+ * @property Customer|null $customer
  * @property Collection|AffiliateGain[] $affiliate_gains
  * @property Collection|Charge[] $charges
+ * @property Collection|Devolution[] $devolutions
  *
  * @package App\Models
  */
 class Participant extends Model
 {
-    use HasFactory, SoftDeletes;
-
+	use SoftDeletes;
 	protected $table = 'participants';
-	public $timestamps = true;
 
 	protected $casts = [
 		'checked' => 'int',
@@ -47,9 +51,9 @@ class Participant extends Model
 		'amount' => 'int',
 		'paid' => 'int',
 		'reserved' => 'int',
-		'customer_id' => 'int',
 		'raffle_id' => 'int',
-		'rafflepromotion_id' => 'int'
+		'expired_at' => 'datetime',
+		'customer_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -63,15 +67,19 @@ class Participant extends Model
 		'numbers',
 		'paid',
 		'reserved',
-		'customer_id',
 		'raffle_id',
-        'rafflepromotion_id',
-        'expired_at'
+		'expired_at',
+		'customer_id'
 	];
 
 	public function raffle()
 	{
 		return $this->belongsTo(Raffle::class);
+	}
+
+	public function customer()
+	{
+		return $this->belongsTo(Customer::class);
 	}
 
 	public function affiliate_gains()
@@ -82,5 +90,10 @@ class Participant extends Model
 	public function charges()
 	{
 		return $this->hasMany(Charge::class);
+	}
+
+	public function devolutions()
+	{
+		return $this->hasMany(Devolution::class);
 	}
 }

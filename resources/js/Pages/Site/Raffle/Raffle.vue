@@ -78,7 +78,7 @@ export default {
         },
     },
     mounted() {
-        console.log(this.raffle);
+        //console.log(this.raffle);
         /*console.log(this.destaques, this.ativas, this.finalizadas)*/
     }
 }
@@ -220,6 +220,30 @@ export default {
 
                     <ul v-for="(item, index) in this.raffle.raffle_awards" :key="index">
                         <li class="text-neutral/70 font-bold">{{item.order}} {{item.description}}</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="md:py-3">
+            <div class="md:container">
+                <div class="c-content flex flex-col">
+                    <p class="text-lg font-bold text-neutral mb-2">Ranking Compradores</p>
+
+                    <ul v-for="(item, index) in this.raffle.buyers" :key="index">
+                        <li class="text-neutral/70 font-bold">{{index+1}} {{item.total}}-{{item.name}}</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="md:py-3">
+            <div class="md:container">
+                <div class="c-content flex flex-col">
+                    <p class="text-lg font-bold text-neutral mb-2">Cotas Premiadas</p>
+
+                    <ul v-for="(item, index) in this.raffle.raffle_premium_numbers" :key="index">
+                        <li class="text-neutral/70 font-bold">{{index+1}} {{item.number_premium}} {{item.winner_name}}</li>
                     </ul>
                 </div>
             </div>

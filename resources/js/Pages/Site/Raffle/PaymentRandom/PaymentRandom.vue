@@ -35,7 +35,7 @@ export default {
             showModal: false,
             value: value,
             quantity: this.min,
-            total: value
+            total: value*this.min
         }
     },
     methods: {
@@ -162,7 +162,7 @@ export default {
             </button>
         </div>
 
-        <Checkout :open="showModal" @close="closeModal"/>
+        <Checkout :quantity="quantity" :total="total" :open="showModal" @close="closeModal"/>
     </div>
 </template>
 

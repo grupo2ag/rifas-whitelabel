@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\Participant;
 use App\Models\Raffle;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use function Laravel\Prompts\select;
 
 class RaffleController extends Controller
 {
@@ -63,7 +65,8 @@ class RaffleController extends Controller
                             'gateway_id',
                             'total',
                             'banner',
-                            'expected_date'
+                            'expected_date',
+                            'buyer_ranking'
                         ]);
 
         if(!empty($rifa)){
@@ -86,6 +89,16 @@ class RaffleController extends Controller
 
             $rifa['galery'] = $galery;
 
+            if($rifa->buyer_ranking > 0 ) {
+                $rifa['buyers'] = Participant::orderBy('total', 'DESC')
+                    ->join('customers', 'customers.id', '=', 'participants.customer_id')
+                    ->select(DB::raw("SUM(paid) AS total"), 'customers.name')
+                    ->limit($rifa->buyer_ranking)
+                    ->groupBy('participants.customer_id', 'customers.id')
+                    ->get();
+                }
+            else $rifa['buyers'] = [];
+
             return Inertia::render('Site/Raffle/Raffle', ['raffle' => $rifa]);
         }
 
@@ -107,12 +120,20 @@ class RaffleController extends Controller
 
     public function verify($phone)
     {
+        $phone = '55 '.$phone;
 
-//        dd($phone);
+        $data = Customer::where('phone', $phone)->first();
 
-        $data = [];
+        $phone = str_replace('55 ', '', $phone);
+        $return = [
+            'buyer' => $data->id,
+            'name' => $data->name,
+            'cpf' => hideString($data->cpf, 3,3),
+            'phone' => hideString($phone, 8, 3),
+            'email' => hideString($data->email, 3,8),
+        ];
 
-        return response()->json($data, 200);
+        return response()->json($return, 200);
     }
 
     public function purchase(Request $request)
