@@ -3,6 +3,7 @@ import App from '@/Pages/App.vue'
 import HeroSection from '@/Pages/Site/Home/HeroSection/HeroSection.vue'
 import Button from '@/Components/Button/Button.vue';
 import {ref} from 'vue';
+import * as func from '@/Helpers/functions';
 
 import InfiniteLoading from "v3-infinite-loading";
 import "v3-infinite-loading/lib/style.css";
@@ -78,6 +79,7 @@ export default {
             load,
             finish,
             page,
+            func
         };
     },
 }

@@ -131,7 +131,7 @@ export default {
                 email: '',
                 cpf: '',
             },
-            step: 'PURCHASE',
+            step: 'VERIFY',
             customer: {}
         }
     },
