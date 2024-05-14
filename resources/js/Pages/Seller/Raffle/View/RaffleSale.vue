@@ -90,7 +90,7 @@ export default {
                 <div class="join">
                     <button class="join-item btn">«</button>
                     <button class="join-item btn ">1</button>
-                    <button class="join-item btn btn-active">2</button>
+                    <button class="join-item btn btn-active text-primary">2</button>
                     <button class="join-item btn ">3</button>
                     <button class="join-item btn btn-disabled">...</button>
                     <button class="join-item btn ">10</button>

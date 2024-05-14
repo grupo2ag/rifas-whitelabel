@@ -44,7 +44,7 @@ export default {
         </template>
         <div class="container-none !w-full px-2">
             <div class="flex flex-row mb-4">
-                <button @click="previousPage" class="flex justify-center border-none btn bg-content hover:bg-base-200"><ArrowLeftIcon class="w-5 h-5" /> Voltar</button>
+                <button @click="previousPage" class="flex justify-center border-none btn bg-content hover:bg-base-200 btn-sm lg:btn-md"><ArrowLeftIcon class="w-5 h-5" /> Voltar</button>
             </div>
             <RaffleLayout @toggleTabs="toggleTabs" :openTab="openTab">
                 <template #body>

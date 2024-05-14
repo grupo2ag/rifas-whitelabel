@@ -38,7 +38,7 @@ export default {
             </div>
         </div>
     </div>
-    <div class="flex flex-row flex-wrap p-4 rounded-lg bg-base-300">
+    <div class="flex flex-row flex-wrap p-4 rounded-lg bg-base-300 animate-fade ">
         <div class="w-full p-2 mb-4 rounded-lg bg-base-200">
             <div class="flex flex-row flex-wrap">
                 <div class="w-4/12 lg:w-2/12 lg:h-[10rem]">
@@ -49,13 +49,13 @@ export default {
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
-                                <TicketIcon class="w-6 mr-2" />
+                                <TicketIcon class="w-6 mr-2 text-primary" />
                                 <p class="text-base text-xl font-bold">Nome Rifa</p>
                             </div>
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
-                                <ChartBarIcon class="w-6 mr-2 min-w-6" />
+                                <ChartBarIcon class="w-6 mr-2 min-w-6 text-primary" />
                                 <div class="py-3 badge badge-success">
                                     Ativo
                                 </div>
@@ -63,25 +63,25 @@ export default {
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
-                                <CalendarDaysIcon class="w-6 mr-2 min-w-6" />
+                                <CalendarDaysIcon class="w-6 mr-2 min-w-6 text-primary" />
                                 <p>12/02/2024</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden">
                             <div class="flex flex-row">
-                                <BanknotesIcon class="w-6 mr-2" />
+                                <BanknotesIcon class="w-6 mr-2 text-primary" />
                                 <p>R$ 4,00/Cota</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden ">
                             <div class="flex flex-row">
-                                <ReceiptPercentIcon class="w-6 mr-2" />
-                                <p>50/100</p>
+                                <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
+                                <p>50000/100000</p>
                             </div>
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row ">
-                                <LinkIcon class="hidden w-6 mr-2 lg:grid" />
+                                <LinkIcon class="hidden w-6 mr-2 lg:grid text-primary" />
                                 <p class="break-all link link-primary">https://roleroleroleorloroeoroelreorleroelreorelreorelr.com.br</p>
                             </div>
                         </div>
@@ -91,14 +91,14 @@ export default {
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="w-full ">
                             <div class="flex flex-row">
-                                <BanknotesIcon class="w-6 mr-2" />
+                                <BanknotesIcon class="w-6 mr-2 text-primary" />
                                 <p>R$ 4,00/Cota</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row">
-                                <ReceiptPercentIcon class="w-6 mr-2" />
-                                <p>50/100</p>
+                                <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
+                                <p>50000/100000</p>
                             </div>
                         </div>
                         <div class="w-full ">
@@ -116,12 +116,12 @@ export default {
                 <div class="flex flex-wrap items-center w-full mt-2 lg:w-2/12">
                     <div class="flex flex-row flex-wrap w-full">
                         <div class="flex w-full mb-2">
-                            <button class="text-white btn btn-info btn-block">
+                            <button class="text-white btn btn-info btn-block btn-sm lg:btn-md">
                                 <PencilSquareIcon class="w-6" /> Editar
                             </button>
                         </div>
                         <div class="flex w-full mb-2">
-                            <button class="text-white btn btn-error btn-block">
+                            <button class="text-white btn btn-error btn-block btn-sm lg:btn-md">
                                 <TrashIcon class="w-6" /> Excluir
                             </button>
                         </div>
@@ -132,7 +132,7 @@ export default {
         <div class="flex flex-row w-full mb-4">
             <div class="w-full p-2 rounded-lg bg-base-100">
                 <div class="flex flex-row mb-2">
-                    <DocumentTextIcon class="w-6 mr-2" />
+                    <DocumentTextIcon class="w-6 mr-2 text-primary" />
                     <h2 class="text-base text-xl font-medium title-font">Descrição</h2>
                 </div>
                 <p class="mx-2">Descriçao Rifa Descriçao RifaDescriçao RifaDescriçao RifaDescriçao
