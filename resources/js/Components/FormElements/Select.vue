@@ -8,15 +8,16 @@ defineEmits(['update:modelValue', 'validate', 'change','multiple']);
 
 <template>
     <div class="py-3 relative">
-        <label class="px-2 block text-black text-[13px] uppercase font-semibold absolute top-[3px] left-1 z-10 bg-white">{{ label }}</label>
+        <label class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">{{ label }}</label>
         <select
-            class="block px-3 pb-2 pt-3 text-base w-full text-black border border-white-dark rounded-md focus:outline-none focus:ring-0 focus:border-blue appearance-none"
+            class="block px-3 pb-2 pt-3 text-base w-full text-neutral border rounded-xl focus:outline-none focus:ring-0 focus:border-blue appearance-none"
             :name="name"
             :id="id"
             :multiple="multiple"
             @change="$emit('validate'), $emit('change')"
             @input="$emit('update:modelValue', $event.target.value), $emit('validate')" ref="input"
-            :value="modelValue">
+            :value="modelValue"
+            :class="[!!error ? 'border-red' :  'border-white-dark']">
             <option selected disabled value="" class="selected">{{ text }}</option>
             <slot/>
         </select>

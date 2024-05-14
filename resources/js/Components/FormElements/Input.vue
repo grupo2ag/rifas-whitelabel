@@ -17,7 +17,7 @@ onMounted(() => {
 
 <template>
     <div class="relative py-3" :class="[ 'form-control', !!error && 'has-error' ]">
-        <label :for="name" class="px-2 block text-neutral/70 text-[13px] font-semibold absolute top-[3px] left-1 z-10 bg-content">
+        <label :for="name" class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">
             {{ label }}
         </label>
         <input :id="name"
