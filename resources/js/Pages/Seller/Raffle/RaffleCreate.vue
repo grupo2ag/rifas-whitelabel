@@ -3,10 +3,13 @@
 </script>
 
 <script>
+import * as func from '@/Helpers/functions.js'
+
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Input from '@/Components/FormElements/Input.vue';
 import Button from '@/Components/Button/Button.vue';
 import Select from '@/Components/FormElements/Select.vue';
+import CurrencyInput from '@/Components/FormElements/CurrencyInput.vue';
 import SwitchCheckbox from '@/Components/SwitchCheckbox/SwitchCheckbox.vue';
 import {ClassicEditor} from '@ckeditor/ckeditor5-editor-classic';
 import {
@@ -19,7 +22,10 @@ import {
     ClockIcon,
     TrashIcon,
     StarIcon,
-    InformationCircleIcon
+    InformationCircleIcon,
+    TrophyIcon,
+    TicketIcon,
+    AdjustmentsHorizontalIcon,
 } from '@heroicons/vue/24/outline';
 import UploadImage from "@/Components/UploadImage/UploadImage.vue";
 
@@ -47,6 +53,7 @@ export default {
         UploadImage,
         Button,
         SwitchCheckbox,
+        CurrencyInput,
         PlusCircleIcon,
         ArrowLeftIcon,
         XMarkIcon,
@@ -56,7 +63,10 @@ export default {
         ClockIcon,
         TrashIcon,
         StarIcon,
-        InformationCircleIcon
+        InformationCircleIcon,
+        TrophyIcon,
+        TicketIcon,
+        AdjustmentsHorizontalIcon
     },
     props: {
         raffle: Object
@@ -66,12 +76,25 @@ export default {
             form: {
                 id: '',
                 title: '',
+                link: '',
                 subtitle: '',
+                total: null,
                 price: 0,
-                image: '',
+                type: 'aleatorio',
+                pix_expired: 5,
+                minimum_purchase: 1,
+                maximum_purchase: 10,
                 description: '',
-                url: '',
-                galleries: ''
+
+                buyer_ranking: 5,
+                partial: 1,
+                finish_at: '',
+                status: 'Ativo',
+                banner: '',
+                highlight: 0,
+
+
+
             },
             currentGallery: {
                 id: 'gallery-1',
@@ -119,102 +142,16 @@ export default {
                         'fontColor',
                         'fontBackgroundColor',
                         '|',
-                        // 'mediaEmbed',
-                        //'imageUpload',
-                        'L8Button',
-                        // 'sourceEditing',
-                        'htmlEmbed',
                         'removeFormat',
-                        // 'addGallery',
-                        // 'removeGallery'
                     ]
-                },
-                /*   mediaEmbed: {
-                       previewsInData: true,
-                       providers: [
-                           {
-                               // hint: this is just for previews. Get actual HTML codes by making API calls from your CMS
-                               name: 'iframely previews',
-
-                               // Match all URLs or just the ones you need:
-                               url: /.+/,
-
-                               html: match => {
-                                   const url = match[ 0 ];
-
-                                   var iframeUrl = IFRAME_SRC + '?app=1&api_key=' + API_KEY + '&url=' + encodeURIComponent(url);
-                                   // alternatively, use &key= instead of &api_key with the MD5 hash of your api_key
-                                   // more about it: https://iframely.com/docs/allow-origins
-
-                                   return (
-                                       // If you need, set maxwidth and other styles for 'iframely-embed' class - it's yours to customize
-                                       '<div class="iframely-embed">' +
-                                       '<div class="iframely-responsive">' +
-                                       `<iframe src="${ iframeUrl }" ` +
-                                       'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>' +
-                                       '</iframe>' +
-                                       '</div>' +
-                                       '</div>'
-                                   );
-                               }
-                           }
-                       ]
-                   },*/
-                htmlEmbed: {
-                    showPreviews: true,
-                    sanitize: (inputHtml) => {
-
-                        // Strip unsafe elements and attributes, e.g.:
-                        // the `<script>` elements and `on*` attributes.
-                        const outputHtml = sanitizeHtml(inputHtml);
-                        // console.log(outputHtml)
-                        return {
-                            html: outputHtml,
-                            // true or false depending on whether the sanitizer stripped anything.
-                            hasChanged: true
-                        };
-                    }
                 },
                 language: 'pt-BR',
-                image: {
-                    toolbar: [
-                        'imageTextAlternative',
-                        'toggleImageCaption',
-                        'imageStyle:inline',
-                        'imageStyle:block',
-                        'imageStyle:side'
-                    ],
-                    upload: {
-                        types: ['png', 'jpg', 'jpeg', 'webp'] // TIPOS DE IMAGENS ACEITAVEIS "accept"
-                    }
-
-                },
-                htmlSupport: {
-                    allow: [
-                        // Enables plain <div> elements.
-                        {
-                            name: 'div'
-                        },
-
-                        // Enables <div>s with all inline styles (but no other attributes).
-                        {
-                            name: 'div',
-                            styles: true
-                        },
-
-                        // Enables <div>s with foo and bar classes.
-                        {
-                            name: 'div',
-                            attributes: {
-                                id: 'galery1',
-                                style: ''
-                            }
-                        },
-                    ]
-                }
             },
             characterLenght: 0,
             characterLenght2: 0,
+            awards: [{
+                description: null, order: null
+            }]
         }
     },
     methods: {
@@ -224,7 +161,22 @@ export default {
                 this.characterLenght2 = this.form.subtitle.length;
             }
         },
+        addAwards() {
+            this.awards.push({ value: null, comission: null, date: null})
+        },
+        removeAwards(index) {
+            console.log(index)
+
+            this.awards.splice(index, 1);
+           // this.awards.push({ value: null, comission: null, date: null})
+        },
     },
+    watch: {
+        "form.title" () {
+            const text =  func.clieanString(this.form.title)
+            this.form.link = text.toLowerCase().split(' ').filter(item => item !== ' ' && item !== '' ).join('-');
+        },
+    }
 }
 </script>
 
@@ -236,92 +188,112 @@ export default {
             </h2>
         </template>
 
-        <div class="py-5 container w-5/12">
+        <div class="py-5 md:container w-full lg:w-6/12">
             <form @submit.prevent="onSubmit">
                 <div class="c-content my-4">
                     <div class="pb-2 flex items-center border-b border-base-100">
-                        <DocumentTextIcon class="h-5 stroke-neutral mr-1"/>
+                        <TicketIcon class="h-5 stroke-neutral mr-1"/>
 
                         <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
                     </div>
 
                     <div class="w-full pt-3">
+                        <div class="w-full">
+                            <Input label="Nome:" v-model="form.title"
+                                   type="text" :name="form.title"
+                                   :maxlength="80"
+                                   v-on:keyup="countdown"
+                                   :error="validator.title || $page.props.errors.title"
+                                   placeholder="Insira o nome"/>
 
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <!--                            <div class="w-full md:w-3/12 relative">-->
-                            <!--                                <UploadImage :imgCurrent="form.image"-->
-                            <!--                                             size="aspect-1" v-model="form.image"-->
-                            <!--                                             label="Imagem de Capa"-->
-                            <!--                                             formats="JPEG ou PNG"-->
-                            <!--                                             filesize="2MB" name="image-notice"-->
-                            <!--                                             :accept="'image/png,image/jpg,image/jpeg,image/webp'"/>-->
-                            <!--                            </div>-->
+                            <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
+                                {{ characterLenght }} de 80
+                                caracteres</p>
+                        </div>
 
-                            <div class="w-full">
-                                <div class="flex gap-4">
-                                    <div class="w-6/12">
-                                        <Input label="Título:" v-model="form.title"
-                                               type="text" name="title" :value="form.title"
-                                               :maxlength="80"
-                                               v-on:keyup="countdown"
-                                               :error="validator.title || $page.props.errors.title"
-                                               placeholder="Insira o título"/>
+                        <div class="w-full">
+                            <div class="box-url">
+                                <label class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Url amigável:</label>
 
-                                        <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
-                                            {{ characterLenght }} de 80
-                                            caracteres</p>
-                                    </div>
-
-                                    <div class="w-6/12">
-                                        <Input label="Valor:" v-model="form.price"
-                                               type="tel" name="title" :value="form.price"
-                                               :error="validator.price || $page.props.errors.price"
-                                               placeholder="R$ 0,00"/>
-                                    </div>
-                                </div>
-
-                                <div class="w-full ">
-                                    <Input label="Subtítulo:" v-model="form.subtitle"
-                                           type="text" name="subtitle" :value="form.subtitle"
-                                           :maxlength="160"
-                                           v-on:keyup="countdown"
-                                           :error="validator.subtitle || $page.props.errors.subtitle"
-                                           placeholder="Digite o subtítulo"/>
-
-                                    <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
-                                        {{ characterLenght2 }} de 160
-                                        caracteres</p>
-                                </div>
-
-                                <div class="flex flex-col lg:flex-row md:gap-4">
-                                    <div class="w-full lg:w-6/12">
-                                        <Select label="Categoria:" v-model='form.category_id' name="category_id"
-                                                :error="validator.category_id || $page.props.errors.category_id">
-                                            <option v-for="category in categories" :value="category.id"
-                                                    :key="category.id">
-                                                {{ category.name }}
-                                            </option>
-                                        </Select>
-                                    </div>
-
-                                    <div class="w-full lg:w-6/12">
-                                        <div class="relative">
-                                            <Select label="Categoria:" v-model='form.category_id' name="category_id"
-                                                    :error="validator.category_id || $page.props.errors.category_id">
-                                                <option v-for="category in categories" :value="category.id"
-                                                        :key="category.id">
-                                                    {{ category.name }}
-                                                </option>
-                                            </Select>
-                                        </div>
-                                    </div>
+                                <div class="box-url__content">
+                                    <span class="overflow-hidden text-neutral/70 text-ellipsis">https://{{$page.props.siteconfig.domain}}/{{form.link}}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="w-full relative">
+                        <div class="w-full">
+                            <Input label="Subtítulo:" v-model="form.subtitle"
+                                   type="text" :name="form.subtitle"
+                                   :maxlength="160"
+                                   v-on:keyup="countdown"
+                                   :error="validator.subtitle || $page.props.errors.subtitle"
+                                   placeholder="Digite o subtítulo"/>
+
+                            <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
+                                {{ characterLenght2 }} de 160
+                                caracteres</p>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row md:gap-4">
+                            <div class="w-full md:w-6/12">
+                                <Select label="Quantidade de Números:" v-model="form.total" :name="form.total"
+                                        :error="validator.total || $page.props.errors.total">
+                                    <option value="10">
+                                        10 Bilhetes - (0 à 9)
+                                    </option>
+                                </Select>
+                            </div>
+
+                            <div class="w-full md:w-6/12">
+                                <CurrencyInput label="Valor" v-model="form.price" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row md:gap-4">
+                            <div class="w-full md:w-6/12">
+                                <Select label="Tipo de Reserva:" v-model="form.type" :name="form.type"
+                                        :error="validator.type || $page.props.errors.type">
+                                    <option value="aleatorio">
+                                        Aleatório
+                                    </option>
+                                    <option value="manual">
+                                        Manual
+                                    </option>
+                                </Select>
+                            </div>
+
+                            <div class="w-full md:w-6/12">
+                                <Select label="Tempo de expiração (min):" v-model="form.pix_expired" :name="form.pix_expired"
+                                        :error="validator.pix_expired || $page.props.errors.pix_expired">
+                                    <option value="5">
+                                        5 minutos
+                                    </option>
+                                    <option value="10">
+                                        10 minutos
+                                    </option>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row md:gap-4">
+                            <div class="w-full md:w-6/12">
+                                <Input label="Qtd mínima de compra:" v-model="form.minimum_purchase"
+                                       type="number" :name="form.minimum_purchase"
+                                       :error="validator.minimum_purchase || $page.props.errors.minimum_purchase"
+                                       placeholder="0"/>
+                            </div>
+
+                            <div class="w-full md:w-6/12">
+                                <Input label="Qtd maxima de compra:" v-model="form.maximum_purchase"
+                                       type="number" :name="form.maximum_purchase"
+                                       :error="validator.maximum_purchase || $page.props.errors.maximum_purchase"
+                                       placeholder="0"/>
+                            </div>
+                        </div>
+
+                        <div class="w-full pt-3 relative">
                             <label
-                                class="px-1.5 block font-medium text-sm text-neutral/70 bg-content rounded-md absolute -top-2.5 left-2.5 z-10">Regulamento:</label>
+                                class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Descrição:</label>
 
                             <ckeditor :editor="editorType" v-model="form.description" :config="editorConfig"></ckeditor>
 
@@ -329,6 +301,178 @@ export default {
                                 <p class="text-xs bg-red text-white py-1 px-2 rounded">
                                     {{ validator.description }}
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="c-content my-4">
+                    <div class="pb-2 flex items-center border-b border-base-100">
+                        <AdjustmentsHorizontalIcon class="h-5 stroke-neutral dark:stroke-white mr-1"/>
+
+                        <h3 class="text-neutral font-semibold text-base">Ajustes do Sorteio</h3>
+                    </div>
+
+                    <div class="pt-3">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="w-full md:w-6/12">
+                                <Input label="Data do Sorteio" type="date"
+                                       :name="form.finish_at" class="appearance-none"
+                                       :error="validator.finish_at || $page.props.errors.date"
+                                       placeholder="dd/mm/aaaa" v-model="form.finish_at"/>
+                            </div>
+
+                            <div class="w-full md:w-6/12">
+                                <Select label="Status:" v-model="form.status" :name="form.status"
+                                        :error="validator.status || $page.props.errors.status">
+                                    <option value="Ativo">
+                                        Ativo
+                                    </option>
+                                    <option value="Finalizado">
+                                        Finalizado
+                                    </option>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <template v-if="form.status === 'Ativo'">
+                            <div class="flex flex-col md:flex-row md:gap-4">
+                                <div class="w-full md:w-6/12">
+                                    <Select label="Mostrar Parcial (%):" v-model='form.partial' :name="form.partial"
+                                            :error="validator.partial || $page.props.errors.partial">
+                                        <option value="1">
+                                            Sim
+                                        </option>
+                                        <option selected value="0">
+                                            Não
+                                        </option>
+                                    </Select>
+                                </div>
+
+                                <div class="w-full md:w-6/12">
+                                    <Input label="Ranking de compradores (Qtd):" v-model="form.buyer_ranking"
+                                           type="number" :name="form.buyer_ranking"
+                                           :error="validator.buyer_ranking || $page.props.errors.buyer_ranking"
+                                           placeholder="0"/>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row gap-6">
+                                <div class="w-full md:w-6/12 relative">
+                                    <UploadImage :imgCurrent="form.banner"
+                                                 name="image-notice"
+                                                 v-model="form.banner"
+                                                 label="Banner de Destaque"
+                                                 size="aspect-56"
+                                                 formats="JPEG ou PNG"
+                                                 recommended="768x560"
+                                                 filesize="2MB"
+                                                 :accept="'image/png,image/jpg,image/jpeg,image/webp'"/>
+                                </div>
+
+                                <div class="w-full md:w-6/12 pt-3 relative">
+                                    <SwitchCheckbox label="Destaque na página inicial" v-model="form.highlight" side="left" id="activeExclusive"/>
+
+                                    <div class="w-full p-1.5 bg-warning flex items-center mt-6 rounded-lg">
+                                        <InformationCircleIcon class="h-7 stroke-black dark:stroke-white mr-1"/>
+
+                                        <p class="flex-1 text-xs text-warning-bw pr-3">
+                                            Ao deixar habilitado a Rifa aparecerá
+                                            na area de destaque na pagina principal do site
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template v-if="form.status === 'Finalizado'">
+                            <div class="flex flex-col md:flex-row gap-4">
+                                <div class="w-full md:w-6/12">
+                                    <Input label="Ganhador:" v-model="form.title"
+                                           type="text" :name="form.title"
+                                           :error="validator.title || $page.props.errors.title"
+                                           placeholder="Digite o nome do ganhador"/>
+                                </div>
+
+                                <div class="w-full md:w-6/12">
+                                    <Input label="Número do Ganhador:" v-model="form.title"
+                                           type="text" :name="form.title"
+                                           :error="validator.title || $page.props.errors.title"
+                                           placeholder="Digite o número do ganhador"/>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="c-content my-4">
+                    <div class="pb-2 flex items-center border-b border-base-100">
+                        <div class="flex items-center">
+                            <TrophyIcon class="h-5 stroke-neutral mr-1"/>
+
+                            <h3 class="text-neutral font-semibold text-base">Prêmios</h3>
+                        </div>
+                    </div>
+
+                    <div class="w-full pt-3">
+                        <div class="flex flex-col items-end md:flex-row gap-4">
+                            <div class="w-full grid grid-cols-1 ">
+                                <div v-for="(item, index) in awards" :key="index" class="flex items-center gap-3">
+                                    <span class="w-6 text-neutral text-right text-lg">{{ index + 1 }}˚</span>
+                                    <Input label="Prêmio:" v-model="item.description"
+                                           type="text" :name="item.description" class="flex-1"
+                                           :placeholder="'Digite o ' + (index + 1) + '˚ prêmio'"/>
+
+                                    <div class="w-12">
+                                        <Button v-if="index !== 0" type="button" @click="removeAwards(index)" color="outline-red">
+                                            <TrashIcon class="h-5"/>
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <div class="w-full flex items-center gap-3">
+                                    <div class="w-6"></div>
+
+                                    <Button type="button" color="primary" class="flex-1" @click="addAwards">
+                                        Adicionar Prêmio
+                                    </Button>
+
+                                    <div class="w-12"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="c-content my-4 hidden">
+                    <div class="flex justify-between w-full">
+                        <div class="flex items-center">
+                            <ClockIcon class="h-5 stroke-black dark:stroke-white mr-1"/>
+
+                            <h3 class="text-black dark:text-white font-semibold text-base">Agenda Publicação</h3>
+                        </div>
+                    </div>
+
+                    <div ref="publish" class="w-full">
+                        <div class="pt-6 mt-2 border-t border-gray-light dark:border-bgadm-light">
+                            <div class="flex flex-col md:flex-row gap-4">
+                                <div class="w-full md:w-6/12">
+                                    <Input label="Data de publicação" type="date"
+                                           name="date" class="appearance-none"
+                                           error="errors.date || $page.props.errors.date"
+                                           placeholder="dd/mm/aaaa" v-model="form.date"/>
+                                </div>
+                                <div class="w-full md:w-6/12">
+                                    <Input label="Horário de publicação" type="time"
+                                           name="time" class="appearance-none"
+                                           error="errors.time || $page.props.errors.time"
+                                           v-model="form.time"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -392,68 +536,6 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content my-4 hidden">
-                    <div class="flex justify-between w-full">
-                        <div class="flex items-center">
-                            <ClockIcon class="h-5 stroke-black dark:stroke-white mr-1"/>
-
-                            <h3 class="text-black dark:text-white font-semibold text-base">Agenda Publicação</h3>
-                        </div>
-                    </div>
-
-                    <div ref="publish" class="w-full">
-                        <div class="pt-6 mt-2 border-t border-gray-light dark:border-bgadm-light">
-                            <div class="flex flex-col lg:flex-row gap-4">
-                                <div class="w-full md:w-6/12">
-                                    <Input label="Data de publicação" type="date"
-                                           name="date" class="appearance-none"
-                                           error="errors.date || $page.props.errors.date"
-                                           placeholder="dd/mm/aaaa" v-model="form.date"/>
-                                </div>
-                                <div class="w-full md:w-6/12">
-                                    <Input label="Horário de publicação" type="time"
-                                           name="time" class="appearance-none"
-                                           error="errors.time || $page.props.errors.time"
-                                           v-model="form.time"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="c-content my-4">
-                    <div class="pb-2 flex items-center border-b border-base-100">
-                        <StarIcon class="h-5 stroke-neutral dark:stroke-white mr-1"/>
-
-                        <h3 class="text-neutral font-semibold text-base">Informações de Destaque</h3>
-                    </div>
-
-                    <div class="w-full pt-3 flex flex-col md:flex-row gap-6">
-                        <div class="w-full md:w-6/12 relative">
-                            <UploadImage :imgCurrent="form.image"
-                                         name="image-notice"
-                                         v-model="form.image"
-                                         label="Banner de Destaque"
-                                         size="aspect-56"
-                                         formats="JPEG ou PNG"
-                                         recommended="768x560"
-                                         filesize="2MB"
-                                         :accept="'image/png,image/jpg,image/jpeg,image/webp'"/>
-                        </div>
-
-                        <div class="w-full md:w-6/12 pt-3 relative">
-                            <SwitchCheckbox label="Destaque" v-model="form.exclusive" side="left" id="activeExclusive"/>
-
-                            <div class="w-full p-1.5 bg-warning flex items-center mt-6 rounded-lg">
-                                <InformationCircleIcon class="h-7 stroke-black dark:stroke-white mr-1"/>
-
-                                <p class="flex-1 text-xs text-warning-bw pr-3">Ao deixar habilitado o banner aparecerá
-                                    na area de destaque na pagina principal do site</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="c-content">
                     <div class="flex justify-end gap-4">
                         <Button :href="route('raffles')" size="sm" color="outline-light">
@@ -469,7 +551,7 @@ export default {
     </AppLayout>
 </template>
 
-<style>
+<style lang="scss">
 :root {
     --ck-border-radius: 10px;
 }
@@ -480,5 +562,12 @@ export default {
 
 .ck-editor__editable {
     min-height: 200px;
+}
+.box-url{
+    @apply py-3 relative cursor-not-allowed;
+
+    &__content{
+        @apply block px-3 pb-2 pt-3 text-base bg-content w-full text-neutral border border-white-dark rounded-xl focus:outline-none focus:ring-0 focus:border-blue
+     }
 }
 </style>
