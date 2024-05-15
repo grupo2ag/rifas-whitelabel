@@ -12,3 +12,5 @@ Artisan::command('inspire', function () {
 Schedule::command('model:prune', [
     '--model' => [WebhookCall::class],
 ])->daily();
+
+Schedule::command('raffle:release')->everyMinute();
