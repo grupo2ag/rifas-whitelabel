@@ -76,8 +76,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
 
     Route::get('/',[HomeController::class, 'index'])->name('index');
     Route::get('/raffle',[RaffleController::class, 'index'])->name('raffle');
-
-    Route::get('/pay/{url}',[RaffleController::class, 'pay'])->name('pay');
+    Route::get('/pay',[RaffleController::class, 'pay'])->name('pay');
     Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
     Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 });

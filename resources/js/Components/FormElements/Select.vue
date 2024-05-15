@@ -18,7 +18,7 @@ defineEmits(['update:modelValue', 'validate', 'change','multiple']);
             @input="$emit('update:modelValue', $event.target.value), $emit('validate')" ref="input"
             :value="modelValue"
             :class="[!!error ? 'border-red' :  'border-white-dark']">
-            <option selected disabled value="" class="selected">{{ text }}</option>
+            <option selected disabled value="" class="selected">Selecione</option>
             <slot/>
         </select>
         <Error :message="error"/>
