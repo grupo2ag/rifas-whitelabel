@@ -1,6 +1,4 @@
 <script>
-// import {PencilIcon, UploadIcon, UserCircleIcon} from '@heroicons/vue/outline'
-// import Input from '@/Components/Input.vue'
 import { CloudArrowUpIcon } from '@heroicons/vue/24/outline'
 
 export default {
@@ -11,7 +9,7 @@ export default {
     data() {
         return {
             image: '',
-            preview: this.modelValue ? this.modelValue : '',
+            preview: this.imgCurrent ? this.imgCurrent : '',
         }
     },
     methods: {
@@ -19,10 +17,29 @@ export default {
             this.image = event.target.files[0]
             this.preview = URL.createObjectURL(this.image)
             this.$emit('update:modelValue', event.target.files[0])
+        },
+        async forceRender() {
+            // Remove MyComponent from the DOM
+            this.renderComponent = false;
+
+            // Then, wait for the change to get flushed to the DOM
+            await this.$nextTick();
+
+            // Add MyComponent back in
+            this.renderComponent = true;
         }
     },
     mounted() {
-        this.preview = this.imgCurrent
+        this.forceRender()
+       // this.preview = this.imgCurrent
+
+        // console.log(this.preview)
+    },
+    watch: {
+        'imgCurrent' (){
+            console.log(this.imgCurrent)
+         //   this.preview = this.imgCurrent ? this.imgCurrent : ''
+        },
     }
 }
 </script>
@@ -64,7 +81,6 @@ export default {
             </div>
         </div>
     </div>
-
 </template>
 
 <style src="./style.scss" lang="scss" scoped/>

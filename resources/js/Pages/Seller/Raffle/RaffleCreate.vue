@@ -46,6 +46,13 @@ import {
 import {Base64UploadAdapter} from '@ckeditor/ckeditor5-upload';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format';
 
+import { ref } from 'vue';
+const componentKey = ref(0);
+
+const forceRender = () => {
+    componentKey.value += 1;
+};
+
 export default {
     components: {
         AppLayout,
@@ -68,7 +75,7 @@ export default {
         TrophyIcon,
         TicketIcon,
         AdjustmentsHorizontalIcon,
-        ReceiptPercentIcon
+        ReceiptPercentIcon,
     },
     props: {
         raffle: Object
@@ -77,39 +84,35 @@ export default {
         return {
             form: {
                 id: '',
-                title: '',
-                link: '',
-                subtitle: '',
+                title: this.raffle ? this.raffle.title : '',
+                link: this.raffle ? this.raffle.link : '',
+                subtitle: this.raffle ? this.raffle.subtitle : '',
                 total: null,
-                price: 0,
-                type: 'aleatorio',
-                pix_expired: 5,
-                minimum_purchase: 1,
-                maximum_purchase: 10,
-                description: '',
+                price: this.raffle ? this.raffle.price : 0,
+                type: this.raffle ? this.raffle.type : 'aleatorio',
+                pix_expired: this.raffle ? this.raffle.pix_expired : '',
+                minimum_purchase: this.raffle ? this.raffle.minimum_purchase : 1,
+                maximum_purchase: this.raffle ? this.raffle.maximum_purchase : 10,
+                description: this.raffle ? this.raffle.description : '',
 
-                buyer_ranking: 5,
-                partial: 1,
-                finish_at: '',
-                status: 'Ativo',
-                banner: '',
-                highlight: 0,
+                buyer_ranking: this.raffle ? this.raffle.buyer_ranking : 5,
+                partial: this.raffle ? this.raffle.partial : 1,
+                finish_at: this.raffle ? this.raffle.finish_at : '',
+                status: this.raffle ? this.raffle.status : 'Ativo',
+                banner: this.raffle ? this.raffle.banner : '',
+                highlight: this.raffle ? this.raffle.highlight : 0,
 
+                gallery: this.raffle ? this.raffle.gallery : [],
 
+                quotas: this.raffle ? this.raffle.gallery : [],
 
-            },
-            currentGallery: {
-                id: 'gallery-1',
-                images: [],
-                active: false,
+                awards: [{description: null, order: null}],
             },
             validator: {
                 id: '',
                 title: '',
-                subtitle: '',
                 image: '',
                 description: '',
-                url: '',
                 galleries: ''
             },
             editorType: ClassicEditor,
@@ -151,9 +154,8 @@ export default {
             },
             characterLenght: 0,
             characterLenght2: 0,
-            awards: [{
-                description: null, order: null
-            }]
+            number_quota: null,
+            imageGallery: ''
         }
     },
     methods: {
@@ -164,19 +166,54 @@ export default {
             }
         },
         addAwards() {
-            this.awards.push({ value: null, comission: null, date: null})
+            this.form.awards.push({description: null, order: null})
         },
         removeAwards(index) {
-            console.log(index)
+            this.form.awards.splice(index, 1);
+        },
+        addQuota() {
+            let num = this.number_quota
+            this.form.quotas.push(num)
+            this.number_quota = ''
+        },
+        removeQuota(item){
+            console.log(item)
+            for (let i = this.form.quotas.length; i--;) {
+                if (this.form.quotas[i] === item) {
+                    this.form.quotas.splice(i, 1);
+                }
+            }
+        },
+        addImage(gallery) {
+            let imageReader = '';
 
-            this.awards.splice(index, 1);
-           // this.awards.push({ value: null, comission: null, date: null})
+            const reader = new FileReader();
+
+            const imageCurrentAdd = {
+                image: reader.result
+            }
+
+            reader.onload = () => {
+                imageReader = reader.result
+                imageCurrentAdd.image = imageReader
+                gallery.push(imageCurrentAdd)
+                this.imageGallery = '';
+            };
+            reader.readAsDataURL(this.imageGallery)
+            forceRender()
+        },
+        removeImage(item) {
+            for (let i = this.form.gallery.length; i--;) {
+                if (this.form.gallery[i].image === item) {
+                    this.form.gallery.splice(i, 1);
+                }
+            }
         },
     },
     watch: {
-        "form.title" () {
-            const text =  func.clieanString(this.form.title)
-            this.form.link = text.toLowerCase().split(' ').filter(item => item !== ' ' && item !== '' ).join('-');
+        "form.title"() {
+            const text = func.clieanString(this.form.title)
+            this.form.link = text.toLowerCase().split(' ').filter(item => item !== ' ' && item !== '').join('-');
         },
     }
 }
@@ -192,7 +229,7 @@ export default {
 
         <div class="py-5 md:container w-full lg:w-6/12">
             <form @submit.prevent="onSubmit">
-                <div class="c-content my-4">
+                <div class="c-content mb-4" ref="geral">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <TicketIcon class="h-5 stroke-neutral mr-1"/>
 
@@ -215,10 +252,15 @@ export default {
 
                         <div class="w-full">
                             <div class="box-url">
-                                <label class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Url amigável:</label>
+                                <label
+                                    class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Url
+                                    amigável:</label>
 
                                 <div class="box-url__content">
-                                    <span class="overflow-hidden text-neutral/70 text-ellipsis">https://{{$page.props.siteconfig.domain}}/{{form.link}}</span>
+                                    <span
+                                        class="overflow-hidden text-neutral/70 text-ellipsis">https://{{
+                                            $page.props.siteconfig.domain
+                                        }}/{{ form.link }}</span>
                                 </div>
                             </div>
                         </div>
@@ -247,7 +289,7 @@ export default {
                             </div>
 
                             <div class="w-full md:w-6/12">
-                                <CurrencyInput label="Valor" v-model="form.price" />
+                                <CurrencyInput label="Valor" v-model="form.price"/>
                             </div>
                         </div>
 
@@ -265,7 +307,8 @@ export default {
                             </div>
 
                             <div class="w-full md:w-6/12">
-                                <Select label="Tempo de expiração (min):" v-model="form.pix_expired" :name="form.pix_expired"
+                                <Select label="Tempo de expiração (min):" v-model="form.pix_expired"
+                                        :name="form.pix_expired"
                                         :error="validator.pix_expired || $page.props.errors.pix_expired">
                                     <option value="5">
                                         5 minutos
@@ -297,9 +340,11 @@ export default {
                             <label
                                 class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Descrição:</label>
 
-                            <ckeditor :editor="editorType" v-model="form.description" :config="editorConfig"></ckeditor>
+                            <ckeditor :editor="editorType" v-model="form.description"
+                                      :config="editorConfig"></ckeditor>
 
-                            <div v-if="validator.description || $page.props.errors.description" class="inline-block">
+                            <div v-if="validator.description || $page.props.errors.description"
+                                 class="inline-block">
                                 <p class="text-xs bg-red text-white py-1 px-2 rounded">
                                     {{ validator.description }}
                                 </p>
@@ -308,7 +353,7 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content my-4">
+                <div class="c-content mb-4">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <AdjustmentsHorizontalIcon class="h-5 stroke-neutral dark:stroke-white mr-1"/>
 
@@ -373,7 +418,8 @@ export default {
                                 </div>
 
                                 <div class="w-full md:w-6/12 pt-3 relative">
-                                    <SwitchCheckbox label="Destaque na página inicial" v-model="form.highlight" side="left" id="activeExclusive"/>
+                                    <SwitchCheckbox label="Destaque na página inicial" v-model="form.highlight"
+                                                    side="left" id="activeExclusive"/>
 
                                     <div class="w-full p-1.5 bg-warning flex items-center mt-6 rounded-lg">
                                         <InformationCircleIcon class="h-7 stroke-black dark:stroke-white mr-1"/>
@@ -389,26 +435,28 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content my-4">
+                <div class="c-content  mb-4" ref="ajustes">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <TrophyIcon class="h-5 stroke-neutral mr-1"/>
 
-                            <h3 class="text-neutral font-semibold text-base">{{form.status === 'Ativo' ? 'Prêmios' : 'Ganhadores' }} </h3>
+                            <h3 class="text-neutral font-semibold text-base">
+                                {{ form.status === 'Ativo' ? 'Prêmios' : 'Ganhadores' }} </h3>
                         </div>
                     </div>
 
                     <div class="w-full pt-3">
                         <div v-if="form.status === 'Ativo'" class="flex flex-col items-end md:flex-row gap-4">
                             <div class="w-full grid grid-cols-1 ">
-                                <div v-for="(item, index) in awards" :key="index" class="flex items-center gap-3">
+                                <div v-for="(item, index) in form.awards" :key="index" class="flex items-center gap-3">
                                     <span class="w-6 text-neutral text-right text-lg">{{ index + 1 }}˚</span>
                                     <Input label="Prêmio:" v-model="item.description"
                                            type="text" :name="item.description" class="flex-1"
-                                           :placeholder="'Digite o ' + (index + 1) + '˚ prêmio'"/>
+                                           :placeholder="'Preencha o ' + (index + 1) + '˚ prêmio'"/>
 
                                     <div class="w-12">
-                                        <Button v-if="index !== 0" type="button" @click="removeAwards(index)" color="outline-red">
+                                        <Button v-if="index !== 0" type="button" @click="removeAwards(index)"
+                                                color="outline-red">
                                             <TrashIcon class="h-5"/>
                                         </Button>
                                     </div>
@@ -427,31 +475,30 @@ export default {
                         </div>
 
                         <template v-if="form.status === 'Finalizado'">
+                            <template v-for="(item, index) in form.awards" :key="index">
+                                <div class="flex flex-col items-center md:flex-row gap-4">
+                                    <p class="text-neutral text-right">{{ index + 1 }}˚ Prêmio</p>
 
-                            <template v-for="(item, index) in awards" :key="index">
-                            <div class="flex flex-col items-center md:flex-row gap-4">
-                                <p class="text-neutral text-right">{{ index + 1 }}˚ Prêmio</p>
+                                    <div class="flex-1">
+                                        <Input label="Ganhador:" v-model="item.description"
+                                               type="text" :name="item.description"
+                                               :error="validator.awards || $page.props.errors.awards"
+                                               placeholder="Digite o nome do ganhador"/>
+                                    </div>
 
-                                <div class="flex-1">
-                                    <Input label="Ganhador:" v-model="form.title"
-                                           type="text" :name="form.title"
-                                           :error="validator.title || $page.props.errors.title"
-                                           placeholder="Digite o nome do ganhador"/>
+                                    <div class=" md:w-3/12">
+                                        <Input label="Número do Ganhador:" v-model="item.number"
+                                               type="text" :name="item.number"
+                                               :error="validator.awards || $page.props.errors.awards"
+                                               placeholder="Digite o número"/>
+                                    </div>
                                 </div>
-
-                                <div class=" md:w-3/12">
-                                    <Input label="Número do Ganhador:" v-model="form.title"
-                                           type="text" :name="form.title"
-                                           :error="validator.title || $page.props.errors.title"
-                                           placeholder="Digite o número"/>
-                                </div>
-                            </div>
                             </template>
                         </template>
                     </div>
                 </div>
 
-                <div class="c-content my-4">
+                <div class="c-content  mb-4">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
@@ -471,13 +518,14 @@ export default {
                             </div>
 
                             <div class="w-full md:w-6/12">
-                                <CurrencyInput label="% de Desconto" :precision="0" :prefix="' '" :suffix="' %'" v-model="form.price" />
+                                <CurrencyInput label="Valor de Desconto"
+                                               v-model="form.price"/>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="c-content my-4">
+                <div class="c-content  mb-4">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
@@ -487,40 +535,48 @@ export default {
                     </div>
 
                     <div class="w-full pt-3">
+                        <div class="flex flex-col md:flex-row items-start md:gap-4">
+                            <div class="w-full md:w-6/12 flex items-center gap-2">
+                                <Input label="Número da Cota Prêmiada:" v-model="number_quota"
+                                       type="number" :name="number_quota"
+                                       placeholder="0" class="w-8/12"/>
 
-                    </div>
-                </div>
+                                <Button type="button" @click="addQuota()" class=" flex-1" color="primary">
+                                    Adicionar Cotas
+                                </Button>
+                            </div>
 
-                <div class="c-content my-4 hidden">
-                    <div class="flex justify-between w-full">
-                        <div class="flex items-center">
-                            <ClockIcon class="h-5 stroke-black dark:stroke-white mr-1"/>
+                            <div class="w-full md:w-6/12 relative">
+                                <div class="w-full">
+                                    <div class="box-url">
+                                        <label
+                                            class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">
+                                            Lista das cotas premiadas :
+                                        </label>
 
-                            <h3 class="text-black dark:text-white font-semibold text-base">Agenda Publicação</h3>
-                        </div>
-                    </div>
-
-                    <div ref="publish" class="w-full">
-                        <div class="pt-6 mt-2 border-t border-gray-light dark:border-bgadm-light">
-                            <div class="flex flex-col md:flex-row gap-4">
-                                <div class="w-full md:w-6/12">
-                                    <Input label="Data de publicação" type="date"
-                                           name="date" class="appearance-none"
-                                           error="errors.date || $page.props.errors.date"
-                                           placeholder="dd/mm/aaaa" v-model="form.date"/>
-                                </div>
-                                <div class="w-full md:w-6/12">
-                                    <Input label="Horário de publicação" type="time"
-                                           name="time" class="appearance-none"
-                                           error="errors.time || $page.props.errors.time"
-                                           v-model="form.time"/>
+                                        <div
+                                            class="box-url__content min-h-[46px] flex flex-wrap items-center gap-2">
+                                            <template v-for="(item, index) in form.quotas" :key="index">
+                                                <div
+                                                    class="w-20  border border-primary px-3 py-1.5 flex items-center justify-between rounded-md gap-1">
+                                                    <p class="text-xs uppercase text-primary">
+                                                        {{ item }}
+                                                    </p>
+                                                    <button type="" @click="removeQuota(item)"
+                                                            aria-label="Excluir Número">
+                                                        <TrashIcon class="stroke-primary h-[14px]"/>
+                                                    </button>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="c-content my-4">
+                <div class="c-content  mb-4">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <PhotoIcon class="h-5 stroke-neutral mr-1"/>
@@ -530,7 +586,7 @@ export default {
                     </div>
 
                     <div class="w-full pt-3">
-                        <div class="flex flex-col md:flex-row gap-4 pb-4">
+                        <div class="flex flex-col md:flex-row gap-4">
                             <div class="w-full">
                                 <div class="flex flex-col md:flex-row md:gap-4">
                                     <div class="w-3/12 flex flex-col items-center relative">
@@ -540,35 +596,29 @@ export default {
                                                      class="mt-1"
                                                      v-model="imageGallery"
                                                      recommended="500x500"
+                                                     :key="componentKey"
                                                      filesize="2MB" name="image-galery"/>
 
-                                        <Button type="button" @click="addImageOn(currentGallery)" class="w-full mt-2"
+                                        <Button type="button" @click="addImage(form.gallery)"
+                                                class="w-full mt-2"
                                                 size="sm" color="primary">Adicionar Imagem
                                         </Button>
                                     </div>
                                     <div class="flex-1">
                                         <p class="font-medium text-sm w-full text-neutral rounded-md">
                                             Galeria:</p>
-
                                         <div
                                             class="pt-3 grid grid-cols-5 gap-2 flex-wrap border-t border-gray-light dark:border-bgadm-light">
-
-                                            <button type="button"
-                                                    class="px-3 border w-full aspect-[4/4] border border-neutral/60 text-neutral text-xs uppercase rounded-lg">
-                                                Nova Imagem
-                                            </button>
-
-                                            <div v-for="(image, index) in currentGallery.images" :key="index"
+                                            <div v-for="(item, index) in form.gallery" :key="index"
                                                  class="relative">
-                                                <div @click="setEditImage(image)"
-                                                     class="cover-remove absolute w-full h-full opacity-0 hover:opacity-100 transition-all cursor-pointer">
+                                                <div class="cover-remove absolute w-full h-full opacity-0 hover:opacity-100 transition-all cursor-pointer">
                                                     <button type="button"
-                                                            @click="removeImgOnGallery(currentGallery.images, index)"
+                                                            @click="removeImage(item.image)"
                                                             class="p-1 m-2 bg-red rounded-full block ml-auto hover:bg-red-dark">
                                                         <TrashIcon class="stroke-white w-4 h-4"/>
                                                     </button>
                                                 </div>
-                                                <img class="object-cover w-full h-full" :src="image.image" alt="">
+                                                <img class="object-cover w-full h-full" :src="item.image" alt="">
                                             </div>
                                         </div>
                                     </div>
@@ -605,11 +655,31 @@ export default {
 .ck-editor__editable {
     min-height: 200px;
 }
-.box-url{
+
+.box-url {
     @apply py-3 relative cursor-not-allowed;
 
-    &__content{
+    &__content {
         @apply block px-3 pb-2 pt-3 text-base bg-content w-full text-neutral border border-white-dark rounded-xl focus:outline-none focus:ring-0 focus:border-blue
-     }
+    }
+}
+
+.c-content {
+    //@apply hidden;
+
+    &.active {
+        @apply block
+    }
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>
