@@ -117,7 +117,9 @@ export default {
                 cpf: '',
                 buyer: '',
                 raffle_id: this.raffle.id,
-                user_id: this.raffle.user_id
+                user_id: this.raffle.user_id,
+                quantity: this.quantity,
+                total: this.total
             },
             schemaVerify: {},
             schemaPurchase: {},
@@ -189,19 +191,38 @@ export default {
                 });
         },
         onPurchase(){
-            const form = useForm(this.formPurchase);
+            //const form = useForm(this.formPurchase);
 
             this.validatorPurchase();
 
-            this.schemaPurchase
-                .validate(this.formPurchase, { abortEarly: false }).then(() => {
+           /* this.schemaPurchase
+                .validate(this.formPurchase, { abortEarly: false }).then(() => {*/
                 this.formPurchase.processing = true;
 
-                form.post(route('purchase'), {
+                axios.post(route('purchase', this.formPurchase))
+                    .then((res) => {
+                        let resposta = res.data
+
+                        if(!resposta.pix.order_id){
+                            this.formVerify.processing = false;
+                        }else{
+                            this.formVerify.processing = true;
+                            console.log(resposta, resposta.pix.order_id);
+                            Inertia.visit(route('pay', resposta.pix.order_id));
+                        }
+                        //FECHA LOADING
+                    }).catch((errors) => {
+                        console.log('errors', errors);
+                        this.formVerify.processing = false;
+                        this.errors = errors;
+                        //FECHA LOADING
+                    })
+
+                /*form.post(route('purchase'), {
                     preserveScroll: true,
-                    onSuccess: () => {
+                    onSuccess: (resp) => {
                         this.form.processing = false;
-                        console.log('success');
+                        console.log('success', resp);
                         //Inertia.visit(route('pay'))
                     },
                     onError: (errors) => {
@@ -209,15 +230,15 @@ export default {
                         this.form.processing = false;
                         this.errors = errors;
                     }
-                });
+                });*/
 
-            }).catch((err) => {
+            /*}).catch((err) => {
                 this.formVerify.processing = false;
 
                 err.inner.forEach((error) => {
                     this.validateVerify = { ...this.validateVerify, [error.path]: error.message };
                 });
-            });
+            });*/
         },
         validatorVerify($attribute) {
             Object.keys(this.validateVerify).forEach(key => {

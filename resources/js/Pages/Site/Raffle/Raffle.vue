@@ -208,7 +208,7 @@ export default {
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
                     <PaymentExposed v-if="purchaseType === 1"/>
-                    <PaymentRandom :raffle="this.raffle" :value="this.raffle.price" :min="this.raffle.minimum_purchase" :max="this.raffle.maximum_purchase" :quotas="this.raffle?.raffle_popular_numbers" v-else/>
+                    <PaymentRandom :raffle="this.raffle" v-else/>
                 </div>
             </div>
         </section>

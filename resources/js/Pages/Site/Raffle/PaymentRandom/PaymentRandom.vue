@@ -20,11 +20,12 @@ export default {
     },
     data() {
         return {
-            quotas: this.raffle.raffle_popular_numbers.length ? this.raffle.raffle_popular_numbers : [
-                {'quantity_numbers': 10, 'popular': false},
-                {'quantity_numbers': 30, 'popular': false},
-                {'quantity_numbers': 50, 'popular': true},
-                {'quantity_numbers': 100, 'popular': false},
+            quotas: this.raffle?.raffle_popular_numbers.length ? this.raffle?.raffle_popular_numbers :
+            [
+                    {'quantity_numbers': 10, 'popular': false},
+                    {'quantity_numbers': 30, 'popular': false},
+                    {'quantity_numbers': 50, 'popular': true},
+                    {'quantity_numbers': 100, 'popular': false},
             ],
             items: [],
             selected: [],
@@ -81,7 +82,7 @@ export default {
         },
     },
     mounted() {
-
+        //console.log(this.raffle?.raffle_popular_numbers, this.raffle)
     }
 }
 </script>

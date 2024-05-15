@@ -8,4 +8,6 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 })->middleware('auth:sanctum');*/
 
+//Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
+
 require 'webhook.php';

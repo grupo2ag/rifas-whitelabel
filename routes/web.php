@@ -44,7 +44,7 @@ Route::get('/account', function () {
 })->name('account');
 
 Route::get('/',[HomeController::class, 'index'])->name('index');
-Route::get('/pay',[RaffleController::class, 'pay'])->name('pay');
+Route::get('/pay/{order}',[RaffleController::class, 'pay'])->name('pay');
 Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
 Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 

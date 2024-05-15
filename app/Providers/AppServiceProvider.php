@@ -21,6 +21,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        /* Lista todas as queries executadas no sistema
+         * if (config('app.debug')) {
+            DB::listen(function ($query) {
+                File::append(
+                    storage_path('/logs/query.log'),
+                    '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL . $query->sql . ' [' . implode(', ', $query->bindings) . ']' . PHP_EOL . PHP_EOL
+                );
+            });
+        }*/
     }
+
 }

@@ -22,9 +22,13 @@ export default {
         QRCode,
         Icon
     },
+    props: {
+        raffle: Object,
+        status: String,
+    },
     data() {
         return {
-            status: 'PROCESSING',
+            status: !!this.status ? this.status : 'PROCESSING',
             loading: true
         }
     },
@@ -39,6 +43,21 @@ export default {
             }, 4000)
         }
     },
+    mounted() {
+        let expire_date = new Date(this.raffle.expired);
+        const actualDate = new Date()
+        this.expire_time = expire_date - actualDate
+
+        if(this.expire_time < 0){
+            this.status = 'CANCELED'
+        }
+    },
+    created(){
+        Echo.channel(`Processed.Pix.${this.raffle.pix_id}`).listen('PixPayment', (e) => {
+            console.log('websocket', e, this.raffle.pix_id)
+            this.status = 'PAID'
+        });
+    }
 }
 </script>
 
@@ -46,22 +65,21 @@ export default {
     <App>
         <section class="pt-16 md:pb-3 md:pt-24 w-full flex flex-col">
             <div class="md:container flex flex-wrap md:gap-5">
-                <Waiting v-if="status == 'PROCESSING' || status == 'CREATED'" :product="product" :sale="sale"/>
+                <Waiting v-if="status == 'PROCESSING' || status == 'CREATED'" :raffle="raffle" />
 
-                <Approved :product="product" :sale="sale" v-else-if="status == 'PAID'"/>
+                <Approved v-else-if="status == 'PAID'"/>
 
-                <Cancel :product="product" :sale="sale"
-                         v-else-if="status == 'CANCELLED' || status == 'REFUNDED' || status == 'CHARGEBACK'"/>
+                <Cancel v-else-if="status == 'CANCELED' || status == 'REFUNDED' || status == 'CHARGEBACK'"/>
 
                 <div class="w-full lg:w-5/12 flex flex-col items-start md:gap-5">
                         <div class="c-content flex w-full items-center gap-3">
-                            <figure class="h-20 aspect-square overflow-hidden">
-                                <img src="https://m.media-amazon.com/images/I/71Zfj6G7-VL._SY466_.jpg"
+                            <figure class="h-20 aspect-square overflow-hidden" v-if="raffle.image">
+                                <img :src="raffle.image"
                                      class="w-full h-full object-cover rounded-xl" alt="">
                             </figure>
                             <div class="flex flex-col justify-between">
-                                <p class="text-neutral font-bold text-lg">VITAMINI C GUMMY VITAMINI C GUMMY</p>
-                                <p class="text-neutral/60">VITAMINI C GUMMY</p>
+                                <p class="text-neutral font-bold text-lg">{{ raffle.title }}</p>
+                                <p class="text-neutral/60" v-if="raffle.subtitle">{{ raffle.subtitle }}</p>
                             </div>
                         </div>
 
@@ -70,32 +88,36 @@ export default {
                             <h4 class="text-lg font-bold text-neutral">
                                 Detalhes da Compra
                             </h4>
-                            <p class="text-sm text-neutral/70 mb-2">7b156d56e87847091153f2e0623e82db</p>
+                            <p class="text-sm text-neutral/70 mb-2">{{ raffle.pix_id }}</p>
 
                             <ul class="c-details">
                                 <li class="c-details__item">
                                     Comprador
-                                    <p>Luiz Henrique Meirelles</p>
-                                </li>
-                                <li class="c-details__item">
-                                    CPF
-                                    <p> 388.***.***-** </p>
+                                    <p>{{ raffle.name }}</p>
                                 </li>
                                 <li class="c-details__item">
                                     Telefone
-                                    <p>(18)****-9672</p>
+                                    <p>+{{ raffle.phone }}</p>
+                                </li>
+                                <li class="c-details__item">
+                                    CPF
+                                    <p> {{ raffle.document }} </p>
+                                </li>
+                                <li class="c-details__item">
+                                    E-mail
+                                    <p>{{ raffle.email }}</p>
                                 </li>
                                 <li class="c-details__item">
                                     Situação
-                                    <p>Aguardando Pagamento</p>
+                                    <p>{{ status != 'PAID' ? 'Aguardando Pagamento' : 'Pago'}}</p>
                                 </li>
                                 <li class="c-details__item">
                                     Titulos
-                                    <p>Os titulos são liberados após o pagamento</p>
+                                    <p>{{ status != 'PAID' ? 'Os titulos são liberados após o pagamento' : raffle.numbers  }}</p>
                                 </li>
                                 <li class="c-details__item font-bold text-neutral">
                                     <span class=""></span>Valor Total
-                                    <p class="text-lg font-bold">{{ 'R$ 0,00' }}</p>
+                                    <p class="text-lg font-bold">{{ (raffle.amount/100).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</p>
                                 </li>
                             </ul>
 

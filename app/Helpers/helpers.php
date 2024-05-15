@@ -46,7 +46,7 @@ if(!function_exists('pixcred_generate')) {
         $generator = $pix->pix_generate($params);
 
         if(!empty($generator['pix_link'])) {
-            $generator['qrCode'] = QrCode::size(250)->generate($generator['pix_link']);
+            //$generator['qrCode'] = QrCode::size(250)->generate($generator['pix_link']);
 
             return $generator;
         }
@@ -78,7 +78,7 @@ if(!function_exists('numbers_reserve')) {
             //valida os disponiveis com a quantidade solicitada
             if(count($disponiveis) == 0){
                 $texto = $rifa->type == 'automatico' ? 'vendidos' : 'vendidos/reservados';
-                return ['errors' => true, 'message' => 'Todos '.$texto];
+                return ['errors' => true, 'message' => 'Todos os numeros '.$texto];
             }
             if (count($disponiveis) < $qttNumbers) {
                 return ['errors' => true, 'message' => 'Quantidade indisponível para a rifa selecionada. A quantidade disponível é: ' . count($disponiveis)];
@@ -203,7 +203,7 @@ if(!function_exists('numbers_reserve')) {
                 DB::rollBack();
             }
 
-            return ['errors' => false, 'numbers' => $resutlNumbers, 'amount' => $amount, 'totalNotDiscount' => $totalNotDiscount, 'discount' => $discount, 'pix' => $generate];
+            return ['errors' => false, 'numbers' => $resutlNumbers, 'participant' => $participant->id, 'amount' => $amount, 'totalNotDiscount' => $totalNotDiscount, 'discount' => $discount, 'pix' => $generate];
         }
 
         return ['errors' => true, 'message' => 'Rifa não encontrada.'];

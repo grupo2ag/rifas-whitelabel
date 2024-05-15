@@ -8,6 +8,16 @@ import QRCode from "@/Components/QRCode/QRCode.vue";
 import Button from "@/Components/Button/Button.vue";
 import VueCountdown from '@chenfengyuan/vue-countdown';
 
+const transformSlotProps = (props) => {
+    const formattedProps = {};
+
+    Object.entries(props).forEach(([key, value]) => {
+        formattedProps[key] = value < 10 ? `0${value}` : String(value);
+    });
+
+    return formattedProps;
+}
+
 export default {
     name: "PixResponse",
     components:{
@@ -17,15 +27,14 @@ export default {
         VueCountdown
     },
     props: {
-        product: String,
-        sale: String,
+        raffle: Number
     },
     data() {
         return {
-            expire_time: 300000,
+            expire_time: (this.raffle.pix_expired*60)*1000,
             copied: false,
-            code: '00020126870014br.gov.bcb.pix2565pix.creditag.com.br/qr/v3/at/d2072d69-bf23-4d12-a40f-31528aea45255204000053039865802BR5925PIXCRED SOCIEDADE DE CRED6009SAO PAULO62070503***6304BF83',
-            copypaste: '00020126870014br.gov.bcb.pix2565pix.creditag.com.br/qr/v3/at/d2072d69-bf23-4d12-a40f-31528aea45255204000053039865802BR5925PIXCRED SOCIEDADE DE CRED6009SAO PAULO62070503***6304BF83',
+            code: this.raffle.pix_code,
+            copypaste: this.raffle.pix_code
         }
     },
     methods: {
@@ -38,6 +47,24 @@ export default {
             }, 4000)
         }
     },
+    watch: {
+        'expire_time'() {
+            if(this.expire_time <= 0){
+                //this.status = 'CANCELED'
+                //console.log(this.expire_time, expire_date, actualDate);
+            }
+        }
+    },
+    mounted() {
+        let expire_date = new Date(this.raffle.expired);
+        const actualDate = new Date()
+        this.expire_time = expire_date - actualDate
+
+        if(this.expire_time < 0){
+           // this.status = 'CANCELED'
+        }
+        //console.log(this.expire_time, expire_date, actualDate);
+    }
 }
 </script>
 
@@ -59,9 +86,9 @@ export default {
         <h4 class="mb-5 text-sm leading-tight text-center text-neutral">
             Você tem
 
-            <vue-countdown class="font-black text-neutral w-12 inline-block" :time="300000"
-                           v-slot="{ minutes, seconds }">
-                0{{ minutes }} : {{ seconds }}
+            <vue-countdown class="font-black text-neutral w-12 inline-block" :time="expire_time"
+                           :transform="transformSlotProps" v-slot="{ minutes, seconds }">
+                {{ minutes }} : {{ seconds }}
             </vue-countdown>
             para efetuar o pagamento,<br> após esse tempo o Link de pagamento e o QrCode irão
             expirar.
