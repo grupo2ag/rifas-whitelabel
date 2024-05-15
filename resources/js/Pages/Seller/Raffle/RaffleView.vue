@@ -14,7 +14,9 @@ import {
 
 export default {
     name: "RaffleView",
-
+    props: {
+        data: Object
+    },
     data() {
     return {
       openTab: 1
@@ -28,6 +30,9 @@ export default {
     previousPage() {
       window.location.href = '/super/raffles/index'
     }
+  },
+  mounted() {
+    console.log(this.data);
   }
 }
 </script>
@@ -46,13 +51,13 @@ export default {
             <div class="flex flex-row mb-4">
                 <button @click="previousPage" class="flex justify-center border-none btn bg-content hover:bg-base-200 btn-sm lg:btn-md"><ArrowLeftIcon class="w-5 h-5" /> Voltar</button>
             </div>
-            <RaffleLayout @toggleTabs="toggleTabs" :openTab="openTab">
+            <RaffleLayout @toggleTabs="toggleTabs" :openTab="openTab" :data="data?.raffle">
                 <template #body>
                     <div class="animate-fade-right" v-bind:class="{'hidden': openTab !== 1, '': openTab === 1}">
-                        <RaffleDashboard />
+                        <RaffleDashboard :data="data"/>
                     </div>
                     <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 2, '': openTab === 2}">
-                        <RaffleSale />
+                        <RaffleSale :data="data"/>
                     </div>
                 </template>
             </RaffleLayout>

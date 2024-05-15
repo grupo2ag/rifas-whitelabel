@@ -1,26 +1,60 @@
 <script setup>
 import StatsRaffleSale from '@/Components/Stats/StatsRaffleSale.vue';
+import moment from 'moment';
 import {
     UserIcon,
     CurrencyDollarIcon,
     PhoneIcon,
     EnvelopeIcon,
-    CalendarDaysIcon
+    CalendarDaysIcon,
+    TicketIcon
 } from '@heroicons/vue/24/outline';
 </script>
 
 <script>
 export default {
+    props: {
+        data: Object
+    },
+    methods: {
+        translateDate(date) {
+            return moment(date).format('DD/MM/YYYY');
+        },
+        translateMoney(value) {
+            if(!value) value = 0;
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        },
+        getColorCup(index) {
+            index = index.toString();
 
+            const colors = {
+                '0' : 'text-yellow',
+                '1' : 'text-gray',
+                '2' : 'text-[#b54a07]'
+            }
+            return colors[index]
+        },
+        getInitials(completeName) {
+            const caracters = completeName.split(/\s+/);
+            let initials = '';
+            caracters.forEach(caracter => {
+                initials += caracter.charAt(0);
+            });
+            return initials.toUpperCase();
+        },
+    },
+    mounted() {
+        console.log(this.data);
+    }
 }
 </script>
 <template>
     <div class="flex flex-row flex-wrap justify-center mb-4">
-        <div class="w-full px-2 mb-2 lg:w-4/12">
-            <StatsRaffleSale :title="'1 Lugar'" :value="'R$ 75,000'" :textBottom="'↗︎ Exemplo de um texto de rodape'"
-                :userName="'DD'">
+        <div v-for="(participant, index) in data?.participants?.ranking" :key="index" class="w-full px-2 mb-2 lg:w-4/12">
+            <StatsRaffleSale :userName="participant?.name" :value="translateMoney(participant?.total_value)" :textBottom="participant?.email"
+                :shortName="getInitials(participant?.name)">
                 <template #cup>
-                    <div class="p-2 mb-2 rounded-full bg-neutral timeline-middle text-yellow">
+                    <div class="p-2 mb-2 border rounded-full border-white-light bg-neutral timeline-middle" :class="getColorCup(index)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4 lg:w-6 lg:h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -30,7 +64,7 @@ export default {
                 </template>
             </StatsRaffleSale>
         </div>
-        <div class="w-full px-2 mb-2 lg:w-4/12">
+        <!-- <div class="w-full px-2 mb-2 lg:w-4/12">
             <StatsRaffleSale :title="'2 Lugar'" :value="'R$ 75,000'" :textBottom="'↗︎ Exemplo de um texto de rodape'"
                 :userName="'DD'">
                 <template #cup>
@@ -57,7 +91,7 @@ export default {
                     </div>
                 </template>
             </StatsRaffleSale>
-        </div>
+        </div> -->
     </div>
     <div class="flex flex-row flex-wrap w-full py-2 rounded-lg bg-base-100">
         <div class="flex justify-start w-full">
@@ -68,20 +102,22 @@ export default {
         <div class="flex-row items-center hidden w-full py-2 m-2 rounded-lg lg:flex bg-content">
             <div class="flex justify-center w-1/12">Id</div>
             <div class="flex justify-center w-3/12">Nome</div>
-            <div class="flex justify-center w-2/12">Valor</div>
-            <div class="flex justify-center w-2/12">Telefone</div>
             <div class="flex justify-center w-3/12">Email</div>
+            <div class="flex justify-center w-1/12">Telefone</div>
+            <div class="flex justify-center w-1/12">Cotas</div>
+            <div class="flex justify-center w-2/12">Valor</div>
             <div class="flex justify-center w-1/12">Data</div>
         </div>
 
         <!-- loop -->
-        <div v-for="i in 15" :key="i" class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-base-300">
-            <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:text-primary text-primary-bw">{{ i }}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>Donald Duck</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12"><CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>R$ 3,00</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12"><PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>(18) 99777-7777</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>donaldpato@duck.com</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>12/02/2024</div>
+        <div v-for="sale in data?.participants?.data" :key="sale.id" class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-base-300">
+            <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:text-primary text-primary-bw">{{ sale?.id }}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.name}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.email}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.phone}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><TicketIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.paid}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12"><CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{translateMoney(sale?.amount)}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{translateDate(sale?.created_at)}}</div>
         </div>
         <!--  -->
         <div class="flex flex-row w-full px-2">

@@ -7,14 +7,10 @@ import ListCard from '@/Components/List/ListCard.vue';
 </script>
 
 <script>
-import RaffleView from './RaffleView.vue';
 export default {
-    name: "ListCard",
+    name: "RaffleIndex",
     props: {
-        data: Object
-    },
-    components: {
-        RaffleView
+        data: Array
     },
     data() {
         return {
@@ -23,7 +19,7 @@ export default {
     },
     methods: {
         openModal() {
-            console.log('apertou abrir')
+            console.log('apertou abrir');
             this.showModal = true
             document.body.classList.add('active');
         },
@@ -31,7 +27,10 @@ export default {
             console.log('apertou fechar')
             this.showModal = false
             document.body.classList.remove('active');
-        },
+        }
+    },
+    mounted() {
+        console.log('Dados recebidos:', this.data);
     }
 }
 </script>
@@ -49,13 +48,13 @@ export default {
         <div class="container sm:max-w-full !w-full">
             <div class="flex flex-row flex-wrap mb-2">
                 <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
-                    <CardDashboard :title="'Campanhas Criadas'" :valueCount="'1'" />
+                    <CardDashboard :title="'Rifas Criadas'" :valueCount="'1'" />
                 </div>
                 <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
-                    <CardDashboard :title="'Campanhas Ativas'" :valueCount="'1'" />
+                    <CardDashboard :title="'Rifas Ativas'" :valueCount="'1'" />
                 </div>
                 <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
-                    <CardDashboard :title="'Campanhas Finalizadas'" :valueCount="'0'" />
+                    <CardDashboard :title="'Rifas Finalizadas'" :valueCount="'0'" />
                 </div>
                 <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Total Arrecadado'" :valueCount="'R$4,000.000'" />
@@ -80,13 +79,14 @@ export default {
                             <div class="flex justify-center w-1/12">Status</div>
                             <div class="flex justify-center w-2/12">Valor</div>
                             <div class="flex justify-center w-1/12">%</div>
-                            <div class="flex justify-center w-2/12">Data Sorteio</div>
+                            <div class="flex justify-center w-2/12">Criada Em</div>
                             <div class="flex justify-center w-1/12"></div>
                         </div>
                     </div>
-                    <div class="w-full mb-4">
-                        <ListCard />
+                    <div v-for="raffle in data" :key="raffle?.id" class="w-full mb-4">
+                        <ListCard :infos="raffle" />
                     </div>
+                    <!--
                     <div class="w-full mb-4">
                         <ListCard />
                     </div>
@@ -107,7 +107,7 @@ export default {
                     </div>
                     <div class="w-full mb-4">
 
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

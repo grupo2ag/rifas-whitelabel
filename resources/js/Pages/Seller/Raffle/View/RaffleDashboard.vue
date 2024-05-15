@@ -1,70 +1,128 @@
 <script setup>
 import StatsRaffle from '@/Components/Stats/StatsRaffle.vue';
 import VueApexCharts from "vue3-apexcharts";
+import moment from 'moment';
 import {
     TicketIcon,
-    DocumentTextIcon
+    DocumentTextIcon,
+    UserIcon,
+    CheckCircleIcon,
+    XCircleIcon
 } from '@heroicons/vue/24/outline';
-const options = { //MOCK, TRAZER DADOS REAIS DO BANCO DE DADOS
-    chart: {
-        height: 350,
-        type: 'area'
-    },
-    dataLabels: {
-        enabled: false
-    },
-    stroke: {
-        curve: 'smooth'
-    },
-    xaxis: {
-        type: 'datetime',
-        categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-    },
-    tooltip: {
-        x: {
-            format: 'dd/MM/yy HH:mm'
+defineProps({
+    data: Object,
+});
+function options(data, colors) {
+    //MOCK, TRAZER DADOS REAIS DO BANCO DE DADOS
+    return {
+        chart: {
+            height: 350
         },
-    },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            categories: getDates(data)
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yyyy'
+            },
+        },
+        colors: colors ?? []
+    }
 }
-const series = [{
-    name: 'exemplo1',
-    data: [30, 40, 45, 50, 49, 60, 70]
-}, {
-    name: 'exemplo2',
-    data: [11, 32, 45, 32, 34, 52, 41]
-}]
+function series(names, datas) {
+    if ((!datas || !names) || (!Array.isArray(datas) || !Array.isArray(names))) return [];
 
+    const series = [];
+    for (let i = 0; i < datas.length; i++) {
+        series.push(
+            {
+                name: names[i],
+                data: getValues(datas[i])
+            }
+        )
+    }
 
-</script>
-
-<script>
-export default {
-  name: "RaffleDashboard"
+    return series;
 }
+
+function getDates(dates) {
+    return dates.map(date => translateDate(date.date));
+}
+function getValues(dates) {
+    console.log(getDates(dates));
+    return dates.map(date => date.value);
+}
+function translateDate(data) {
+    return moment(data).format('DD/MM/YYYY');
+}
+
 </script>
 
 <template>
     <div class="flex flex-row flex-wrap justify-center mb-4">
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Role'" :value="'75,000'" :textBottom="'↗︎ Exemplo de um texto de rodape'" />
+            <StatsRaffle :title="'Participantes'" :value="data?.participants?.distinct"
+                :textBottom="'Total de participantes'">
+                <template #iconTextBottom>
+                    <UserIcon class="w-4 mr-1" />
+                </template>
+            </StatsRaffle>
         </div>
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Role'" :value="'75,000'" :textBottom="'↗︎ Exemplo de um texto de rodape'" />
+            <StatsRaffle :title="'Cotas Geradas'" :value="data?.raffle?.paid + data?.raffle?.pix_expired"
+                :textBottom="'Total de cotas geradas'">
+                <template #iconTextBottom>
+                    <TicketIcon class="w-4 mr-1" />
+                </template>
+            </StatsRaffle>
         </div>
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Role'" :value="'75,000'" :textBottom="'↗︎ Exemplo de um texto de rodape'" />
+            <StatsRaffle :title="'Cotas Pagas'" :value="data?.raffle?.paid" :textBottom="'Total de cotas pagas'">
+                <template #iconTextBottom>
+                    <CheckCircleIcon class="w-4 mr-1"/>
+                </template>
+            </StatsRaffle>
         </div>
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Role'" :value="'75,000'" :textBottom="'↗︎ Exemplo de um texto de rodape'" />
+            <StatsRaffle :title="'Cotas Expiradas'" :value="data?.raffle?.pix_expired"
+                :textBottom="'Total de cotas expiradas'">
+                <template #iconTextBottom>
+                    <XCircleIcon class="w-4 mr-1"/>
+                </template>
+            </StatsRaffle>
         </div>
     </div>
-    <div class="flex gap-3 flex-row min-h-[23rem] lg:max-h-[20rem] flex-wrap lg:flex-nowrap">
+    <div class="flex gap-3 flex-row min-h-[23rem] lg:max-h-[25rem] flex-wrap lg:flex-nowrap">
         <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 bg-base-100">
-            <VueApexCharts type="area" height="350" :options="options" :series="series"></VueApexCharts>
+            <div class="flex flex-row flex-wrap">
+                <div class="w-full px-4">
+                    <h2 class="text-base text-xl font-medium title-font">Participantes/Dia</h2>
+                </div>
+                <div class="w-full">
+                    <VueApexCharts type="area" height="350" :options="options(data?.grafics?.participants)"
+                        :series="series(['Participantes'], [data?.grafics?.participants])"></VueApexCharts>
+                </div>
+            </div>
         </div>
-        <div class="w-full lg:pl-3 lg:px-2 lg:w-6/12">
+        <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 bg-base-100">
             <div class="w-full h-full rounded-lg bg-base-100 min-h-max">
-                <VueApexCharts type="bar" height="350" :options="options" :series="series"></VueApexCharts>
+                <div class="flex flex-row flex-wrap">
+                    <div class="w-full px-4">
+                        <h2 class="text-base text-xl font-medium title-font">Cotas/Dia</h2>
+                    </div>
+                    <div class="w-full">
+                        <VueApexCharts type="bar" height="350"
+                            :options="options(data?.grafics?.paid, ['#3EA077', '#dc3545'])"
+                            :series="series(['Pago', 'Expirado'], [data?.grafics?.paid, data?.grafics?.expired])">
+                        </VueApexCharts>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -19,8 +19,9 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        $resp = numbers_devolution(1, 5);
-        dd($resp);
+        // $resp = numbers_devolution(1, 5);
+        // dd($resp);
+
         //Event::dispatch(new PixPayment('1234'));
         //dd('ok');
         //dd(numbers_generate(100000));
@@ -47,7 +48,7 @@ class TesteController extends Controller
 
         $registration_data = [
             'name' => 'Sebastião Barbosa Silva',
-            'phone' => '55 (53) 91831-8081'
+            'phone' => '55 (18) 99928-1829'
         ];
         dd(numbers_reserve(1, 2, 1, $registration_data, false));
         //dd(numbers_available(1));

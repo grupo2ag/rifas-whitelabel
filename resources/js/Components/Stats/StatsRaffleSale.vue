@@ -1,8 +1,11 @@
 <script setup>
+import {
+    EnvelopeIcon,
+} from '@heroicons/vue/24/outline';
 defineProps({
-    title: String,
     value: String | Number,
     textBottom: String,
+    shortName: String,
     userName: String
 })
 </script>
@@ -16,13 +19,13 @@ defineProps({
                     <div class="flex flex-row items-center">
                         <div class="flex justify-start w-auto">
                             <div class="avatar placeholder">
-                                <div class="w-10 h-10 rounded-full lg:w-16 lg:h-16 bg-neutral text-neutral-content">
-                                    <span class="lg:text-2xl">{{ userName }}</span>
+                                <div class="w-10 h-10 border rounded-full lg:w-16 lg:h-16 bg-neutral text-neutral-content border-white-light">
+                                    <span class="lg:text-2xl">{{ shortName }}</span>
                                 </div>
                             </div>
                         </div>
                         <div class="w-auto px-2">
-                            <div class="stat-title text-content">Donald Duck</div>
+                            <div class="stat-title text-content">{{userName}}</div>
                             <div class="stat-value text-content">{{ value }}</div>
                         </div>
                     </div>
@@ -33,7 +36,8 @@ defineProps({
                     </div>
                 </div>
             </div>
-            <div class="flex flex-row w-full">
+            <div class="flex flex-row items-center w-full px-1">
+                <EnvelopeIcon class="w-3 mr-1"/>
                 <div v-if="textBottom" class="stat-desc text-content">{{ textBottom }}</div>
             </div>
         </div>

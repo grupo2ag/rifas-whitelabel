@@ -44,4 +44,8 @@ class RaffleImage extends Model
 	{
 		return $this->belongsTo(Raffle::class);
 	}
+    public function scopeOfRaffleId($query, $id)
+    {
+        return $query->where('raffle_id', $id);
+    }
 }

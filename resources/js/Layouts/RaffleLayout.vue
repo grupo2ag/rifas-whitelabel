@@ -9,19 +9,29 @@ import {
     PencilSquareIcon,
     BanknotesIcon,
     ReceiptPercentIcon,
-    DocumentTextIcon
+    DocumentTextIcon,
+TableCellsIcon
 } from '@heroicons/vue/24/outline';
+import moment from 'moment';
 </script>
 
 <script>
+import { object } from 'yup';
 export default {
     name: "RaffleLayout",
     props: {
-        openTab: Number
+        openTab: Number,
+        data: Object
     },
     methods: {
         setToggleTabs(tabNumber) {
             this.$emit('toggleTabs', tabNumber)
+        },
+        translateDate(data) {
+            return moment(data).format('DD/MM/YYYY');
+        },
+        translateMoney(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
     }
 }
@@ -42,47 +52,48 @@ export default {
         <div class="w-full p-2 mb-4 rounded-lg bg-base-200">
             <div class="flex flex-row flex-wrap">
                 <div class="w-4/12 lg:w-2/12 lg:h-[10rem]">
-                    <img src="https://mundoemrevista.com.br/wp-content/uploads/2024/01/trevo-de-quatro-folhas.webp"
+                    <img :src="data?.image?.path"
                         alt="Preview" class="object-cover w-full h-full rounded-lg">
                 </div>
                 <div class="flex w-8/12 lg:w-4/12">
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
-                                <TicketIcon class="w-6 mr-2 text-primary" />
-                                <p class="text-base text-xl font-bold">Nome Rifa</p>
+                                <TicketIcon class="hidden w-6 mr-2 lg:grid text-primary " />
+                                <p class="text-base text-xl font-bold">{{ data?.title }}</p>
                             </div>
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
                                 <ChartBarIcon class="w-6 mr-2 min-w-6 text-primary" />
-                                <div class="py-3 badge badge-success">
-                                    Ativo
+                                <div class="py-3 badge"
+                                :class="{ 'badge-success': data?.status.toLowerCase() == 'ativo', 'badge-error': data?.status.toLowerCase() != 'ativo' }">
+                                    {{ data?.status }}
                                 </div>
                             </div>
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
                                 <CalendarDaysIcon class="w-6 mr-2 min-w-6 text-primary" />
-                                <p>12/02/2024</p>
+                                <p>{{ translateDate(data?.created_at) }}</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden">
                             <div class="flex flex-row">
                                 <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>R$ 4,00/Cota</p>
+                                <p>{{translateMoney(data?.price)}}/Cota</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden ">
                             <div class="flex flex-row">
                                 <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
-                                <p>50000/100000</p>
+                                <p>{{data?.paid}}/{{data?.quantity}}</p>
                             </div>
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row ">
                                 <LinkIcon class="hidden w-6 mr-2 lg:grid text-primary" />
-                                <p class="break-all link link-primary">https://roleroleroleorloroeoroelreorleroelreorelreorelr.com.br</p>
+                                <p class="break-all link link-primary">{{ data?.link }}</p>
                             </div>
                         </div>
                     </div>
@@ -92,18 +103,19 @@ export default {
                         <div class="w-full ">
                             <div class="flex flex-row">
                                 <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>R$ 4,00/Cota</p>
+                                <p>{{translateMoney(data?.price)}}/Cota</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row">
                                 <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
-                                <p>50000/100000</p>
+                                <p>{{data?.paid}}/{{data?.quantity}}</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row">
-
+                                <TableCellsIcon class="w-6 mr-2 text-primary"/>
+                                <p>{{ data?.type == 'automatico' ? 'Automático':'Manual' }}</p>
                             </div>
                         </div>
                         <div class="w-full ">
@@ -135,9 +147,7 @@ export default {
                     <DocumentTextIcon class="w-6 mr-2 text-primary" />
                     <h2 class="text-base text-xl font-medium title-font">Descrição</h2>
                 </div>
-                <p class="mx-2">Descriçao Rifa Descriçao RifaDescriçao RifaDescriçao RifaDescriçao
-                    RifaDescriçao RifaDescriçao RifaDescriçao RifaDescriçao RifaDescriçao RifaDescriçao
-                    RifaDescriçao RifaDescriçao RifaDescriçao RifaDescriçao RifaDescriçao Rifa</p>
+                <p class="mx-2">{{ data?.description }}</p>
             </div>
         </div>
         <div class="w-full">

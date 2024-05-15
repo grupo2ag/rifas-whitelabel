@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Site\RaffleController;
 use App\Http\Middleware\LevelAdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -19,19 +20,24 @@ Route::prefix('/super')
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         });
 
-        Route::get(
-            '/raffles/index',
-            function () {
-                return Inertia::render('Seller/Raffle/RaffleIndex');
-            }
-        )->name('raffleIndex');
+        Route::prefix('/raffles')->name('raffles.')->group(function () {
+            Route::get(
+                '/index',
+                // function () {
+                //     return Inertia::render('Seller/Raffle/RaffleIndex');
+                // }
+                [RaffleController::class, 'index']
+            )->name('raffleIndex');
 
-        Route::get(
-            '/raffles/view',
-            function () {
-                return Inertia::render('Seller/Raffle/RaffleView');
-            }
-        )->name('raffleView');
+            Route::get(
+                '/view/{id}',
+                // function () {
+                //     return Inertia::render('Seller/Raffle/RaffleView');
+                // }
+                [RaffleController::class, 'view']
+            )->name('raffleView');
+        });
+
 
 
         /* ROTAS NAO AUTENTICADAS AQUI*/
