@@ -50,7 +50,7 @@ class RaffleController extends Controller
             ->groupBy(DB::raw('DATE(created_at)'))->get()
         ];
 
-        $data['participants']['data'] = $raffle->participants()->orderBy('id')->get()->toArray();
+        $data['participants']['data'] = $raffle->participants()->orderBy('id')->paginate()->toArray();
         $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('document')->count();
         $data['participants']['ranking'] = $raffle->participants()->select('document', 'name', 'email', DB::raw('COUNT(*) as quantity'), DB::raw('SUM(amount) as total_value'))->groupBy('document', 'name', 'email')->orderByDesc('total_value')->take(3)->get();
 
