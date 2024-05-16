@@ -49,7 +49,7 @@ export default {
             galery: this.raffle?.galery,
             direction: 'vertical',
             isLargeScreen: useMediaQuery('(min-width: 768px)'),
-            purchaseType: 2,
+            purchaseType: this.raffle.type == 'automatico' ? 2 : 1,
             showModal: true
         }
     },
@@ -90,7 +90,7 @@ export default {
             <div class="md:container">
                 <div class="c-content flex flex-col md:flex-row gap-8">
                     <div class="w-full md:w-7/12 flex flex-col items-start">
-                        <h1 class="text-3xl text-neutral font-bold uppercase mb-1 md:hidden">{{ this.raffle.title }}</h1>
+                        <h1 class="text-3xl text-neutral font-bold uppercase mb-1 md:hidden">{{ raffle.title }}</h1>
                         <p class="text-xs px-3 py-1 bg-primary text-primary-bw rounded-md mb-4 md:hidden">Corra</p>
 
                         <div class="w-full flex flex-col gap-6">
@@ -133,33 +133,33 @@ export default {
                     <div class="w-full md:w-5/12 ">
                         <div class="flex flex-col items-start gap-3 relative">
                             <div class="flex flex-col items-start">
-                                <h1 class="text-2xl md:text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">{{ this.raffle.title }}</h1>
+                                <h1 class="text-2xl md:text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">{{ raffle.title }}</h1>
 
                                 <Badge color="primary" class="mb-2 hidden md:block">Corra</Badge>
 
                                 <p class="text-neutral/70">
-                                    {{ this.raffle?.subtitle }}
+                                    {{ raffle?.subtitle }}
                                 </p>
                             </div>
 
                             <div class="flex justify-between items-end">
                                 <p class="text-sm text-neutral">
-                                    Por apenas<br> <span class="text-3xl font-bold">{{ parseFloat( (this.raffle.price/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span>
+                                    Por apenas<br> <span class="text-3xl font-bold">{{ parseFloat( (raffle.price/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span>
                                 </p>
                             </div>
 
                             <div class="w-full">
-                                <Progress :value="this.raffle.percent" max="100"/>
+                                <Progress :value="raffle.percent" max="100"/>
                             </div>
 
                             <Button type="button" color="primary" class="pulsate-fwd w-full"  @click="goto('purchase', 75)">
-                                {{ this.raffle.status === 'Ativo' ? 'Adquira Já' : 'Finalizada' }}
+                                {{ raffle.status === 'Ativo' ? 'Adquira Já' : 'Finalizada' }}
                             </Button>
 
                             <ul class="w-full flex flex-col md:flex-row gap-3">
                                 <li class="w-full md:w-auto text-sm text-neutral flex-1">
                                     Data prevista do sorteio:
-                                    <p class="text-base font-bold">{{ !!this.raffle.expected_date ? format(new Date(this.raffle.expected_date), "dd/MM/yyy") : 'A Definir' }}</p>
+                                    <p class="text-base font-bold">{{ !!raffle.expected_date ? format(new Date(raffle.expected_date), "dd/MM/yyy") : 'A Definir' }}</p>
                                 </li>
 
                             <!--<li class="w-full md:w-auto text-sm text-neutral flex-1">
@@ -208,7 +208,19 @@ export default {
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
                     <PaymentExposed v-if="purchaseType === 1"/>
-                    <PaymentRandom :raffle="this.raffle" v-else/>
+                    <PaymentRandom :raffle="raffle" v-else/>
+                </div>
+            </div>
+        </section>
+
+        <section class="md:py-3">
+            <div class="md:container">
+                <div class="c-content flex flex-col">
+                    <p class="text-lg font-bold text-neutral mb-2">Promoçoes</p>
+
+                    <ul v-for="(item, index) in raffle.raffle_promotions" :key="index">
+                        <li class="text-neutral/70 font-bold">Comprando acima de {{item.quantity_numbers}}, o valor por cota é {{ parseFloat( (item.amount/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -218,7 +230,7 @@ export default {
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Prêmios</p>
 
-                    <ul v-for="(item, index) in this.raffle.raffle_awards" :key="index">
+                    <ul v-for="(item, index) in raffle.raffle_awards" :key="index">
                         <li class="text-neutral/70 font-bold">{{item.order}} {{item.description}}</li>
                     </ul>
                 </div>
@@ -230,7 +242,7 @@ export default {
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Ranking Compradores</p>
 
-                    <ul v-for="(item, index) in this.raffle.buyers" :key="index">
+                    <ul v-for="(item, index) in raffle.buyers" :key="index">
                         <li class="text-neutral/70 font-bold">{{index+1}} {{item.total}}-{{item.name}}</li>
                     </ul>
                 </div>
@@ -242,7 +254,7 @@ export default {
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Cotas Premiadas</p>
 
-                    <ul v-for="(item, index) in this.raffle.raffle_premium_numbers" :key="index">
+                    <ul v-for="(item, index) in raffle.raffle_premium_numbers" :key="index">
                         <li class="text-neutral/70 font-bold">{{index+1}} {{item.number_premium}} {{item.winner_name}}</li>
                     </ul>
                 </div>
@@ -254,7 +266,7 @@ export default {
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold mb-2 text-neutral">Regulamento</p>
                     <div id="regulation" class="c-regulation__content" :class="activeHeight ? 'active' : ''">
-                        {{ this.raffle.description }}
+                        {{ raffle.description }}
                     </div>
 
                     <button v-if="!activeHeight" type="button"

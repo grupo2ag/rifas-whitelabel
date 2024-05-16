@@ -8,6 +8,34 @@ import Button from '@/Components/Button/Button.vue'
 import Icon from '@/Components/Icon/Icon.vue'
 import Checkout from '@/Pages/Site/Raffle/Checkout/Checkout.vue'
 
+const promotion = (raffle, quantity) => {
+    if(raffle?.raffle_promotions.length){
+        let promotion = raffle.raffle_promotions;
+
+        let maisProximo = promotion.reduce(function(anterior, corrente) {
+            return (Math.abs(corrente.quantity_numbers - quantity) < Math.abs(anterior.quantity_numbers - quantity) ? corrente.quantity_numbers : anterior.quantity_numbers);
+        });
+
+        let discount = 0;
+        let amount = 0;
+        let total = 0;
+
+        for(let i = 0; i < promotion.length; i++){
+            let pm = promotion[i].quantity_numbers
+
+            if(quantity >= pm){
+                discount = promotion[i].discount;
+                amount =  promotion[i].amount;
+                total = amount * quantity;
+            }
+        }
+
+        return total > 0 ? [discount, amount, total] : false;
+    }
+
+    return false;
+}
+
 export default {
     name: "PaymentExposed",
     components: {
@@ -54,23 +82,61 @@ export default {
             }
         },
         removeItem() {
-            if (this.quantity > this.min) {
-                this.quantity--
-                this.total = this.quantity * this.value
+            this.quantity--
+            let temPromo = promotion(this.raffle, this.quantity)
+            //console.log(this.quantity, this.min, this.value, temPromo);
+            if(temPromo){
+                if (this.quantity >= this.min) {
+
+                    this.total = temPromo[2]
+                    this.value = temPromo[1]
+                }
+            }else{
+                this.value = this.raffle.price
+                if (this.quantity >= this.min) {
+
+                    this.total = this.quantity * this.value
+                }
             }
         },
         addItem() {
-            if (this.quantity < this.max) {
-                this.quantity++
-                this.total = this.quantity * this.value
+            this.quantity++
+            let temPromo = promotion(this.raffle, this.quantity)
+
+            if(temPromo){
+                if (this.quantity < this.max) {
+                    this.total = temPromo[2]
+                    this.value = temPromo[1]
+                }
+            }else{
+                this.value = this.raffle.price
+                if (this.quantity < this.max) {
+                    this.total = this.quantity * this.value
+                }
             }
         },
         addQuotas(quotas) {
-            if (this.quantity < this.max) {
-                this.quantity += quotas
-                if(this.quantity > this.max) this.quantity = this.max
-                this.total = this.quantity * this.value
-            }else this.quantity = this.max
+            this.quantity += quotas
+            let temPromo = promotion(this.raffle, this.quantity)
+
+            if(temPromo){
+                if (this.quantity < this.max) {
+                    this.total = temPromo[2]
+                    this.value = temPromo[1]
+                }else{
+                    this.quantity = this.max
+                }
+            }else{
+                this.value = this.raffle.price
+                if (this.quantity < this.max) {
+                    if(this.quantity > this.max) this.quantity = this.max
+                    this.total = this.quantity * this.value
+
+                }else{
+                    this.quantity = this.max
+                }
+            }
+
         },
         openModal() {
             this.showModal = true
@@ -82,6 +148,7 @@ export default {
         },
     },
     mounted() {
+        //promotion(this.raffle,102)
         //console.log(this.raffle?.raffle_popular_numbers, this.raffle)
     }
 }

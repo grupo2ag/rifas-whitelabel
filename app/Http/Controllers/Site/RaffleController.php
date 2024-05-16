@@ -103,6 +103,8 @@ class RaffleController extends Controller
                 }
             else $rifa['buyers'] = [];
 
+            //dd($rifa);
+
             return Inertia::render('Site/Raffle/Raffle', ['raffle' => $rifa]);
         }
 
