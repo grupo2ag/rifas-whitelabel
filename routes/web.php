@@ -39,7 +39,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/created',[SellerController::class, 'created'])->name('rafflecreated');
         });
     });
-
+});
 
 /* ROTAS NAO AUTENTICADAS AQUI*/
 Route::get('/account', function () {
