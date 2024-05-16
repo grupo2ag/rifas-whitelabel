@@ -215,6 +215,21 @@ export default {
                         console.log('errors', errors);
                         this.formVerify.processing = false;
                         this.errors = errors;
+
+                        this.closeModal()
+
+                        this.$swal({
+                            html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
+                            confirmButtonText: "Ok",
+                            icon: 'error',
+                            type: 'error',
+                            allowOutsideClick: true,
+                            customClass: {
+                                confirmButton: 'sw-btn sw-btn--red',
+                                popup: 'sw-popup',
+                                title: 'sw-title',
+                            }
+                        })
                         //FECHA LOADING
                     })
 
@@ -296,6 +311,12 @@ export default {
     watch: {
         'formPurchase.name': function() {
             if(!!this.formPurchase.name) this.formPurchase.name = this.formPurchase.name.toUpperCase()
+        },
+        'quantity': function() {
+            this.formPurchase.quantity = this.quantity
+        },
+        'total': function() {
+            this.formPurchase.total = this.total
         }
     }
 }
@@ -401,9 +422,11 @@ export default {
                             <span class="font-bold text-lg text-primary-bw">{{ getInitials(this.formPurchase.name) }}</span>
                         </div>
 
-                        <p class="text-neutral font-bold">{{ this.formPurchase.name }}</p>
-                        <p class="text-neutral font-bold">{{ this.formPurchase.phone }}</p>
-                        <p class="text-neutral font-bold">{{ this.formPurchase.email }}</p>
+                        <div class="">
+                            <p class="text-neutral font-bold">{{ this.formPurchase.name }}</p>
+                            <p class="text-sm text-neutral/70 font-bold">{{ this.formPurchase.phone }}</p>
+                            <p class="text-sm text-neutral/70 font-bold">{{ this.formPurchase.email }}</p>
+                        </div>
                     </div>
 
                     <Button type="submit" color="success" class="w-full mb-3">
