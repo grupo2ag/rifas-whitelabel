@@ -60,6 +60,7 @@ export default {
         Input,
         Select,
         UploadImage,
+        Button,
         SwitchCheckbox,
         CurrencyInput,
         PlusCircleIcon,
@@ -230,10 +231,16 @@ export default {
         <div class="py-5 md:container w-full lg:w-6/12">
             <form @submit.prevent="onSubmit">
                 <div class="c-content mb-4" ref="geral">
-                    <div class="pb-2 flex items-center border-b border-base-100">
-                        <TicketIcon class="h-5 stroke-neutral mr-1"/>
+                    <div class="w-full pb-2 flex items-center justify-between border-b border-base-100">
+                        <div class="flex items-center">
+                            <TicketIcon class="h-5 stroke-neutral mr-1"/>
 
-                        <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
+                            <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
+                        </div>
+
+                        <Button :href="route('raffle')" size="sm" color="outline-light">
+                            <ArrowLeftIcon class="w-4 fill-white mr-2"/> Voltar
+                        </Button>
                     </div>
 
                     <div class="w-full pt-3">

@@ -3,7 +3,7 @@ import { Head } from '@inertiajs/inertia-vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import CardDashboard from '@/Components/Cards/CardDashboard.vue';
 import ListCard from '@/Components/List/ListCard.vue';
-
+import { Link } from '@inertiajs/inertia-vue3';
 </script>
 
 <script>
@@ -69,7 +69,7 @@ export default {
                     </div>
                     <div class="flex justify-end w-full px-4 py-4">
 <!--                        <button :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</button>-->
-                        <a :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</a>
+                        <Link :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</Link>
                     </div>
                 </div>
                 <div class="flex flex-row flex-wrap px-2 mb-4">
