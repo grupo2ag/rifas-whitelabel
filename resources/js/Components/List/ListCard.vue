@@ -41,7 +41,7 @@ export default {
 
 <template>
 <!--    <Link :href="route('rafflesview', infos?.id)" class="p-2 rounded-lg bg-base-300 hover:bg-base-100" role="button" @click="redirectView(infos?.id)">-->
-    <Link :href="route('raffle.raffleView', {id: infos?.id})" class="p-2 rounded-lg bg-base-300 hover:bg-base-100 block">
+    <Link :href="route('raffles.raffleView', {id: infos?.id})" class="p-2 rounded-lg bg-base-300 hover:bg-base-100 block">
         <div class="flex flex-row flex-wrap">
             <div class="w-full mb-1 sm:w-full md:w-full xl:w-1/12 lg:w-full sm:mb-1 md:mb-1 xl:mb-0">
                 <div class="flex flex-row">

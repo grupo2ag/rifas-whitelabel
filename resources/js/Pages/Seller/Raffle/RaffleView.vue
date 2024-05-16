@@ -28,7 +28,7 @@ export default {
       this.openTab = tabNumber
     },
     previousPage() {
-      window.location.href = route('raffle')
+      window.location.href = route('raffles.index')
     }
   },
   mounted() {

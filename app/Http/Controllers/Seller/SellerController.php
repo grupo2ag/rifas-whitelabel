@@ -16,16 +16,18 @@ class SellerController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        if(!$user){
+            return Inertia::render('Auth/Login');
+        }
+        $data = $user->raffles()->get()->toArray();
 
-        //$data['total_affiliates'] = Affiliate::count();
-        $data['total_rifas'] = Raffle::count();
-        $data['total_numeros'] = Raffle::sum('quantity');
-        $data['total_vendido'] = Raffle::select(DB::raw('TRUNC((COALESCE(SUM(price), 0))/100,2) AS total'))->first()->total;
-        $data['total_participantes'] = Raffle::sum('price');
-        //$data['uuid'] = '1234';
+        foreach ($data as $key => $value) {
+            $raffle = $user->raffles()->ofId($value['id'])->first();
+            $data[$key]['paid'] = $raffle->participants()->sum('paid');
+        }
+        return Inertia::render('Seller/Raffle/RaffleIndex', ['data'=> $data]);
 
-        return Inertia::render('Panel/User/Dashboard', $data);
-//        return Inertia::render('Seller/Raffle/RaffleIndex');
     }
 
     public function view(Request $request, $id)
@@ -55,6 +57,7 @@ class SellerController extends Controller
         $data['raffle']['image'] = $raffle->raffle_images()->first();
         $data['raffle']['paid'] = $raffle->participants()->sum('paid');
 
+      // dd('Aqui');
         return Inertia::render('Seller/Raffle/RaffleView', ['data'=> $data]);
     }
 

@@ -238,7 +238,7 @@ export default {
                             <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
                         </div>
 
-                        <Button :href="route('raffle')" size="sm" color="outline-light">
+                        <Button :href="route('raffles.index')" size="sm" color="outline-light">
                             <ArrowLeftIcon class="w-4 fill-white mr-2"/> Voltar
                         </Button>
                     </div>
@@ -637,7 +637,7 @@ export default {
 
                 <div class="c-content">
                     <div class="flex justify-end gap-4">
-                        <Button :href="route('raffle')" size="sm" color="outline-light">
+                        <Button :href="route('raffles.index')" size="sm" color="outline-light">
                             Cancelar
                         </Button>
                         <Button type="button" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">

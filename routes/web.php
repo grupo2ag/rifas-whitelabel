@@ -33,10 +33,10 @@ Route::middleware(LevelMiddleware::class)->group(function (){
     ])->group(function () {
         Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
 
-        Route::prefix('/raffle')->name('raffle.')->group(function () {
+        Route::prefix('/raffles')->name('raffles.')->group(function () {
             Route::get('/',[SellerController::class, 'index'])->name('index');
             Route::get('/view/{id}',[SellerController::class, 'view'])->name('raffleView');
-            Route::get('/created',[SellerController::class, 'created'])->name('rafflecreated');
+            Route::get('/created',[SellerController::class, 'created'])->name('raffleCreated');
         });
     });
 });
@@ -51,7 +51,7 @@ Route::get('/pay/{order}',[RaffleController::class, 'pay'])->name('pay');
 Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
 Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 
-Route::get('/{url}',[RaffleController::class, 'index'])->name('raffle');
+Route::get('/{url}',[RaffleController::class, 'index'])->name('rifas');
 
 require 'admin/admin_web.php';
 
