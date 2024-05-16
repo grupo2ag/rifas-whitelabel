@@ -31,7 +31,9 @@ export default {
             return moment(data).format('DD/MM/YYYY');
         },
         translateMoney(value) {
+            if(!value) value = 0;
             return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
         }
     }
 }
