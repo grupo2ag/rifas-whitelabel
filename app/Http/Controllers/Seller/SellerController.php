@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Site;
+namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Participant;
@@ -12,22 +12,20 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
-class RaffleController extends Controller
+class SellerController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        if(!$user){
-            return Inertia::render('Auth/Login');
-        }
-        $data = $user->raffles()->get()->toArray();
 
-        foreach ($data as $key => $value) {
-            $raffle = $user->raffles()->ofId($value['id'])->first();
-            $data[$key]['paid'] = $raffle->participants()->sum('paid');
-        }
-        return Inertia::render('Seller/Raffle/RaffleIndex', ['data'=> $data]);
+        //$data['total_affiliates'] = Affiliate::count();
+        $data['total_rifas'] = Raffle::count();
+        $data['total_numeros'] = Raffle::sum('quantity');
+        $data['total_vendido'] = Raffle::select(DB::raw('TRUNC((COALESCE(SUM(price), 0))/100,2) AS total'))->first()->total;
+        $data['total_participantes'] = Raffle::sum('price');
+        //$data['uuid'] = '1234';
 
+        return Inertia::render('Panel/User/Dashboard', $data);
+//        return Inertia::render('Seller/Raffle/RaffleIndex');
     }
 
     public function view(Request $request, $id)
@@ -57,33 +55,12 @@ class RaffleController extends Controller
         $data['raffle']['image'] = $raffle->raffle_images()->first();
         $data['raffle']['paid'] = $raffle->participants()->sum('paid');
 
-//        dd($data);
-
         return Inertia::render('Seller/Raffle/RaffleView', ['data'=> $data]);
     }
 
-    public function pay()
-    {
-        return Inertia::render('Site/Payment/PaymentIndex');
-    }
-
-
-    public function verify($phone)
+    public function created(Request $request)
     {
 
-//        dd($phone);
-
-        $data = [];
-
-        return response()->json($data, 200);
+        return Inertia::render('Seller/Raffle/RaffleCreate');
     }
-
-    public function purchase(Request $request)
-    {
-
-//        dd($phone);
-
-        return Inertia::render('Site/Raffle/Raffle');
-    }
-
 }

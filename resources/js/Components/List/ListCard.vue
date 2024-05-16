@@ -1,6 +1,8 @@
 <script setup>
 import IconsSvg from "@/Components/IconsSvg/IconsSvg.vue";
 import moment from 'moment';
+import { Link } from '@inertiajs/inertia-vue3';
+
 </script>
 
 <script>
@@ -11,13 +13,15 @@ export default {
     },
     methods: {
         redirectView(id) {
-            window.location.href = `/super/raffles/view/${id}`
+         //   window.location.href = `/super/raffles/view/${id}`
         },
         translateDate(data) {
             return moment(data).format('DD/MM/YYYY');
         },
         translateMoney(valor) {
+            if(!valor) valor = 0;
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
         },
         calcPercent(parcialValue, totalValue) {
             if (totalValue !== 0) {
@@ -34,8 +38,10 @@ export default {
 }
 </script>
 
+
 <template>
-    <div class="p-2 rounded-lg bg-base-300 hover:bg-base-100" role="button" @click="redirectView(infos?.id)">
+<!--    <Link :href="route('rafflesview', infos?.id)" class="p-2 rounded-lg bg-base-300 hover:bg-base-100" role="button" @click="redirectView(infos?.id)">-->
+    <Link :href="route('raffle.raffleView', {id: infos?.id})" class="p-2 rounded-lg bg-base-300 hover:bg-base-100 block">
         <div class="flex flex-row flex-wrap">
             <div class="w-full mb-1 sm:w-full md:w-full xl:w-1/12 lg:w-full sm:mb-1 md:mb-1 xl:mb-0">
                 <div class="flex flex-row">
@@ -115,6 +121,5 @@ export default {
                 <IconsSvg name="icon-chevron-right" />
             </div>
         </div>
-
-    </div>
+    </Link>
 </template>

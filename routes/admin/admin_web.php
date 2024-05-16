@@ -20,23 +20,23 @@ Route::prefix('/super')
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
         });
 
-        Route::prefix('/raffles')->name('raffles.')->group(function () {
-            Route::get(
+//        Route::prefix('/raffles')->name('raffles.')->group(function () {
+          /*  Route::get(
                 '/index',
                 // function () {
                 //     return Inertia::render('Seller/Raffle/RaffleIndex');
                 // }
                 [RaffleController::class, 'index']
-            )->name('raffleIndex');
+            )->name('raffleIndex');*/
 
-            Route::get(
+          /*  Route::get(
                 '/view/{id}',
                 // function () {
                 //     return Inertia::render('Seller/Raffle/RaffleView');
                 // }
                 [RaffleController::class, 'view']
-            )->name('raffleView');
-        });
+            )->name('raffleView');*/
+//        });
 
 
 
