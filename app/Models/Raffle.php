@@ -11,6 +11,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\RaffleImage;
 
 /**
  * Class Raffle
@@ -120,6 +121,15 @@ class Raffle extends Model
 		return $this->hasMany(Participant::class);
 	}
 
+    public function scopeActivateRaffles()
+    {
+        return $this->where('status', '=', 'Ativo');
+    }
+
+    public function scopeOfId($query, $id)
+    {
+        return $query->where('id', $id);
+    }
 	public function affiliates()
 	{
 		return $this->belongsToMany(Affiliate::class, 'affiliate_raffles')

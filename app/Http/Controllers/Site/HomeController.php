@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Site;
+use Laravel\Jetstream\Jetstream;
 
 use App\Http\Controllers\Controller;
 use App\Models\Raffle;

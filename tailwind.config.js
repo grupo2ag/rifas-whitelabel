@@ -1,6 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
+import tailwindAnimated from 'tailwindcss-animated'
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -129,6 +130,7 @@ export default {
     plugins: [
         forms,
         typography,
+        tailwindAnimated,
         require('daisyui'),
         function ({addComponents}) {
             addComponents({

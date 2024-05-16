@@ -76,4 +76,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function raffles()
+    {
+        return $this->hasMany(Raffle::class);
+    }
 }

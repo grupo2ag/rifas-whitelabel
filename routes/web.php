@@ -6,11 +6,22 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\Site\RaffleController;
+use App\Http\Controllers\Seller\SellerController;
+use App\Http\Controllers\Seller\DashboardController;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
     Route::get('/teste', [TesteController::class, 'index']);
 }
+
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
 
 Route::middleware(LevelMiddleware::class)->group(function (){
 
@@ -20,23 +31,15 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         config('jetstream.auth_session'),
         'verified',
     ])->group(function () {
-        Route::get('/dashboard', function () {
-            //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
-            return Inertia::render('Dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
 
-
-        Route::get('/raffles', function () {
-            //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
-            return Inertia::render('Seller/Raffle/RaffleIndex');
-        })->name('raffles');
-
-        Route::get('/raffle/create', function () {
-            //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
-            return Inertia::render('Seller/Raffle/RaffleCreate');
-        })->name('rafflecreated');
+        Route::prefix('/raffle')->name('raffle.')->group(function () {
+            Route::get('/',[SellerController::class, 'index'])->name('index');
+            Route::get('/view/{id}',[SellerController::class, 'view'])->name('raffleView');
+            Route::get('/created',[SellerController::class, 'created'])->name('rafflecreated');
+        });
     });
-});
+
 
 /* ROTAS NAO AUTENTICADAS AQUI*/
 Route::get('/account', function () {

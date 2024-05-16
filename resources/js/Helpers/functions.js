@@ -225,3 +225,17 @@ export const imitateText = (text, limit) =>
 */
 
 export const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+
+export const clieanString = (string) => {
+    /** TIRAR ACENTOS */
+
+    string = string.replace(new RegExp('[ÁÀÂÃ]','gi'), 'a');
+    string = string.replace(new RegExp('[ÉÈÊ]','gi'), 'e');
+    string = string.replace(new RegExp('[ÍÌÎ]','gi'), 'i');
+    string = string.replace(new RegExp('[ÓÒÔÕ]','gi'), 'o');
+    string = string.replace(new RegExp('[ÚÙÛ]','gi'), 'u');
+    string = string.replace(new RegExp('[Ç]','gi'), 'c');
+
+    /** TIRAR CARACTERES ESPECIAIS */
+    return string.replaceAll(/[^a-zA-Z0-9\- ]/g, "");
+}

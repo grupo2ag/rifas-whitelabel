@@ -87,6 +87,11 @@ class Participant extends Model
 		return $this->hasMany(AffiliateGain::class);
 	}
 
+    public function scopeOfRaffleId($query, $id)
+    {
+        return $query->where('raffle_id', $id);
+    }
+
 	public function charges()
 	{
 		return $this->hasMany(Charge::class);

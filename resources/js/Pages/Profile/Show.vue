@@ -16,7 +16,7 @@ defineProps({
     <AuthenticatedLayout :user="$page.props.auth.user">
         <!-- <AppLayout title="Profile"></AppLayout> -->
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+            <h2 class="text-xl font-semibold leading-tight text-primary-bw">
                 Profile
             </h2>
         </template>
