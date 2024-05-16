@@ -125,7 +125,7 @@ class RaffleController extends Controller
                 'name' => $data->name,
                 'cpf' => !empty($data->cpf) ? hideString($data->cpf, 3,3) : '',
                 'phone' => !empty($phone) ? hideString($phone, 8, 3) : '',
-                'email' => !empty($data->email) ? hideString($data->email, 3,8) : '',
+                'email' => !empty($data->email) ? hideString($data->email, 3,3) : '',
             ];
         }
 
