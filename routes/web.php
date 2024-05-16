@@ -31,12 +31,13 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         config('jetstream.auth_session'),
         'verified',
     ])->group(function () {
-        Route::get('/dashboard',[DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::prefix('/raffles')->name('raffles.')->group(function () {
-            Route::get('/',[SellerController::class, 'index'])->name('index');
-            Route::get('/view/{id}',[SellerController::class, 'view'])->name('raffleView');
-            Route::get('/created',[SellerController::class, 'created'])->name('raffleCreated');
+            Route::get('/', [SellerController::class, 'index'])->name('raffleIndex');
+            Route::get('/view/{id}', [SellerController::class, 'view'])->name('raffleView');
+            Route::get('/created', [SellerController::class, 'created'])->name('raffleCreated');
+            Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
         });
     });
 });
@@ -46,12 +47,12 @@ Route::get('/account', function () {
     return Inertia::render('Site/Account/Account');
 })->name('account');
 
-Route::get('/',[HomeController::class, 'index'])->name('index');
-Route::get('/pay/{order}',[RaffleController::class, 'pay'])->name('pay');
+Route::get('/', [HomeController::class, 'index'])->name('index');
+Route::get('/pay/{order}', [RaffleController::class, 'pay'])->name('pay');
 Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
 Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 
-Route::get('/{url}',[RaffleController::class, 'index'])->name('raffle');
+Route::get('/{url}', [RaffleController::class, 'index'])->name('raffle');
 
 require 'admin/admin_web.php';
 

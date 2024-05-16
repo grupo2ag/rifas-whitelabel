@@ -55,7 +55,7 @@ export default {
         <div class="mb-4 rounded">
             <Popper content="Campanhas" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
-                <NavLink :href="route('raffles.index')" :active="false" >
+                <NavLink :href="route('raffles.raffleIndex')" :active="false" >
                     <TicketIcon class="w-6 h-6 text-content" />
                 </NavLink>
             </Popper>

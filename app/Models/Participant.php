@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Participant
- * 
+ *
  * @property int $id
  * @property int $checked
  * @property int|null $msg_paid_sent
@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $deleted_at
  * @property Carbon|null $expired_at
  * @property int|null $customer_id
- * 
+ *
  * @property Raffle $raffle
  * @property Customer|null $customer
  * @property Collection|AffiliateGain[] $affiliate_gains
@@ -69,7 +69,8 @@ class Participant extends Model
 		'reserved',
 		'raffle_id',
 		'expired_at',
-		'customer_id'
+		'customer_id',
+        'raffle_promotion_id'
 	];
 
 	public function raffle()

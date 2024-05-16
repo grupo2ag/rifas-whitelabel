@@ -1,5 +1,6 @@
 <script setup>
 // import Welcome from '@/Components/Welcome.vue';
+import {useForm } from '@inertiajs/vue3';
 </script>
 
 <script>
@@ -79,7 +80,8 @@ export default {
         ReceiptPercentIcon,
     },
     props: {
-        raffle: Object
+        raffle: Object,
+        quantity_numbers: Array
     },
     data() {
         return {
@@ -108,6 +110,8 @@ export default {
                 quotas: this.raffle ? this.raffle.gallery : [],
 
                 awards: [{description: null, order: null}],
+
+                quantity_numbers: this.quantity_numbers
             },
             validator: {
                 id: '',
@@ -160,6 +164,21 @@ export default {
         }
     },
     methods: {
+        onSubmit() {
+            const form = useForm(this.form)
+
+            form.post(route('raffles.raffleStore'), {
+                onSuccess: () => {
+                    this.disabled = false
+                    this.loading = false
+                },
+                onError: () => {
+                    this.disabled = false
+                    this.loading = false
+
+                }
+            })
+        },
         countdown() {
             if (this.form.title || this.form.subtitle) {
                 this.characterLenght = this.form.title.length;
@@ -238,7 +257,7 @@ export default {
                             <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
                         </div>
 
-                        <Button :href="route('raffles.index')" size="sm" color="outline-light">
+                        <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
                             <ArrowLeftIcon class="w-4 fill-white mr-2"/> Voltar
                         </Button>
                     </div>
@@ -287,11 +306,9 @@ export default {
 
                         <div class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
-                                <Select label="Quantidade de Números:" v-model="form.total" :name="form.total"
-                                        :error="validator.total || $page.props.errors.total">
-                                    <option value="10">
-                                        10 Bilhetes - (0 à 9)
-                                    </option>
+                                <Select label="Quantidade de Números:"  v-model="form.total" :name="form.total"
+                                        :error="validator.total || $page.props.errors.total" >
+                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value" :selected="!!item.selected">{{ item.texto }}</option>
                                 </Select>
                             </div>
 
@@ -318,10 +335,16 @@ export default {
                                         :name="form.pix_expired"
                                         :error="validator.pix_expired || $page.props.errors.pix_expired">
                                     <option value="5">
-                                        5 minutos
+                                        5 minutos (recomendado)
                                     </option>
                                     <option value="10">
                                         10 minutos
+                                    </option>
+                                    <option value="30">
+                                        30 minutos
+                                    </option>
+                                    <option value="60">
+                                        1 hora
                                     </option>
                                 </Select>
                             </div>
@@ -370,7 +393,7 @@ export default {
                     <div class="pt-3">
                         <div class="flex flex-col md:flex-row gap-4">
                             <div class="w-full md:w-6/12">
-                                <Input label="Data do Sorteio" type="date"
+                                <Input label="Data prevista do Sorteio" type="date"
                                        :name="form.finish_at" class="appearance-none"
                                        :error="validator.finish_at || $page.props.errors.date"
                                        placeholder="dd/mm/aaaa" v-model="form.finish_at"/>
@@ -505,7 +528,7 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4">
+                <div class="c-content  mb-4 hidden">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
@@ -532,7 +555,7 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4">
+                <div class="c-content  mb-4 hidden">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
@@ -637,7 +660,7 @@ export default {
 
                 <div class="c-content">
                     <div class="flex justify-end gap-4">
-                        <Button :href="route('raffles.index')" size="sm" color="outline-light">
+                        <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
                             Cancelar
                         </Button>
                         <Button type="button" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">
