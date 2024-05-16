@@ -32,16 +32,16 @@ export default {
             }
         }
     },
-    // mounted(){
-    //     console.log(this.infos)
-    // }
+    mounted(){
+        console.log(this.infos, "LIST CARD")
+    }
 }
 </script>
 
 
 <template>
 <!--    <Link :href="route('rafflesview', infos?.id)" class="p-2 rounded-lg bg-base-300 hover:bg-base-100" role="button" @click="redirectView(infos?.id)">-->
-    <Link :href="route('raffles.raffleView', {id: infos?.id})" class="p-2 rounded-lg bg-base-300 hover:bg-base-100 block">
+    <Link :href="route('raffles.raffleView', {id: infos?.id})" class="block p-2 rounded-lg bg-base-100 hover:bg-base-300">
         <div class="flex flex-row flex-wrap">
             <div class="w-full mb-1 sm:w-full md:w-full xl:w-1/12 lg:w-full sm:mb-1 md:mb-1 xl:mb-0">
                 <div class="flex flex-row">
@@ -81,7 +81,7 @@ export default {
                         <div class="flex flex-col flex-wrap">
                             <div class="flex justify-end w-full mb-1">
                                 <div class="py-3 badge"
-                                    :class="{ 'badge-success': infos?.status.toLowerCase() == 'ativo', 'badge-error': infos?.status.toLowerCase() != 'ativo' }">
+                                    :class="{ 'badge-success': infos?.status?.toLowerCase() == 'ativo', 'badge-error': infos?.status?.toLowerCase() != 'ativo' }">
                                     {{ infos?.status }}
                                 </div>
                             </div>
@@ -99,7 +99,7 @@ export default {
             <div
                 class="flex items-center justify-end hidden w-full px-2 mb-4 sm:hidden sm:justify-center sm:w-1/12 md:hidden md:justify-center md:w-1/12 xl:grid xl:justify-center xl:w-1/12">
                 <div class="py-3 badge"
-                    :class="{ 'badge-success': infos?.status.toLowerCase() == 'ativo', 'badge-error': infos?.status.toLowerCase() != 'ativo' }">
+                    :class="{ 'badge-success': infos?.status?.toLowerCase() == 'ativo', 'badge-error': infos?.status?.toLowerCase() != 'ativo' }">
                     {{ infos?.status }}
                 </div>
             </div>

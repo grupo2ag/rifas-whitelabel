@@ -37,7 +37,7 @@ const promotion = (raffle, quantity) => {
 }
 
 export default {
-    name: "PaymentExposed",
+    name: "PaymentRandom",
     components: {
         Button,
         Icon,

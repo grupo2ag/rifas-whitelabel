@@ -21,12 +21,13 @@ class SellerController extends Controller
         if(!$user){
             return Inertia::render('Auth/Login');
         }
-        $data = $user->raffles()->get()->toArray();
+        $data = $user->raffles()->orderBy('id')->paginate();
 
-        foreach ($data as $key => $value) {
+        foreach ($data->items() as $key => $value) {
             $raffle = $user->raffles()->ofId($value['id'])->first();
-            $data[$key]['paid'] = $raffle->participants()->sum('paid');
+            $data->items()[$key]['paid'] = $raffle->participants()->sum('paid');
         }
+
         return Inertia::render('Seller/Raffle/RaffleIndex', ['data'=> $data]);
 
     }
@@ -45,13 +46,16 @@ class SellerController extends Controller
         $data['grafics'] = [
             'participants' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(DISTINCT document) as value'))
             ->groupBy(DB::raw('DATE(created_at)'))->get(),
+
             'paid' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(paid) as value'))
             ->groupBy(DB::raw('DATE(created_at)'))->get(),
+
             'expired' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('(SUM(reserved) - SUM(paid)) as value'))
             ->groupBy(DB::raw('DATE(created_at)'))->get()
         ];
 
-        $data['participants']['data'] = $raffle->participants()->orderBy('id')->get()->toArray();
+        $data['participants']['data'] = $raffle->participants()->orderBy('id')->paginate();
+
         $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('document')->count();
         $data['participants']['ranking'] = $raffle->participants()->select('document', 'name', 'email', DB::raw('COUNT(*) as quantity'), DB::raw('SUM(amount) as total_value'))->groupBy('document', 'name', 'email')->orderByDesc('total_value')->take(3)->get();
 
