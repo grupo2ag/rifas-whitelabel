@@ -60,7 +60,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         Route::get('/raffles/view', function () {
             //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');
             return Inertia::render('Seller/Raffle/RaffleView');
-        })->name('raffles');
+        })->name('rafflesc');
 
         Route::get('/raffle/create', function () {
             //return auth()->user()->level === 1 ? Inertia::render('Dashboard') : Redirect::route('admin.dashboard');

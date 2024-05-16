@@ -68,7 +68,8 @@ export default {
                         </div>
                     </div>
                     <div class="flex justify-end w-full px-4 py-4">
-                        <button class="text-black btn border-none bg-[#dedede]">Criar Rifa</button>
+<!--                        <button :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</button>-->
+                        <a :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</a>
                     </div>
                 </div>
                 <div class="flex flex-row flex-wrap px-2 mb-4">

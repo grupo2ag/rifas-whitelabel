@@ -5,7 +5,8 @@
 <script>
 import * as func from '@/Helpers/functions.js'
 
-import AppLayout from '@/Layouts/AppLayout.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
 import Input from '@/Components/FormElements/Input.vue';
 import Button from '@/Components/Button/Button.vue';
 import Select from '@/Components/FormElements/Select.vue';
@@ -55,11 +56,10 @@ const forceRender = () => {
 
 export default {
     components: {
-        AppLayout,
+        AuthenticatedLayout,
         Input,
         Select,
         UploadImage,
-        Button,
         SwitchCheckbox,
         CurrencyInput,
         PlusCircleIcon,
@@ -220,7 +220,7 @@ export default {
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AuthenticatedLayout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Rifa
@@ -630,7 +630,7 @@ export default {
 
                 <div class="c-content">
                     <div class="flex justify-end gap-4">
-                        <Button :href="route('raffles')" size="sm" color="outline-light">
+                        <Button :href="route('raffle')" size="sm" color="outline-light">
                             Cancelar
                         </Button>
                         <Button type="button" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">
@@ -640,7 +640,7 @@ export default {
                 </div>
             </form>
         </div>
-    </AppLayout>
+    </AuthenticatedLayout>
 </template>
 
 <style lang="scss">
