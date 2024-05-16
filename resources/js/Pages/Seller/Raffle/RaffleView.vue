@@ -15,7 +15,8 @@ import {
 export default {
     name: "RaffleView",
     props: {
-        data: Object
+        data: Object,
+        tab: String
     },
     data() {
     return {
@@ -32,7 +33,9 @@ export default {
     }
   },
   mounted() {
-    console.log(this.data);
+      const url = new URLSearchParams(window.location.search);
+      if(url.has('page')) this.openTab = 2;
+    console.log(this.data, url.get('tab'));
   }
 }
 </script>

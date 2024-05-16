@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import CardDashboard from '@/Components/Cards/CardDashboard.vue';
 import ListCard from '@/Components/List/ListCard.vue';
 import { Link } from '@inertiajs/inertia-vue3';
+import Pagination from '@/Components/Pagination.vue';
 </script>
 
 <script>
@@ -19,12 +20,10 @@ export default {
     },
     methods: {
         openModal() {
-            console.log('apertou abrir');
             this.showModal = true
             document.body.classList.add('active');
         },
         closeModal() {
-            console.log('apertou fechar')
             this.showModal = false
             document.body.classList.remove('active');
         }
@@ -68,8 +67,10 @@ export default {
                         </div>
                     </div>
                     <div class="flex justify-end w-full px-4 py-4">
-<!--                        <button :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</button>-->
-                        <Link :href="route('raffles.raffleCreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</Link>
+                        <!--                        <button :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</button>-->
+                        <Link :href="route('raffles.raffleCreated')" class="text-black btn border-none bg-[#dedede]">
+                        Criar Rifa
+                        </Link>
                     </div>
                 </div>
                 <div class="flex flex-row flex-wrap px-2 mb-4">
@@ -84,31 +85,14 @@ export default {
                             <div class="flex justify-center w-1/12"></div>
                         </div>
                     </div>
-                    <div v-for="raffle in data" :key="raffle?.id" class="w-full mb-4">
+                    <div v-for="raffle in data?.data" :key="raffle?.id" class="w-full mb-4">
                         <ListCard :infos="raffle" />
                     </div>
-                    <!--
-                    <div class="w-full mb-4">
-                        <ListCard />
+                    <div class="flex flex-row w-full px-2" :class='{"hidden": data?.last_page == 1}'>
+                        <div class="flex justify-end w-full">
+                            <Pagination :data="data" />
+                        </div>
                     </div>
-                    <div class="w-full mb-4">
-                        <ListCard />
-                    </div>
-                    <div class="w-full mb-4">
-                        <ListCard />
-                    </div>
-                    <div class="w-full mb-4">
-                        <ListCard />
-                    </div>
-                    <div class="w-full mb-4">
-
-                    </div>
-                    <div class="w-full mb-4">
-
-                    </div>
-                    <div class="w-full mb-4">
-
-                    </div> -->
                 </div>
             </div>
         </div>

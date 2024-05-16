@@ -70,10 +70,10 @@ export default {
                 <div class="flex flex-wrap justify-center w-full lg:w-6/12 md:w-full">
                     <div class="flex flex-row flex-wrap w-full lg:h-1/6 ">
                         <div class="w-full px-2 mb-2 lg:w-4/12 md:w-6/12 ">
-                            <CardDashboard :title="'Campanhas Ativas'" :valueCount="'1'" />
+                            <CardDashboard :title="'Rifas Ativas'" :valueCount="'1'" />
                         </div>
                         <div class="w-full px-2 mb-2 lg:w-4/12 md:w-6/12 ">
-                            <CardDashboard :title="'Campanhas Finalizadas'" :valueCount="'0'" />
+                            <CardDashboard :title="'Rifas Finalizadas'" :valueCount="'0'" />
                         </div>
                         <div class="w-full px-2 mb-2 lg:w-4/12 md:w-6/12 ">
                             <CardDashboard :title="'Total Arrecadado'" :valueCount="'R$4,000.000'" />

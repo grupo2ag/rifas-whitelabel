@@ -1,6 +1,7 @@
 <script setup>
 import StatsRaffleSale from '@/Components/Stats/StatsRaffleSale.vue';
 import moment from 'moment';
+import Pagination from '@/Components/Pagination.vue';
 import {
     UserIcon,
     CurrencyDollarIcon,
@@ -71,7 +72,7 @@ export default {
                 Minhas Vendas
             </div>
         </div>
-        <div class="flex-row items-center hidden w-full py-2 m-2 rounded-lg lg:flex bg-content">
+        <div class="flex-row items-center hidden w-full py-2 m-2 rounded-lg lg:flex bg-base-200">
             <div class="flex justify-center w-1/12">Id</div>
             <div class="flex justify-center w-3/12">Nome</div>
             <div class="flex justify-center w-3/12">Email</div>
@@ -82,8 +83,8 @@ export default {
         </div>
 
         <!-- loop -->
-        <div v-for="sale in data?.participants?.data?.data" :key="sale.id" class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-base-300">
-            <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:text-primary text-primary-bw">{{ sale?.id }}</div>
+        <div v-for="sale in data?.participants?.data?.data" :key="sale.id" class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content">
+            <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-primary text-primary-bw">{{ sale?.id }}</div>
             <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.name}}</div>
             <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.email}}</div>
             <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.phone}}</div>
@@ -92,18 +93,9 @@ export default {
             <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{translateDate(sale?.created_at)}}</div>
         </div>
         <!--  -->
-        <div class="flex flex-row w-full px-2">
+        <div class="flex flex-row w-full px-2" :class='{"hidden": data?.participants?.data?.last_page == 1}'>
             <div class="flex justify-end w-full">
-                <!-- Paginantion -->
-                <div class="join">
-                    <button class="join-item btn">«</button>
-                    <button class="join-item btn ">1</button>
-                    <button class="join-item btn btn-active text-primary">2</button>
-                    <button class="join-item btn ">3</button>
-                    <button class="join-item btn btn-disabled">...</button>
-                    <button class="join-item btn ">10</button>
-                    <button class="join-item btn">»</button>
-                </div>
+                <Pagination :data="data?.participants?.data"/>
             </div>
         </div>
     </div>
