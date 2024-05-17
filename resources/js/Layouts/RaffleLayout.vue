@@ -126,6 +126,7 @@ export default {
                         <div class="w-full mb-2">
                             <div class="flex flex-row ">
                                 <LinkIcon class="hidden w-6 mr-2 lg:grid text-primary" />
+                                <a target="_blank" :href="!data?.visible ? route('raffle', 'visualizar|raffle-'+data?.link) : route('raffle', data?.link)">clique</a>
                                 <p class="break-all link link-primary">{{ data?.link }}</p>
                             </div>
                         </div>
