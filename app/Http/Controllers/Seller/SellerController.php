@@ -26,7 +26,7 @@ class SellerController extends Controller
     {
         $user = Auth::user();
 
-        $data = $user->raffles()->orderBy('id')->paginate();
+        $data = $user->raffles()->orderBy('id')->paginate()->toArray();
 
         $data['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
         $data['total_raffles_finished'] = $user->raffles()->where('status', 'Encerrado')->count();
@@ -62,7 +62,7 @@ class SellerController extends Controller
                 ->groupBy(DB::raw('DATE(created_at)'))->get()
         ];
 
-        $data['participants']['data'] = $raffle->participants()->orderBy('id')->paginate();
+        $data['participants']['data'] = $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate();
 
         $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('document')->count();
         $data['participants']['ranking'] = $raffle->participants()->select('document', 'name', 'email', DB::raw('COUNT(*) as quantity'), DB::raw('SUM(amount) as total_value'))->groupBy('document', 'name', 'email')->orderByDesc('total_value')->take(3)->get();

@@ -23,19 +23,19 @@ export default {
             showModal: false
         }
     },
-    methods: {
-        openModal() {
-            this.showModal = true
-            document.body.classList.add('active');
-        },
-        closeModal() {
-            this.showModal = false
-            document.body.classList.remove('active');
-        }
-    },
-    mounted() {
-        console.log('Dados recebidos:', this.data);
-    }
+    // methods: {
+    //     openModal() {
+    //         this.showModal = true
+    //         document.body.classList.add('active');
+    //     },
+    //     closeModal() {
+    //         this.showModal = false
+    //         document.body.classList.remove('active');
+    //     }
+    // },
+    // mounted() {
+    //     console.log('Dados recebidos:', this.data);
+    // }
 }
 </script>
 
