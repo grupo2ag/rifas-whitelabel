@@ -9,7 +9,7 @@ html{
 }
 
 .c-content{
-    @apply px-4 py-7 md:p-7 md:rounded-3xl bg-content border-t md:border border-base-100/70;
+    @apply px-4 border-t py-7 md:p-7 md:rounded-3xl bg-content md:border border-base-100/70;
 }
 
 .pulsate-fwd {
@@ -33,7 +33,7 @@ html{
 }
 
 .bedge{
-    @apply py-3 rounded-md text-sm;
+    @apply py-3 text-sm rounded-md;
 }
 
 body.active {
@@ -50,7 +50,7 @@ body.active {
     background: #fff;
 }
 
-.swal2-icon.swal2-warning, .swal2-icon.swal2-error {
+.swal2-icon.swal2-warning, .swal2-icon.swal2-error, .swal2-icon.swal2-question {
     padding: 8px;
     background: #fff;
     margin-top: -2rem;
@@ -60,8 +60,7 @@ body.active {
 }
 
 .swal2-icon.swal2-success {
-    /* padding: 8px;
-     margin-top: -2rem;*/
+     margin-top: -2rem;
 }
 
 .sw-title {

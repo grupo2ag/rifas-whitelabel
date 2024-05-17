@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from '@inertiajs/inertia-vue3';
 import AuthenticatedLayout from '../../../../Layouts/AuthenticatedLayout.vue';
-import CardCampaign from '../../../../Components/Cards/CardCampaign.vue';
+import CardCampaign from '../../../../Components/Cards/CardRaffle.vue';
 import CardDashboard from '../../../../Components/Cards/CardDashboard.vue';
 import {
     TicketIcon

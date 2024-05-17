@@ -2,6 +2,7 @@
 import StatsRaffleSale from '@/Components/Stats/StatsRaffleSale.vue';
 import moment from 'moment';
 import Pagination from '@/Components/Pagination.vue';
+import * as func from '@/Helpers/functions';
 import {
     UserIcon,
     CurrencyDollarIcon,
@@ -18,13 +19,6 @@ export default {
         data: Object
     },
     methods: {
-        translateDate(date) {
-            return moment(date).format('DD/MM/YYYY');
-        },
-        translateMoney(value) {
-            if(!value) value = 0;
-            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        },
         getColorCup(index) {
             index = index.toString();
 
@@ -35,14 +29,6 @@ export default {
             }
             return colors[index]
         },
-        getInitials(completeName) {
-            const caracters = completeName.split(/\s+/);
-            let initials = '';
-            caracters.forEach(caracter => {
-                initials += caracter.charAt(0);
-            });
-            return initials.toUpperCase();
-        },
     },
     mounted() {
         console.log(this.data);
@@ -50,12 +36,12 @@ export default {
 }
 </script>
 <template>
-    <div class="flex flex-row flex-wrap justify-center mb-4">
+    <div class="flex flex-row flex-wrap justify-center">
         <div v-for="(participant, index) in data?.participants?.ranking" :key="index" class="w-full px-2 mb-2 lg:w-4/12">
-            <StatsRaffleSale :userName="participant?.name" :value="translateMoney(participant?.total_value)" :textBottom="participant?.email"
-                :shortName="getInitials(participant?.name)">
+            <StatsRaffleSale :userName="participant?.name" :value="func.translateMoney(participant?.total_value)" :textBottom="participant?.email"
+                :shortName="func.getInitials(participant?.name)">
                 <template #cup>
-                    <div class="p-2 mb-2 border rounded-full border-white-light bg-neutral timeline-middle" :class="getColorCup(index)">
+                    <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle" :class="getColorCup(index)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4 lg:w-6 lg:h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -66,7 +52,7 @@ export default {
             </StatsRaffleSale>
         </div>
     </div>
-    <div class="flex flex-row flex-wrap w-full py-2 rounded-lg bg-base-100">
+    <div v-if="data?.participants?.data?.data && data?.participants?.data?.data?.length > 0" class="flex flex-row flex-wrap w-full py-2 mt-4 rounded-lg bg-base-100">
         <div class="flex justify-start w-full">
             <div class="px-4 text-neutral card-title">
                 Minhas Vendas
@@ -76,9 +62,9 @@ export default {
             <div class="flex justify-center w-1/12">Id</div>
             <div class="flex justify-center w-3/12">Nome</div>
             <div class="flex justify-center w-3/12">Email</div>
-            <div class="flex justify-center w-1/12">Telefone</div>
+            <div class="flex justify-center w-2/12">Telefone</div>
             <div class="flex justify-center w-1/12">Cotas</div>
-            <div class="flex justify-center w-2/12">Valor</div>
+            <div class="flex justify-center w-1/12">Valor</div>
             <div class="flex justify-center w-1/12">Data</div>
         </div>
 
@@ -87,10 +73,10 @@ export default {
             <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-primary text-primary-bw">{{ sale?.id }}</div>
             <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.name}}</div>
             <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.email}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.phone}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12"><PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.phone}}</div>
             <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><TicketIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.paid}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12"><CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{translateMoney(sale?.amount)}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{translateDate(sale?.created_at)}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{func.translateMoney(sale?.amount)}}</div>
+            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{func.translateDate(sale?.created_at)}}</div>
         </div>
         <!--  -->
         <div class="flex flex-row w-full px-2" :class='{"hidden": data?.participants?.data?.last_page == 1}'>
@@ -99,5 +85,4 @@ export default {
             </div>
         </div>
     </div>
-
 </template>

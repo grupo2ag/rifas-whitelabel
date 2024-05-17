@@ -15,7 +15,7 @@ trait HasProfilePhotoCustom
     {
         $name = (string) Str::uuid();
         $webp = (string) Image::make($photo->get())->encode('webp', 75);
-        $path = $storagePath.'/'.$name.'.webp';
+        $path = config('filesystems.disks.s3.path').'/images/'.auth()->user()->id.'/'.$storagePath.'/'.$name.'.webp';
         Storage::disk($this->profilePhotoDisk())->put($path, $webp);
 
         tap($this->profile_photo_path, function ($previous) use ($photo, $path, $webp) {

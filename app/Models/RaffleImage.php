@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class RaffleImage
- * 
+ *
  * @property int $id
  * @property string|null $path
  * @property int $raffle_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $highlight
- * 
+ *
  * @property Raffle $raffle
  *
  * @package App\Models
@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 class RaffleImage extends Model
 {
 	protected $table = 'raffle_images';
+
+    public $timestamps = true;
 
 	protected $casts = [
 		'raffle_id' => 'int',

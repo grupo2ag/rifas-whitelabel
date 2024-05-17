@@ -121,11 +121,6 @@ class Raffle extends Model
 		return $this->hasMany(Participant::class);
 	}
 
-    public function scopeActivateRaffles()
-    {
-        return $this->where('status', '=', 'Ativo');
-    }
-
     public function scopeOfId($query, $id)
     {
         return $query->where('id', $id);
@@ -178,9 +173,14 @@ class Raffle extends Model
         return $query->where('link', $value);
     }
 
-    public function scopeVisible(Builder $query, string $value): Builder
+    public function scopeVisible(Builder $query, int $value): Builder
     {
         return $query->where('visible', $value);
+    }
+
+    public function scopeActivateRaffles(Builder $query, string $value = 'Ativo'): Builder
+    {
+        return $query->where('status', '=', $value);
     }
 
     public function scopeExclude($query, $columns)

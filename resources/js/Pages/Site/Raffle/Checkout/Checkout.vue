@@ -392,7 +392,7 @@ export default {
                     <span class="hidden md:block">Voltar</span>
                 </Button>
 
-                <h3 class="w-full text-2xl font-bold text-center text-neutral font-secondary mb-2 ">
+                <h3 class="w-full mb-2 text-2xl font-bold text-center text-neutral font-secondary ">
                     Checkout
                 </h3>
             </div>
@@ -401,9 +401,9 @@ export default {
         <template #body>
             <div class="pb-3 mb-3 border-b border-base-100">
                 <template v-if="false">
-                    <p class="text-neutral/70 text-sm mb-1">Deseja reservar o(s) número(s):</p>
+                    <p class="mb-1 text-sm text-neutral/70">Deseja reservar o(s) número(s):</p>
                     <div
-                        class="w-full pb-3 md:pb-0 flex items-start flex-wrap gap-1">
+                        class="flex flex-wrap items-start w-full gap-1 pb-3 md:pb-0">
                         <template v-for="item in data">
                             <div class="bg-primary text-primary-bw px-3 py-1.5 flex items-center rounded-md gap-1">
                                 <p class="text-sm uppercase text-primary-bw">
@@ -418,7 +418,7 @@ export default {
                 </template>
                 <template v-else>
                     <div class="">
-                        <p class="text-neutral text-center">
+                        <p class="text-center text-neutral">
                             Seus números serão gerados assim que concluir a reserva.
                         </p>
                     </div>
@@ -426,11 +426,11 @@ export default {
             </div>
 
             <div class="p-2.5 bg-primary flex rounded-xl gap-8">
-                <div class="p-3 flex items-center justify-center bg-content/50 rounded-lg">
+                <div class="flex items-center justify-center p-3 rounded-lg bg-content/50">
                     <Icon name="icon-bag" class="w-6 h-6 stroke-primary-bw"/>
                 </div>
 
-                <div class="flex-1 grid grid-cols-2">
+                <div class="grid flex-1 grid-cols-2">
                     <div class="">
                         <p class="text-sm text-primary-bw">Quantidade</p>
                         <p class="text-2xl text-primary-bw">{{ quantity }}</p>
@@ -464,15 +464,15 @@ export default {
                                v-mask="['(##) #####-####', '(##) ####-####']"/>
                     </div>
 
-                    <div class="p-2 bg-warning rounded-xl mb-3">
+                    <div class="p-2 mb-3 bg-warning rounded-xl">
                         <p class="flex items-center gap-2 text-sm text-warning-bw/70">
                         <span
-                            class="rounded-full bg-warning-bw/20 w-5 h-5 flex items-center justify-center text-warning-bw">!
+                            class="flex items-center justify-center w-5 h-5 rounded-full bg-warning-bw/20 text-warning-bw">!
                         </span>
                             Informe seu telefone para continuar.</p>
                     </div>
 
-                    <p class="text-xs text-neutral/70 mb-2">
+                    <p class="mb-2 text-xs text-neutral/70">
                         Reservando seu(s) número(s), você declara que leu e concorda com nossos <a
                         href="" target="_blank" class="text-blue">Termos de Uso.</a>
                     </p>
@@ -487,13 +487,13 @@ export default {
             <template v-if="step === 'CONFIRM'">
                 <form @submit.prevent="onPurchase" class="pt-3 mt-3 border-t border-base-100">
 
-                    <div class="my-2 p-2 border border-base-100 rounded-xl flex w-full items-center gap-3 mb-4">
-                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                            <span class="font-bold text-lg text-primary-bw">{{ getInitials(formPurchase.name) }}</span>
+                    <div class="flex items-center w-full gap-3 p-2 my-2 mb-4 border border-base-100 rounded-xl">
+                        <div class="flex items-center justify-center w-12 h-12 rounded-full bg-primary">
+                            <span class="text-lg font-bold text-primary-bw">{{ getInitials(formPurchase.name) }}</span>
                         </div>
 
                         <div class="">
-                            <p class="text-neutral font-bold">{{ formPurchase.name }}</p>
+                            <p class="font-bold text-neutral">{{ formPurchase.name }}</p>
                             <p class="text-sm text-neutral/70">{{ formPurchase.phone }}</p>
                             <p class="text-sm text-neutral/70">{{ formPurchase.email }}</p>
                         </div>
@@ -545,17 +545,17 @@ export default {
                                v-model="formPurchase.cpf" :error="validatePurchase.cpf" v-mask="'###.###.###-##'"/>
                     </div>
 
-                    <div class="p-2 bg-warning/20 rounded-xl mb-3">
+                    <div class="p-2 mb-3 bg-warning/20 rounded-xl">
                         <p class="flex items-center gap-2 text-sm text-warning-bw/60">
                         <span
-                            class="rounded-full bg-warning/50 w-5 h-5 flex items-center justify-center text-warning-bw">
+                            class="flex items-center justify-center w-5 h-5 rounded-full bg-warning/50 text-warning-bw">
                         !
                         </span>
                             Informe seus dados corretamente.
                         </p>
                     </div>
 
-                    <p class="text-xs text-neutral/70 mb-3">
+                    <p class="mb-3 text-xs text-neutral/70">
                         Reservando seu(s) número(s), você declara que leu e concorda com nossos
                         <a href="" target="_blank" class="text-blue">Termos de Uso.</a>
                     </p>

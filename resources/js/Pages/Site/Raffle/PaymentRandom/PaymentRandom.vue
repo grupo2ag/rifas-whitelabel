@@ -48,7 +48,7 @@ export default {
     },
     data() {
         return {
-            quotas: this.raffle?.raffle_popular_numbers.length ? this.raffle?.raffle_popular_numbers :
+            quotas: this.raffle?.raffle_popular_numbers.length ? this.raffle.raffle_popular_numbers :
             [
                     {'quantity_numbers': 10, 'popular': false},
                     {'quantity_numbers': 30, 'popular': false},
