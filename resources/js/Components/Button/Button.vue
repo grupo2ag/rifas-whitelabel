@@ -21,7 +21,7 @@ const defaultClasses = computed(() => 'flex items-center justify-center whitespa
 const sizeClasses = computed(() => {
     switch (props.size) {
         case 'xs':
-            return 'text-xs px-4 py-2';
+            return 'text-xs px-3 py-1.5';
         case 'sm':
             return 'text-sm px-4 py-1.5';
         case 'lg':
@@ -34,7 +34,7 @@ const sizeClasses = computed(() => {
 const colorsClasses = computed(() => {
     switch (props.color) {
         case 'primary':
-            return 'bg-primary hover:bg-primary/80 text-primary-bw';
+            return 'bg-primary hover:bg-primary/80 text-primary-bw border border-primary';
         case 'warning':
             return 'bg-warning hover:bg-warning/80 text-warning-bw';
         case 'success':

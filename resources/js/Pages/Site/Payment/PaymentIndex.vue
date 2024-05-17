@@ -117,7 +117,7 @@ export default {
                             </li>
                             <li class="c-details__item">
                                 Situação
-                                <p>{{ status != 'PAID' ? 'Aguardando Pagamento' : 'Pago'}}</p>
+                                <p>{{ status === 'PAID' ? 'Pago' : status === 'CANCELED' ? 'Cancelado' : 'Aguardando Pagamento'}}</p>
                             </li>
                             <li class="c-details__item">
                                 Titulos
@@ -126,13 +126,13 @@ export default {
                                 </template>
                                 <template v-else>
                                     <div class="flex flex-wrap gap-0.5 mt-1 mb-2">
-                                        <template  v-for="item in raffle.numbers.split(',')">
+                                        <template v-for="item in raffle.numbers.split(',')">
                                             <span class="w-16 border border-neutral/20 text-neutral font-semibold py-1 text-sm text-center ">{{item}}</span>
                                         </template>
                                     </div>
                                 </template>
                             </li>
-                            <li class="c-details__item">
+                            <li v-if="status === 'PAID'" class="c-details__item">
                                 Quantidade
                                 <p> {{ status != 'PAID' ? raffle.reserved :  raffle.pago }} </p>
                             </li>
