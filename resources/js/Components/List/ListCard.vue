@@ -20,6 +20,8 @@ export default {
         },
         translateMoney(valor) {
             if(!valor) valor = 0;
+            else valor = parseFloat(valor/100).toFixed(2);
+
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
         },

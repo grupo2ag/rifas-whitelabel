@@ -204,6 +204,7 @@ return [
         'text'      => 'texto',
         'time'      => 'hora',
         'title'     => 'título',
+        'today'     => 'hoje',
         'username'  => 'usuário',
         'year'      => 'ano',
         'description' => 'descrição',
