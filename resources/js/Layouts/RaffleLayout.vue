@@ -181,7 +181,7 @@ export default {
                     <DocumentTextIcon class="w-6 mr-2 text-primary" />
                     <h2 class="text-base text-xl font-medium title-font">Descrição</h2>
                 </div>
-                <p class="mx-2">{{ data?.description }}</p>
+                <p class="mx-2" v-html="data?.description"></p>
             </div>
         </div>
         <div class="w-full">
