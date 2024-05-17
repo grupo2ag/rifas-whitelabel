@@ -119,3 +119,9 @@ export default {
         </div>
     </div>
 </template>
+
+<style lang="scss" scoped>
+.c-copied{
+    @apply w-full text-sm text-center bg-primary mx-auto text-primary-bw border-primary font-bold px-4 py-3 rounded-xl border absolute top-0 z-[10];
+}
+</style>
