@@ -50,12 +50,12 @@ export default {
 }
 </script>
 <template>
-    <div class="flex flex-row flex-wrap justify-center mb-4">
+    <div class="flex flex-row flex-wrap justify-center">
         <div v-for="(participant, index) in data?.participants?.ranking" :key="index" class="w-full px-2 mb-2 lg:w-4/12">
             <StatsRaffleSale :userName="participant?.name" :value="translateMoney(participant?.total_value)" :textBottom="participant?.email"
                 :shortName="getInitials(participant?.name)">
                 <template #cup>
-                    <div class="p-2 mb-2 border rounded-full border-white-light bg-neutral timeline-middle" :class="getColorCup(index)">
+                    <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle" :class="getColorCup(index)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4 lg:w-6 lg:h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -66,7 +66,7 @@ export default {
             </StatsRaffleSale>
         </div>
     </div>
-    <div class="flex flex-row flex-wrap w-full py-2 rounded-lg bg-base-100">
+    <div v-if="data?.participants?.data?.data && data?.participants?.data?.data?.length > 0" class="flex flex-row flex-wrap w-full py-2 mt-4 rounded-lg bg-base-100">
         <div class="flex justify-start w-full">
             <div class="px-4 text-neutral card-title">
                 Minhas Vendas
@@ -99,5 +99,4 @@ export default {
             </div>
         </div>
     </div>
-
 </template>

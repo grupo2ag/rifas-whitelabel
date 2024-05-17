@@ -35,7 +35,6 @@ export default {
   mounted() {
       const url = new URLSearchParams(window.location.search);
       if(url.has('page')) this.openTab = 2;
-    console.log(this.data, url.get('tab'));
   }
 }
 </script>

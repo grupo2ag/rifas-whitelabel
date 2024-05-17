@@ -47,6 +47,9 @@ const series = [{
 export default {
     props: {
         data: Object
+    },
+    mounted() {
+        console.log('dados: ', this.data)
     }
 }
 </script>
@@ -56,27 +59,27 @@ export default {
     <Head title="Dashboard"></Head>
     <AuthenticatedLayout :user="$page.props.auth.user">
         <template #header>
-            <h2 class="flex items-center font-semibold text-white lg:text-xl">
-                <Squares2X2Icon class="w-5 h-5 mr-2 text-white lg:w-6 lg:h-6" />
+            <h2 class="flex items-center font-semibold text-content lg:text-xl">
+                <Squares2X2Icon class="w-5 h-5 mr-2 text-content lg:w-6 lg:h-6" />
                 Dashboard
             </h2>
         </template>
-        <div class="container-none">
+        <div class="!w-full container-none px-2">
             <!-- <CarouselDashboard /> -->
             <div class="flex flex-row gap-3 lg:min-h-[35rem] mb-6 md:flex-wrap flex-wrap lg:flex-nowrap">
                 <div class="w-full py-2 rounded-lg lg:w-6/12 bg-content md:w-full">
-                    <CarouselDashboard />
+                    <CarouselDashboard :data="data?.raffles?.data"/>
                 </div>
                 <div class="flex flex-wrap justify-center w-full lg:w-6/12 md:w-full">
                     <div class="flex flex-row flex-wrap w-full lg:h-1/6 ">
                         <div class="w-full px-2 mb-2 lg:w-4/12 md:w-6/12 ">
-                            <CardDashboard :title="'Rifas Ativas'" :valueCount="'1'" />
+                            <CardDashboard :title="'Rifas Ativas'" :valueCount="data?.raffles?.total_raffles_active ?? 0" />
                         </div>
                         <div class="w-full px-2 mb-2 lg:w-4/12 md:w-6/12 ">
-                            <CardDashboard :title="'Rifas Finalizadas'" :valueCount="'0'" />
+                            <CardDashboard :title="'Rifas Finalizadas'" :valueCount="data?.raffles?.total_raffles_finished ?? 0" />
                         </div>
                         <div class="w-full px-2 mb-2 lg:w-4/12 md:w-6/12 ">
-                            <CardDashboard :title="'Total Arrecadado'" :valueCount="'R$4,000.000'" />
+                            <CardDashboard :title="'Rifas Criadas'" :valueCount="data?.raffles?.total_raffles" />
                         </div>
                     </div>
                     <div class="flex flex-row flex-wrap w-full pt-6 lg:h-5/6">
@@ -94,7 +97,7 @@ export default {
                                 </div>
                                 <div class="flex flex-row justify-center w-full">
                                     <div class="flex justify-center">
-                                        <button class="p-2 border-none rounded-lg bg-primary btn">Adicionar meio de
+                                        <button class="p-2 border-none rounded-lg bg-primary btn text-primary-bw">Adicionar meio de
                                             pagamento</button>
                                     </div>
                                 </div>

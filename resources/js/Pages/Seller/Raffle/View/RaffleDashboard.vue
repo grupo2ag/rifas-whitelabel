@@ -65,7 +65,7 @@ function translateDate(data) {
 </script>
 
 <template>
-    <div class="flex flex-row flex-wrap justify-center mb-4">
+    <div class="flex flex-row flex-wrap justify-center">
         <div class="w-full px-2 mb-2 lg:w-3/12">
             <StatsRaffle :title="'Participantes'" :value="data?.participants?.distinct"
                 :textBottom="'Total de participantes'">
@@ -98,7 +98,7 @@ function translateDate(data) {
             </StatsRaffle>
         </div>
     </div>
-    <div class="flex gap-3 flex-row min-h-[23rem] lg:max-h-[25rem] flex-wrap lg:flex-nowrap">
+    <div v-if="data?.grafics?.paid?.length > 0 || data?.grafics?.expired?.length > 0" class="mt-4 flex gap-3 flex-row min-h-[23rem] lg:max-h-[25rem] flex-wrap lg:flex-nowrap">
         <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 bg-base-100">
             <div class="flex flex-row flex-wrap">
                 <div class="w-full px-4">

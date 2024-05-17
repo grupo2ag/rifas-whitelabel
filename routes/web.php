@@ -37,6 +37,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/',[SellerController::class, 'index'])->name('index');
             Route::get('/view/{id}',[SellerController::class, 'view'])->name('raffleView');
             Route::get('/created',[SellerController::class, 'created'])->name('raffleCreated');
+            Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
         });
     });
 });

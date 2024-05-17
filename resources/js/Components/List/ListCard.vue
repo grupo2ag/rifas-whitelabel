@@ -45,11 +45,12 @@ export default {
         <div class="flex flex-row flex-wrap">
             <div class="w-full mb-1 sm:w-full md:w-full xl:w-1/12 lg:w-full sm:mb-1 md:mb-1 xl:mb-0">
                 <div class="flex flex-row">
-                    <div class="w-10/12 sm:w-11/12 md:w-11/12 lg:w-11/12 h-[8rem]">
+                    <!-- <div class="w-10/12 sm:w-11/12 md:w-11/12 lg:w-11/12 h-[8rem]"> -->
+                    <div class="w-full h-[8rem]">
                         <img src="https://mundoemrevista.com.br/wp-content/uploads/2024/01/trevo-de-quatro-folhas.webp"
                             alt="Preview" class="object-cover w-full h-full rounded-lg">
                     </div>
-                    <div class="grid w-2/12 sm:w-1/12 md:w-1/12 lg:w-1/12 sm:grid md:grid xl:hidden lg:grid">
+                    <!-- <div class="grid w-2/12 sm:w-1/12 md:w-1/12 lg:w-1/12 sm:grid md:grid xl:hidden lg:grid">
                         <div class="flex flex-col">
                             <div class="flex justify-end w-full pb-1 h-3/6">
                                 <button class="h-full p-0 px-2 py-2 text-white btn btn-info">
@@ -62,7 +63,7 @@ export default {
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="flex items-center w-full mb-2 sm:w-full md:w-full xl:px-4 xl:w-4/12">

@@ -17,24 +17,27 @@ class SellerController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if(!$user){
+        if (!$user) {
             return Inertia::render('Auth/Login');
         }
-        $data = $user->raffles()->orderBy('id')->paginate();
+        $data = $user->raffles()->orderBy('id')->paginate()->toArray();
 
-        foreach ($data->items() as $key => $value) {
+        $data['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
+        $data['total_raffles_finished'] = $user->raffles()->where('status', 'Encerrado')->count();
+        $data['total_raffles'] = $user->raffles()->count();
+
+        foreach ($data['data'] as $key => $value) {
             $raffle = $user->raffles()->ofId($value['id'])->first();
-            $data->items()[$key]['paid'] = $raffle->participants()->sum('paid');
+            $data['data'][$key]['paid'] = $raffle->participants()->sum('paid');
         }
 
-        return Inertia::render('Seller/Raffle/RaffleIndex', ['data'=> $data]);
-
+        return Inertia::render('Seller/Raffle/RaffleIndex', ['data' => $data]);
     }
 
     public function view(Request $request, $id)
     {
         $user = Auth::user();
-        if(!$user){
+        if (!$user) {
             return Inertia::render('Auth/Login');
         }
 
@@ -44,13 +47,13 @@ class SellerController extends Controller
 
         $data['grafics'] = [
             'participants' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(DISTINCT document) as value'))
-            ->groupBy(DB::raw('DATE(created_at)'))->get(),
+                ->groupBy(DB::raw('DATE(created_at)'))->get(),
 
             'paid' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(paid) as value'))
-            ->groupBy(DB::raw('DATE(created_at)'))->get(),
+                ->groupBy(DB::raw('DATE(created_at)'))->get(),
 
             'expired' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('(SUM(reserved) - SUM(paid)) as value'))
-            ->groupBy(DB::raw('DATE(created_at)'))->get()
+                ->groupBy(DB::raw('DATE(created_at)'))->get()
         ];
 
         $data['participants']['data'] = $raffle->participants()->orderBy('id')->paginate();
@@ -61,13 +64,30 @@ class SellerController extends Controller
         $data['raffle']['image'] = $raffle->raffle_images()->first();
         $data['raffle']['paid'] = $raffle->participants()->sum('paid');
 
-      // dd('Aqui');
-        return Inertia::render('Seller/Raffle/RaffleView', ['data'=> $data]);
+        // dd('Aqui');
+        return Inertia::render('Seller/Raffle/RaffleView', ['data' => $data]);
     }
 
     public function created(Request $request)
     {
 
         return Inertia::render('Seller/Raffle/RaffleCreate');
+    }
+
+    public function updated(Request $request, $id)
+    {
+        $user = Auth::user();
+        $raffle = $user->raffles()->findOrFail($id);
+
+        if (!$raffle) {
+            return redirect()->back()->with('error', 'Rifa não encontrada!.');
+        }
+
+        $raffle->update([
+            'status' => 'Encerrado',
+            'updated_at' => now(),
+            'visible' => 0
+        ]);
+        return redirect()->back()->with('success', 'Rifa encerrada com sucesso.');
     }
 }
