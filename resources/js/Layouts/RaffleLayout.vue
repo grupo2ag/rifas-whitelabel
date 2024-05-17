@@ -31,9 +31,46 @@ export default {
             return moment(data).format('DD/MM/YYYY');
         },
         translateMoney(value) {
-            if(!value) value = 0;
+            if (!value) value = 0;
             return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
+        },
+        onExclude() {
+            this.$swal({
+                title: `Deseja realmente encerrar a rifa #${this?.data?.title}?`,
+                text: 'Uma vez encerrada, a rifa não poderá ser ativada novamente!',
+                confirmButtonText: "Sim, Encerrar",
+                showCancelButton: true,
+                cancelButtonText: "Não, Cancelar",
+                icon: 'question',
+                type: 'question',
+                allowOutsideClick: true,
+                customClass: {
+                    confirmButton: 'sw-btn sw-btn--red',
+                    cancelButton: 'sw-btn sw-btn--blue',
+                    popup: 'sw-popup',
+                    title: 'sw-title',
+                }
+            }).then((res) => {
+                if (res?.isConfirmed) {
+                    axios.post(route('raffles.raffleUpdated', this.data?.id))
+                        .then(response => {
+                            this.$swal(
+                                'Pronto!',
+                                `A Rifa #${this.data?.title} foi encerrada com sucesso!`,
+                                'success'
+                            )
+                            this.data.status = 'Encerrado';
+                        })
+                        .catch(error => {
+                            this.$swal(
+                                'Ops!',
+                                `Ocorreu um erro ao encerrar a Rifa #${this.data?.title}`,
+                                'error'
+                            )
+                            console.error(error?.response);
+                        });
+                }
+            })
         }
     }
 }
@@ -69,7 +106,7 @@ export default {
                             <div class="flex flex-row">
                                 <ChartBarIcon class="w-6 mr-2 min-w-6 text-primary" />
                                 <div class="py-3 badge"
-                                :class="{ 'badge-success': data?.status.toLowerCase() == 'ativo', 'badge-error': data?.status.toLowerCase() != 'ativo' }">
+                                    :class="{ 'badge-success': data?.status.toLowerCase() == 'ativo', 'badge-error': data?.status.toLowerCase() != 'ativo' }">
                                     {{ data?.status }}
                                 </div>
                             </div>
@@ -83,13 +120,13 @@ export default {
                         <div class="grid w-full mb-2 lg:hidden">
                             <div class="flex flex-row">
                                 <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>{{translateMoney(data?.price)}}/Cota</p>
+                                <p>{{ translateMoney(data?.price) }}/Cota</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden ">
                             <div class="flex flex-row">
                                 <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
-                                <p>{{data?.paid}}/{{data?.quantity}}</p>
+                                <p>{{ data?.paid }}/{{ data?.quantity }}</p>
                             </div>
                         </div>
                         <div class="w-full mb-2">
@@ -105,19 +142,19 @@ export default {
                         <div class="w-full ">
                             <div class="flex flex-row">
                                 <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>{{translateMoney(data?.price)}}/Cota</p>
+                                <p>{{ translateMoney(data?.price) }}/Cota</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row">
                                 <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
-                                <p>{{data?.paid}}/{{data?.quantity}}</p>
+                                <p>{{ data?.paid }}/{{ data?.quantity }}</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row">
-                                <TableCellsIcon class="w-6 mr-2 text-primary"/>
-                                <p>{{ data?.type == 'automatico' ? 'Automático':'Manual' }}</p>
+                                <TableCellsIcon class="w-6 mr-2 text-primary" />
+                                <p>{{ data?.type == 'automatico' ? 'Automático' : 'Manual' }}</p>
                             </div>
                         </div>
                         <div class="w-full ">
@@ -129,14 +166,14 @@ export default {
                 </div>
                 <div class="flex flex-wrap items-center w-full mt-2 lg:w-2/12">
                     <div class="flex flex-row flex-wrap w-full">
-                        <div class="flex w-full mb-2">
+                        <div v-if="data?.status.toLowerCase() == 'ativo'" class="flex w-full mb-2">
                             <button class="text-white btn btn-info btn-block btn-sm lg:btn-md">
                                 <PencilSquareIcon class="w-6" /> Editar
                             </button>
                         </div>
-                        <div class="flex w-full mb-2">
-                            <button class="text-white btn btn-error btn-block btn-sm lg:btn-md">
-                                <TrashIcon class="w-6" /> Excluir
+                        <div v-if="data?.status.toLowerCase() == 'ativo'" class="flex w-full mb-2">
+                            <button @click="onExclude()" class="text-white btn btn-error btn-block btn-sm lg:btn-md">
+                                <FlagIcon class="w-6" /> Encerrar
                             </button>
                         </div>
                     </div>

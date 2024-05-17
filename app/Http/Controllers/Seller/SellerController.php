@@ -8,7 +8,6 @@ use App\Models\Participant;
 use App\Models\Raffle;
 use App\Models\RaffleAward;
 use App\Models\RaffleImage;
-use App\Models\User;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +27,11 @@ class SellerController extends Controller
 
         $data = $user->raffles()->orderBy('id')->paginate();
 
-        foreach ($data->items() as $key => $value) {
+        $data['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
+        $data['total_raffles_finished'] = $user->raffles()->where('status', 'Encerrado')->count();
+        $data['total_raffles'] = $user->raffles()->count();
+
+        foreach ($data['data'] as $key => $value) {
             $raffle = $user->raffles()->ofId($value['id'])->first();
             $data->items()[$key]['paid'] = $raffle->participants()->sum('paid');
             $image = $raffle->raffle_images()->first();
@@ -229,5 +232,22 @@ class SellerController extends Controller
             DB::rollBack();
             return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
         }
+    }
+
+    public function updated(Request $request, $id)
+    {
+        $user = Auth::user();
+        $raffle = $user->raffles()->findOrFail($id);
+
+        if (!$raffle) {
+            return redirect()->back()->with('error', 'Rifa não encontrada!.');
+        }
+
+        $raffle->update([
+            'status' => 'Encerrado',
+            'updated_at' => now(),
+            'visible' => 0
+        ]);
+        return redirect()->back()->with('success', 'Rifa encerrada com sucesso.');
     }
 }

@@ -5,6 +5,11 @@ import CardDashboard from '@/Components/Cards/CardDashboard.vue';
 import ListCard from '@/Components/List/ListCard.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import Pagination from '@/Components/Pagination.vue';
+import {
+    TicketIcon,
+    CheckIcon,
+    ClockIcon
+} from '@heroicons/vue/24/outline';
 </script>
 
 <script>
@@ -45,19 +50,37 @@ export default {
             </h2>
         </template>
         <div class="container sm:max-w-full !w-full">
-            <div class="flex flex-row flex-wrap mb-2">
-                <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
-                    <CardDashboard :title="'Rifas Criadas'" :valueCount="'1'" />
+            <div class="flex flex-row flex-wrap justify-center mb-2">
+                <div class="w-full mb-2 lg:w-4/12 lg:px-2 sm:w-full sm:mb-2">
+                    <CardDashboard :title="'Rifas Criadas'" :valueCount="data?.total_raffles ?? 0">
+                        <template #icon>
+                            <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle">
+                                <TicketIcon class="w-8" />
+                            </div>
+                        </template>
+                    </CardDashboard>
                 </div>
-                <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
-                    <CardDashboard :title="'Rifas Ativas'" :valueCount="'1'" />
+                <div class="w-full mb-2 lg:w-4/12 lg:px-2 sm:w-full sm:mb-2">
+                    <CardDashboard :title="'Rifas Ativas'" :valueCount="data?.total_raffles_active ?? 0" >
+                        <template #icon>
+                            <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle">
+                                <ClockIcon class="w-8" />
+                            </div>
+                        </template>
+                    </CardDashboard>
                 </div>
-                <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
-                    <CardDashboard :title="'Rifas Finalizadas'" :valueCount="'0'" />
+                <div class="w-full mb-2 lg:w-4/12 lg:px-2 sm:w-full sm:mb-2">
+                    <CardDashboard :title="'Rifas Encerradas'" :valueCount="data?.total_raffles_finished ?? 0">
+                        <template #icon>
+                            <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle">
+                                <CheckIcon class="w-8" />
+                            </div>
+                        </template>
+                    </CardDashboard>
                 </div>
-                <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
+                <!-- <div class="w-full mb-2 lg:w-3/12 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Total Arrecadado'" :valueCount="'R$4,000.000'" />
-                </div>
+                </div> -->
             </div>
             <div class="card bg-content">
                 <div class="flex flex-row">
@@ -79,7 +102,7 @@ export default {
                             <div class="flex justify-center w-1/12"></div>
                             <div class="flex justify-start w-4/12 ml-4">Nome</div>
                             <div class="flex justify-center w-1/12">Status</div>
-                            <div class="flex justify-center w-2/12">Valor</div>
+                            <div class="flex justify-center w-2/12">Valor/Cota</div>
                             <div class="flex justify-center w-1/12">%</div>
                             <div class="flex justify-center w-2/12">Criada Em</div>
                             <div class="flex justify-center w-1/12"></div>
@@ -88,7 +111,7 @@ export default {
                     <div v-for="raffle in data?.data" :key="raffle?.id" class="w-full mb-4">
                         <ListCard :infos="raffle" />
                     </div>
-                    <div class="flex flex-row w-full px-2" :class='{"hidden": data?.last_page == 1}'>
+                    <div class="flex flex-row w-full px-2" :class='{ "hidden": data?.last_page == 1 }'>
                         <div class="flex justify-end w-full">
                             <Pagination :data="data" />
                         </div>
