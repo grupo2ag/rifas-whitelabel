@@ -23,7 +23,7 @@ export default defineComponent(  {
         <slot/>
     </main>
 
-    <FooterSing/>
+    <FooterSing v-if="route().current('pay') === false"/>
 
     <AdsScript/>
 </template>

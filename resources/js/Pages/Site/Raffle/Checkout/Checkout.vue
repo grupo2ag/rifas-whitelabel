@@ -12,7 +12,7 @@ import * as yup from "yup";
 import {pt} from 'yup-locale-pt';
 import {Inertia} from "@inertiajs/inertia";
 import {useForm} from "@inertiajs/inertia-vue3";
-import { PhoneInput } from '@lbgm/phone-number-input';
+import {PhoneInput} from '@lbgm/phone-number-input';
 import '@lbgm/phone-number-input/style';
 
 const cpfIsValid = function (cpf) {
@@ -131,20 +131,52 @@ export default {
                 phone: '',
                 email: '',
                 cpf: '',
+                buyer: '',
             },
             step: 'VERIFY',
-            customer: {}
+            customer: {},
         }
     },
     mounted() {
+        if (this.buyer > 0){
+            console.log('!= null')
+        } else {
+
+        }
+
+        console.log(this.formPurchase.buyer)
+
         yup.setLocale(pt);
         this.schemaPurchase = yup.object().shape({
-            name: yup.string().min(3, 'Digite ao menos 3 caracteres').required('Obrigatório'),
-            phone: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
-            phone_confirmation: yup.string().min(14, 'invalido').oneOf([yup.ref('phone'), null], 'Telefone diferente').required(''),
-            email: yup.string().email('Informe um E-mail válido').min(8, 'E-mail incompleto').required('Obrigatório').matches(func.emailRegex, "E-mail inválido"),
-            cpf: yup.string().min(13, 'CPF incompleto').required('Obrigatório').test('test-invalid-cpf', 'CPF Inválido', value => cpfIsValid(value))
-                .required('CPF é obrigatório'),
+
+            //name: yup.string().min(3, 'Digite ao menos 3 caracteres').required('Obrigatório'),
+            buyer: yup.string(),
+            name: yup.string().when("buyer", {
+                is: () => this.formPurchase.buyer === '',
+                then: yup.string().min(3, 'Digite ao menos 3 caracteres').required('Obrigatório'),
+                otherwise: yup.string(),
+            }),
+            phone: yup.string().when("buyer", {
+                is: () => this.formPurchase.buyer === '',
+                then: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
+                otherwise: yup.string(),
+            }),
+            phone_confirmation: yup.string().when("buyer", {
+                is: () => this.formPurchase.buyer === '',
+                then: yup.string().min(14, 'invalido').oneOf([yup.ref('phone'), null], 'Telefone diferente').required('Obrigatório'),
+                otherwise: yup.string(),
+            }),
+            email: yup.string().when("buyer", {
+                is: () => this.formPurchase.buyer === '',
+                then: yup.string().email('Informe um E-mail válido').min(8, 'E-mail incompleto').required('Obrigatório').matches(func.emailRegex, "E-mail inválido"),
+                otherwise: yup.string(),
+            }),
+            cpf: yup.string().when("buyer", {
+                is: () => this.formPurchase.buyer === '',
+                then: yup.string().min(13, 'CPF incompleto').required('Obrigatório').test('test-invalid-cpf', 'CPF Inválido', value => cpfIsValid(value))
+                    .required('CPF é obrigatório'),
+                otherwise: yup.string(),
+            }),
         })
 
         this.schemaVerify = yup.object().shape({
@@ -156,82 +188,85 @@ export default {
             this.$emit('close')
         },
         onVerify() {
-            this.validatorVerify();
+            //      this.validatorVerify();
 
             this.schemaVerify
-                .validate(this.formVerify, { abortEarly: false }).then(() => {
-                    this.formVerify.processing = true;
+                .validate(this.formVerify, {abortEarly: false}).then(() => {
+                this.formVerify.processing = true;
 
-                    fetch(route('verify', this.formVerify.phone)).then(
-                        resp => {
-                            resp.json().then((data) => {
-                                if(!!data.phone){
-                                    this.customer = data;
+                fetch(route('verify', this.formVerify.phone)).then(
+                    resp => {
+                        resp.json().then((data) => {
+                            if (!!data.phone) {
+                                this.customer = data;
 
-                                    this.formPurchase.name = this.customer.name
-                                    this.formPurchase.phone = this.customer.phone
-                                    this.formPurchase.email = this.customer.email
-                                    this.formPurchase.buyer = this.customer.buyer
-                                    //this.formPurchase.cpf = this.customer.cpf
+                                this.formPurchase.name = this.customer.name
+                                this.formPurchase.phone = this.customer.phone
+                                this.formPurchase.email = this.customer.email
+                                this.formPurchase.buyer = this.customer.buyer
+                                //this.formPurchase.cpf = this.customer.cpf
 
-                                    this.step = 'CONFIRM'
-                                }else this.step = 'PURCHASE'
-                            }).catch(error => {
-                                console.error(error);
-                            });
-                            this.formVerify.processing = false;
-                            this.clearVerify()
+                                this.step = 'CONFIRM'
+                            } else {
+                                this.formPurchase.phone = this.formVerify.phone
+                                this.step = 'PURCHASE'
+                            }
+                        }).catch(error => {
+                            console.error(error);
+                        });
+                        this.formVerify.processing = false;
+                        //   this.clearVerify()
                     });
-                }).catch((err) => {
-                    this.formVerify.processing = false;
+            }).catch((err) => {
+                this.formVerify.processing = false;
 
-                    err.inner.forEach((error) => {
-                        this.validateVerify = { ...this.validateVerify, [error.path]: error.message };
-                    });
+                err.inner.forEach((error) => {
+                    this.validateVerify = {...this.validateVerify, [error.path]: error.message};
                 });
+            });
         },
-        onPurchase(){
+        onPurchase() {
             //const form = useForm(this.formPurchase);
 
-            this.validatorPurchase();
+            // this.validatorPurchase();
 
-           /* this.schemaPurchase
-                .validate(this.formPurchase, { abortEarly: false }).then(() => {*/
+            this.schemaPurchase
+                .validate(this.formPurchase, {abortEarly: false}).then(() => {
                 this.formPurchase.processing = true;
 
                 axios.post(route('purchase', this.formPurchase))
                     .then((res) => {
                         let resposta = res.data
 
-                        if(!resposta.pix.order_id){
+                        if (!resposta.pix.order_id) {
                             this.formVerify.processing = false;
-                        }else{
+                        } else {
                             this.formVerify.processing = true;
                             console.log(resposta, resposta.pix.order_id);
                             Inertia.visit(route('pay', resposta.pix.order_id));
                         }
                         //FECHA LOADING
                     }).catch((errors) => {
-                        console.log('errors', errors);
-                        this.formVerify.processing = false;
-                        this.errors = errors;
+                    console.log('errors', errors);
+                    this.formVerify.processing = false;
+                    this.errors = errors;
 
-                        this.closeModal()
+                    this.closeModal()
 
-                        this.$swal({
-                            html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
-                            confirmButtonText: "Ok",
-                            icon: 'error',
-                            type: 'error',
-                            allowOutsideClick: true,
-                            customClass: {
-                                confirmButton: 'sw-btn sw-btn--red',
-                                popup: 'sw-popup',
-                                title: 'sw-title',
-                            }
-                        })
-                        //FECHA LOADING
+                    this.$swal({
+                        html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
+                        confirmButtonText: "Ok",
+                        icon: 'error',
+                        type: 'error',
+                        allowOutsideClick: true,
+                        customClass: {
+                            confirmButton: 'sw-btn sw-btn--red',
+                            popup: 'sw-popup',
+                            title: 'sw-title',
+                        }
                     })
+                    //FECHA LOADING
+                })
 
                 /*form.post(route('purchase'), {
                     preserveScroll: true,
@@ -247,13 +282,14 @@ export default {
                     }
                 });*/
 
-            /*}).catch((err) => {
+            }).catch((err) => {
+                // console.log('aqui')
                 this.formVerify.processing = false;
 
                 err.inner.forEach((error) => {
-                    this.validateVerify = { ...this.validateVerify, [error.path]: error.message };
+                    this.validatePurchase = {...this.validatePurchase, [error.path]: error.message};
                 });
-            });*/
+            });
         },
         validatorVerify($attribute) {
             Object.keys(this.validateVerify).forEach(key => {
@@ -263,16 +299,16 @@ export default {
             });
 
             this.schemaVerify
-                .validate(this.formVerify, { abortEarly: false })
+                .validate(this.formVerify, {abortEarly: false})
                 .then(() => {
-                   // this.errors.user = {};
+                    // this.errors.user = {};
                 })
                 .catch(err => {
-                 //   this.errors.user = {};
+                    //   this.errors.user = {};
 
                     err.inner.forEach((error) => {
                         if ($attribute === error.path) {
-                            this.validateVerify = { ...this.validateVerify, [error.path]: error.message };
+                            this.validateVerify = {...this.validateVerify, [error.path]: error.message};
                         }
                     });
                 });
@@ -285,16 +321,15 @@ export default {
             });
 
             this.schemaPurchase
-                .validate(this.formPurchase, { abortEarly: false })
+                .validate(this.formPurchase, {abortEarly: false})
                 .then(() => {
-                   // this.errors.user = {};
+                    // this.errors.user = {};
                 })
                 .catch(err => {
-                 //   this.errors.user = {};
-
+                    //   this.errors.user = {};
                     err.inner.forEach((error) => {
                         if ($attribute === error.path) {
-                            this.validatePurchase = { ...this.validatePurchase, [error.path]: error.message };
+                            this.validatePurchase = {...this.validatePurchase, [error.path]: error.message};
                         }
                     });
                 });
@@ -304,18 +339,43 @@ export default {
                 phone: ''
             };
         },
-        returnVerify(){
+        clearPurchase() {
+            this.formPurchase = {
+                name: '',
+                phone: '',
+                confirmPhone: '',
+                email: '',
+                cpf: '',
+                buyer: '',
+                raffle_id: this.raffle.id,
+                user_id: this.raffle.user_id,
+                quantity: this.quantity,
+                total: this.total
+            }
+        },
+        returnVerify() {
             this.step = 'VERIFY';
+
+            this.validatePurchase = {
+                name: '',
+                phone: '',
+                email: '',
+                cpf: '',
+            }
+
+            this.formVerify = {
+                phone: ''
+            };
         }
     },
     watch: {
-        'formPurchase.name': function() {
-            if(!!this.formPurchase.name) this.formPurchase.name = this.formPurchase.name.toUpperCase()
+        'formPurchase.name': function () {
+            if (!!this.formPurchase.name) this.formPurchase.name = this.formPurchase.name.toUpperCase()
         },
-        'quantity': function() {
+        'quantity': function () {
             this.formPurchase.quantity = this.quantity
         },
-        'total': function() {
+        'total': function () {
             this.formPurchase.total = this.total
         }
     }
@@ -325,9 +385,17 @@ export default {
 <template>
     <Modal :show="open" @close="closeModal()">
         <template #header>
-            <h3 class="text-2xl font-bold text-neutral font-secondary md:mb-2">
-                Checkout
-            </h3>
+            <div class="relative">
+                <Button v-if="step !== 'VERIFY'" type="button" color="outline-primary" size="sm" class="!px-2 absolute left-0"
+                        @click="returnVerify">
+                    <Icon name="icon-arrow-left" class="w-4 fill-primary md:mr-1"/>
+                    <span class="hidden md:block">Voltar</span>
+                </Button>
+
+                <h3 class="w-full text-2xl font-bold text-center text-neutral font-secondary mb-2 ">
+                    Checkout
+                </h3>
+            </div>
         </template>
 
         <template #body>
@@ -351,7 +419,7 @@ export default {
                 <template v-else>
                     <div class="">
                         <p class="text-neutral text-center">
-                            Seus números serão gerados assim que concluir a compra.
+                            Seus números serão gerados assim que concluir a reserva.
                         </p>
                     </div>
                 </template>
@@ -370,7 +438,7 @@ export default {
 
                     <div class="">
                         <p class="text-sm text-primary-bw">Valor Total</p>
-                        <span class="text-2xl font-bold text-primary-bw">{{ func.formatValue(this.total) }}</span>
+                        <span class="text-2xl font-bold text-primary-bw">{{ func.formatValue(total) }}</span>
                     </div>
                 </div>
             </div>
@@ -378,29 +446,30 @@ export default {
             <template v-if="step === 'VERIFY'">
                 <form @submit.prevent="onVerify" class="pt-3 mt-3 border-t border-base-100">
 
-<!--                    <VuePhoneNumberInput v-model="v-model="formVerify.phone"" />-->
+                    <!--                    <VuePhoneNumberInput v-model="v-model="formVerify.phone"" />-->
 
-<!--                    <phone-input
-                        @phone="phone = $event"
-                        @country="country = $event"
-                        @phoneData="phoneData = $event"
-                        name="phone-number-input"
-                        label="Enter your phone"
-                        required
-                        :value="formVerify.phone"
-                    />-->
+                    <!--                    <phone-input
+                                            @phone="phone = $event"
+                                            @country="country = $event"
+                                            @phoneData="phoneData = $event"
+                                            name="phone-number-input"
+                                            label="Enter your phone"
+                                            required
+                                            :value="formVerify.phone"
+                                        />-->
 
                     <div class="w-full">
                         <Input type="tel" label="Telefone" :name="formVerify.phone" placeholder="(00) 00000-0000"
                                autocomplete="tel" :error="validateVerify.phone" v-model="formVerify.phone"
-                               v-mask="['(##) #####-####', '(##) ####-####']" @validate="validatorVerify('phone')"/>
+                               v-mask="['(##) #####-####', '(##) ####-####']"/>
                     </div>
 
                     <div class="p-2 bg-warning rounded-xl mb-3">
                         <p class="flex items-center gap-2 text-sm text-warning-bw/70">
-                        <span class="rounded-full bg-warning-bw/20 w-5 h-5 flex items-center justify-center text-warning-bw">!
+                        <span
+                            class="rounded-full bg-warning-bw/20 w-5 h-5 flex items-center justify-center text-warning-bw">!
                         </span>
-                        Informe seu telefone para continuar.</p>
+                            Informe seu telefone para continuar.</p>
                     </div>
 
                     <p class="text-xs text-neutral/70 mb-2">
@@ -408,7 +477,8 @@ export default {
                         href="" target="_blank" class="text-blue">Termos de Uso.</a>
                     </p>
 
-                    <Button type="submit" color="info" class="w-full" :disabled="formVerify.processing" :loading="formVerify.processing">
+                    <Button type="submit" color="info" class="w-full font-bold uppercase"
+                            :disabled="formVerify.processing" :loading="formVerify.processing">
                         Continuar
                     </Button>
                 </form>
@@ -417,25 +487,26 @@ export default {
             <template v-if="step === 'CONFIRM'">
                 <form @submit.prevent="onPurchase" class="pt-3 mt-3 border-t border-base-100">
 
-                    <div class="my-2 p-2 border border-base-100 rounded-xl flex w-full items-center gap-3">
+                    <div class="my-2 p-2 border border-base-100 rounded-xl flex w-full items-center gap-3 mb-4">
                         <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                            <span class="font-bold text-lg text-primary-bw">{{ getInitials(this.formPurchase.name) }}</span>
+                            <span class="font-bold text-lg text-primary-bw">{{ getInitials(formPurchase.name) }}</span>
                         </div>
 
                         <div class="">
-                            <p class="text-neutral font-bold">{{ this.formPurchase.name }}</p>
-                            <p class="text-sm text-neutral/70 font-bold">{{ this.formPurchase.phone }}</p>
-                            <p class="text-sm text-neutral/70 font-bold">{{ this.formPurchase.email }}</p>
+                            <p class="text-neutral font-bold">{{ formPurchase.name }}</p>
+                            <p class="text-sm text-neutral/70">{{ formPurchase.phone }}</p>
+                            <p class="text-sm text-neutral/70">{{ formPurchase.email }}</p>
                         </div>
                     </div>
 
-                    <Button type="submit" color="success" class="w-full mb-3">
+                    <Button type="submit" color="success" class="w-full font-bold uppercase"
+                            :disabled="formPurchase.processing" :loading="formPurchase.processing">
                         Concluir Reserva
                     </Button>
 
-                    <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
-                        Outra Conta
-                    </Button>
+                    <!--                    <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
+                                            Outra Conta
+                                        </Button>-->
                 </form>
             </template>
 
@@ -454,9 +525,12 @@ export default {
                     </div>
 
                     <div class="w-full">
-                        <Input type="tel" label="Confirme o Telefone" :name="formPurchase.phone_confirmation" placeholder="(00) 00000-0000"
-                               autocomplete="tel" :error="validatePurchase.phone_confirmation" v-model="formPurchase.phone_confirmation"
-                               v-mask="['(##) #####-####', '(##) ####-####']" @validate="validatorPurchase('phone_confirmation')"/>
+                        <Input type="tel" label="Confirme o Telefone" :name="formPurchase.phone_confirmation"
+                               placeholder="(00) 00000-0000"
+                               autocomplete="tel" :error="validatePurchase.phone_confirmation"
+                               v-model="formPurchase.phone_confirmation"
+                               v-mask="['(##) #####-####', '(##) ####-####']"
+                               @validate="validatorPurchase('phone_confirmation')"/>
                     </div>
 
                     <div class="w-full">
@@ -468,136 +542,30 @@ export default {
                     <div class="w-full">
                         <Input type="text" label="CPF" :name="formPurchase.cpf" placeholder="000.000.000-00"
                                autocomplete="cpf" @validate="validatorPurchase('cpf')"
-                               v-model="formPurchase.cpf" :error="validatePurchase.cpf" v-mask="'###.###.###-##'" />
+                               v-model="formPurchase.cpf" :error="validatePurchase.cpf" v-mask="'###.###.###-##'"/>
                     </div>
 
                     <div class="p-2 bg-warning/20 rounded-xl mb-3">
                         <p class="flex items-center gap-2 text-sm text-warning-bw/60">
-                        <span class="rounded-full bg-warning/50 w-5 h-5 flex items-center justify-center text-warning-bw">
+                        <span
+                            class="rounded-full bg-warning/50 w-5 h-5 flex items-center justify-center text-warning-bw">
                         !
                         </span>
                             Informe seus dados corretamente.
                         </p>
                     </div>
 
-                    <p class="text-xs text-neutral/70 mb-2">
+                    <p class="text-xs text-neutral/70 mb-3">
                         Reservando seu(s) número(s), você declara que leu e concorda com nossos
                         <a href="" target="_blank" class="text-blue">Termos de Uso.</a>
                     </p>
 
-                    <Button type="submit" color="success" class="w-full mb-3">
+                    <Button type="submit" color="success" class="w-full font-bold uppercase"
+                            :disabled="formPurchase.processing" :loading="formPurchase.processing">
                         Concluir Reserva
-                    </Button>
-
-                    <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
-                        Outra Conta
                     </Button>
                 </form>
             </template>
-
-            <!--            <form @submit.prevent="onSubmit">
-                            <div class="flex flex-col items-start md:gap-4 md:flex-row">
-                                <div class="w-full md:w-6/12">
-                                    <Input type="text" label="Nome" :name="form.name" placeholder="Digite o nome"
-                                           autocomplete="name" :error="validator.name" v-model="form.name"
-                                           @validate="validate('name')"/>
-                                </div>
-
-                                <div class="w-full md:w-6/12">
-                                    <Input type="tel" label="Telefone" :name="form.phone" placeholder="(00) 00000-0000"
-                                           autocomplete="tel" :error="validator.phone" v-model="form.phone"
-                                           v-mask="['(##) #####-####', '(##) ####-####']" @validate="validate('phone')"/>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col md:gap-4 md:flex-row">
-                                <div class="w-full md:w-6/12">
-                                    <Input type="text" label="E-mail" :name="form.email" placeholder="email@email.com"
-                                           autocomplete="email" @validate="validate('email')"
-                                           v-model="form.email" :error="validator.email"/>
-                                </div>
-
-                                <div class="w-full md:w-6/12">
-                                    <Select label="Departamento:" text="Selecione"
-                                            :error="validator.departament_id" v-model="form.departament_id"
-                                            @validate="validate('departament_id')">
-                                        <option
-                                            v-for="(item, index) in departments"
-                                            :value="item.id" :key="index">{{ item.description }}
-                                        </option>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            <div v-if="isShow" class="flex flex-col md:gap-4 md:flex-row">
-                                <div class="w-full md:w-6/12">
-                                    <Input type="date" label="Data do Show"
-                                           placeholder="dd/mm/aaaa" @validate="validate('date_show')"
-                                           :error="validator.date_show" v-model="form.date_show"/>
-                                </div>
-
-                                <div class="w-full md:w-6/12">
-                                    <Input type="time" label="Hora do Show"
-                                           placeholder="&#45;&#45;:&#45;&#45;" @validate="validate('time_show')"
-                                           :error="validator.time_show" v-model="form.time_show"/>
-                                </div>
-                            </div>
-
-                            <div v-if="isShow" class="flex flex-col md:gap-4 md:flex-row">
-                                <div class="w-full md:w-6/12">
-                                    <Input type="text" label="Local do Show"
-                                           placeholder="Digite o local" @validate="validate('place')"
-                                           :error="validator.place" v-model="form.place"/>
-                                </div>
-
-                                <div class="w-full md:w-6/12">
-                                    <Select label="Tipo do Show" text="Selecione" :name="form.type_event"
-                                            @validate="validate('type_event')"
-                                            :error="validator.type_event" v-model="form.type_event">
-                                        <option
-                                            v-for="(event, index) in typeEvent"
-                                            :value="event.id" :key="index">{{ event.name }}
-                                        </option>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-col items-start md:gap-4 md:flex-row">
-                                <div class="w-full md:w-6/12">
-                                    <Select label="Estado"
-                                            @change="selectState(form.state)"
-                                            :error="validator.state" v-model="form.state">
-                                        <option selected="0" disabled value="0">Selecione</option>
-                                        <option
-                                            v-for="(state, index) in states"
-                                            :value="state.id" :key="index">{{ state.name }}
-                                        </option>
-                                    </Select>
-                                </div>
-
-                                <div class="w-full md:w-6/12">
-                                    <Select label="Cidade" :name="form.city" text="Selecione"
-                                            :error="validator.city" v-model="form.city">
-                                        <option value="" selected disabled v-if="loading">Aguarde...</option>
-                                        <option
-                                            v-for="(city, index) in cities"
-                                            :value="city.id" :key="index">{{ city.name }}
-                                        </option>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            <Textarea label="Mensagem" :name="form.message" placeholder="Digite sua mensagem"
-                                      rows="5" @validate="validate('message')"
-                                      :error="validator.message" v-model="form.message"/>
-
-                            <div class="flex justify-center mt-2">
-                                <Button type="submit" color="primary" class="w-full md:w-4/12" :disabled="form.processing"
-                                        :loading="form.processing">
-                                    Enviar E-mail
-                                </Button>
-                            </div>
-                        </form>-->
         </template>
     </Modal>
 </template>

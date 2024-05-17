@@ -164,36 +164,16 @@ export default {
             O site escolhe números de forma aleatória para você.
         </p>
 
-        <!--        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    <Button type="button" color="info" class="flex-1"
-                            @click="filterItems('all')">
-                        Todos
-                    </button>
-
-                    <Button type="button" color="outline-primary" class="flex-1"
-                            @click="filterItems('available')">
-                        Disponivel
-                    </button>
-
-                    <Button type="button" color="warning" class="flex-1"
-                            @click="filterItems('reserved')">
-                        Reservado
-                    </button>
-
-                    <Button type="button" color="success" class="flex-1"
-                            @click="filterItems('paid')">
-                        Pago
-                    </button>
-                </div>-->
-
         <div class="">
             <div class="grid gap-3 grid-cols-2 mb-3"
                  :class="'md:grid-cols-' + (quotas.length > 2 ? quotas.length / 2 : 'DA')">
                 <template v-for="(item, index) in quotas" :key="index">
-                    <Button type="button" color="outline-light" @click="addQuotas(item.quantity_numbers)" class="flex-col">
+                    <Button type="button" color="outline-light" @click="addQuotas(item.quantity_numbers)" class="py-5 flex-col relative overflow-hidden">
                         <span class="text-3xl font-bold">+ {{ item.quantity_numbers }}</span>
                         <span class="text-xs">Selecionar</span>
-                        <Badge color="primary" class="mb-2 hidden md:block">{{ item.popular ? 'Popular' : '' }}</Badge>
+
+
+                        <span v-if="item.popular" class="c-recomend">{{ item.popular ? 'Popular' : '' }}</span>
                     </Button>
                 </template>
             </div>
@@ -214,11 +194,11 @@ export default {
                 </div>
             </div>
 
-            <div class="px-5 py-3 w-full flex items-center justify-between gap-4 bg-primary mb-3 rounded-xl">
-                <p class="w-6/12 text-sm text-primary-bw">{{ quantity }} x {{ func.formatValue(value) }} </p>
+            <div class="px-5 py-3 w-full flex items-center justify-between border border-primary gap-4 mb-3 rounded-xl">
+                <p class="w-6/12 text-sm text-neutral">{{ quantity }} x {{ func.formatValue(value) }} </p>
 
-                <p class="w-6/12 text-right text-sm md:text-sm text-primary-bw">
-                    Total <span class="text-xl font-bold text-primary-bw">{{ func.formatValue(total) }}</span>
+                <p class="w-6/12 text-right text-sm md:text-sm text-neutral">
+                    Total <span class="text-xl font-bold text-neutral">{{ func.formatValue(total) }}</span>
                 </p>
             </div>
 

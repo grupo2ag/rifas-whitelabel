@@ -25,7 +25,7 @@ const sizeClasses = computed(() => {
         case 'sm':
             return 'text-sm px-4 py-1.5';
         case 'lg':
-            return 'text-lg px-7 py-2.5';
+            return 'text-lg px-7 py-3';
         default:
             return 'text-base leading-none px-4 py-3.5';
     }
@@ -86,6 +86,8 @@ const loadingClasses = computed(() => {
                 return 'is-loading before:text-white/90 before:border-r-black';
             case 'info':
                 return 'is-loading before:text-info-bw before:border-r-info hover:before:border-r-info/10';
+            case 'success':
+                return 'is-loading before:text-success-bw before:border-r-success hover:before:border-r-success/10';
             default:
                 return '';
         }
@@ -96,9 +98,9 @@ const disabledClasses = computed(() => {
     if (props.disabled) {
         switch (props.color) {
             case 'success':
-                return 'disabled:hover:gray-light disabled:bg-gray-light disabled:border-gray-light disabled:cursor-not-allowed';
+                return 'disabled:bg-success/80 disabled:hover:bg-success/80 disabled:cursor-not-allowed';
             case 'black':
-                return 'disabled:hover:bg-black-light disabled:bg-black-light disabled:cursor-not-allowed';
+                return 'disabled:bg-success/60 disabled:hover:bg-success/60 disabled:cursor-not-allowed';
         }
     }
 });

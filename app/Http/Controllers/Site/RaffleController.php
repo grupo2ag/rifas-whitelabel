@@ -148,6 +148,7 @@ class RaffleController extends Controller
 
             $name = Str::trim($request->name);
             $phone = '55 '.Str::trim($request->phone);
+            $email= Str::trim($request->email);
 
             $return = Customer::updateOrCreate(
                 [
@@ -162,13 +163,15 @@ class RaffleController extends Controller
 
             $registration_data = [
                 'name' => $name,
-                'phone' => $phone
+                'phone' => $phone,
+                'email' => $email
             ];
         }else{
             $return = Customer::find($request->buyer);
             $registration_data = [
                 'name' => $return->name,
-                'phone' => $return->phone
+                'phone' => $return->phone,
+                'email' => $return->email
             ];
         }
 

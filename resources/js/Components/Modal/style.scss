@@ -17,7 +17,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    @apply pt-10 pb-10;
+    @apply pt-10 pb-10 px-3;
 }
 
 .modal-container {
@@ -37,7 +37,7 @@
     align-items: center;
     justify-content: center;
     transition: .3s;
-    @apply w-8 h-8 absolute -top-3 -right-3 rounded-full bg-primary hover:scale-110 z-10;
+    @apply w-7 h-7 absolute -top-2 -right-2 rounded-full bg-primary hover:scale-110 z-10;
 }
 
 .modal-enter-from {
