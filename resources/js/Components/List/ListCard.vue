@@ -48,8 +48,7 @@ export default {
             <div class="w-full mb-1 sm:w-full md:w-full xl:w-1/12 lg:w-full sm:mb-1 md:mb-1 xl:mb-0">
                 <div class="flex flex-row">
                     <div class="w-10/12 sm:w-11/12 md:w-11/12 lg:w-11/12 h-[8rem]">
-                        <img src="https://mundoemrevista.com.br/wp-content/uploads/2024/01/trevo-de-quatro-folhas.webp"
-                            alt="Preview" class="object-cover w-full h-full rounded-lg">
+                        <img :src="infos?.image" alt="Preview" class="object-cover w-full h-full rounded-lg">
                     </div>
                     <div class="grid w-2/12 sm:w-1/12 md:w-1/12 lg:w-1/12 sm:grid md:grid xl:hidden lg:grid">
                         <div class="flex flex-col">

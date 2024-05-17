@@ -54,7 +54,7 @@ export default {
         <div class="w-full p-2 mb-4 rounded-lg bg-base-200">
             <div class="flex flex-row flex-wrap">
                 <div class="w-4/12 lg:w-2/12 lg:h-[10rem]">
-                    <img :src="data?.image?.path"
+                    <img :src="data?.image"
                         alt="Preview" class="object-cover w-full h-full rounded-lg">
                 </div>
                 <div class="flex w-8/12 lg:w-4/12">
