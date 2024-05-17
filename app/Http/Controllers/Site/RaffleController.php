@@ -30,6 +30,16 @@ class RaffleController extends Controller
 
     public function index($url)
     {
+
+        $visualizar = explode('-', $url);
+        $contains = Str::containsAll('visualizar|raffle', [$visualizar[0]]);
+        $visible = 1;
+        if($contains){
+            unset($visualizar[0]);
+            $url = implode('-', $visualizar);
+            $visible = 0;
+        }
+
         $rifa = Raffle::with(['raffle_premium_numbers' => function ($query) {
                             $query->orderBy('raffle_premium_numbers.number_premium', 'ASC');
                         }])
@@ -47,7 +57,8 @@ class RaffleController extends Controller
                         }])
                         ->Slug($url)
                         ->UserID($this->user_id)
-                        ->Visible(true)
+                        ->ActivateRaffles()
+                        ->Visible($visible)
                         ->first([
                             DB::raw("CASE WHEN raffles.type = '".Raffle::TYPE_MANUAL."' THEN raffles.numbers ELSE '' END AS r_numbers"),
                             'id',
@@ -83,10 +94,10 @@ class RaffleController extends Controller
             $galery = [];
             if(!empty($rifa->raffle_images)){
                 foreach($rifa->raffle_images as $image){
-                    $mountUrl = config('filesystems.disks.s3.path').'/images/'.$rifa->id.'/'.$image->path;
+                    //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$this->user_id.'/gallery/'.$rifa->id.'/'.$image->path;
 
                     $s3TmpLink = new \stdClass();
-                    $s3TmpLink->img = Storage::disk(config('filesystems.default'))->temporaryUrl($mountUrl, now()->addMinutes(30));
+                    $s3TmpLink->img = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
                     array_push($galery, $s3TmpLink);
                 }
             }
@@ -97,6 +108,7 @@ class RaffleController extends Controller
                 $rifa['buyers'] = Participant::orderBy('total', 'DESC')
                     ->join('customers', 'customers.id', '=', 'participants.customer_id')
                     ->select(DB::raw("SUM(paid) AS total"), 'customers.name')
+                    ->where('participants.raffle_id', $rifa->id)
                     ->limit($rifa->buyer_ranking)
                     ->groupBy('participants.customer_id', 'customers.id')
                     ->get();
@@ -148,6 +160,7 @@ class RaffleController extends Controller
 
             $name = Str::trim($request->name);
             $phone = '55 '.Str::trim($request->phone);
+            $email= Str::trim($request->email);
 
             $return = Customer::updateOrCreate(
                 [
@@ -162,13 +175,15 @@ class RaffleController extends Controller
 
             $registration_data = [
                 'name' => $name,
-                'phone' => $phone
+                'phone' => $phone,
+                'email' => $email
             ];
         }else{
             $return = Customer::find($request->buyer);
             $registration_data = [
                 'name' => $return->name,
-                'phone' => $return->phone
+                'phone' => $return->phone,
+                'email' => $return->email
             ];
         }
 

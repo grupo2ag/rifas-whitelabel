@@ -1,5 +1,6 @@
 <script setup>
 // import Welcome from '@/Components/Welcome.vue';
+import {useForm } from '@inertiajs/vue3';
 </script>
 
 <script>
@@ -79,7 +80,8 @@ export default {
         ReceiptPercentIcon,
     },
     props: {
-        raffle: Object
+        raffle: Object,
+        quantity_numbers: Array
     },
     data() {
         return {
@@ -90,7 +92,7 @@ export default {
                 subtitle: this.raffle ? this.raffle.subtitle : '',
                 total: null,
                 price: this.raffle ? this.raffle.price : 0,
-                type: this.raffle ? this.raffle.type : 'aleatorio',
+                type: this.raffle ? this.raffle.type : 'automatico',
                 pix_expired: this.raffle ? this.raffle.pix_expired : '',
                 minimum_purchase: this.raffle ? this.raffle.minimum_purchase : 1,
                 maximum_purchase: this.raffle ? this.raffle.maximum_purchase : 10,
@@ -98,7 +100,7 @@ export default {
 
                 buyer_ranking: this.raffle ? this.raffle.buyer_ranking : 5,
                 partial: this.raffle ? this.raffle.partial : 1,
-                finish_at: this.raffle ? this.raffle.finish_at : '',
+                expected_date: this.raffle ? this.raffle.expected_date : '',
                 status: this.raffle ? this.raffle.status : 'Ativo',
                 banner: this.raffle ? this.raffle.banner : '',
                 highlight: this.raffle ? this.raffle.highlight : 0,
@@ -107,7 +109,7 @@ export default {
 
                 quotas: this.raffle ? this.raffle.gallery : [],
 
-                awards: [{description: null, order: null}],
+                awards: [{description: null, order: null}]
             },
             validator: {
                 id: '',
@@ -160,6 +162,21 @@ export default {
         }
     },
     methods: {
+        onSubmit() {
+            const form = useForm(this.form)
+
+            form.post(route('raffles.raffleStore'), {
+                onSuccess: () => {
+                    this.disabled = false
+                    this.loading = false
+                },
+                onError: () => {
+                    this.disabled = false
+                    this.loading = false
+
+                }
+            })
+        },
         countdown() {
             if (this.form.title || this.form.subtitle) {
                 this.characterLenght = this.form.title.length;
@@ -216,6 +233,9 @@ export default {
             const text = func.clieanString(this.form.title)
             this.form.link = text.toLowerCase().split(' ').filter(item => item !== ' ' && item !== '').join('-');
         },
+    },
+    mounted() {
+        //console.log(this.$page.props)
     }
 }
 </script>
@@ -238,7 +258,7 @@ export default {
                             <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
                         </div>
 
-                        <Button :href="route('raffles.index')" size="sm" color="outline-light">
+                        <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
                             <ArrowLeftIcon class="w-4 fill-white mr-2"/> Voltar
                         </Button>
                     </div>
@@ -287,11 +307,9 @@ export default {
 
                         <div class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
-                                <Select label="Quantidade de Números:" v-model="form.total" :name="form.total"
-                                        :error="validator.total || $page.props.errors.total">
-                                    <option value="10">
-                                        10 Bilhetes - (0 à 9)
-                                    </option>
+                                <Select label="Quantidade de Números:"  v-model="form.total" :name="form.total"
+                                        :error="validator.total || $page.props.errors.total" >
+                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value" :selected="!!item.selected">{{ item.texto }}</option>
                                 </Select>
                             </div>
 
@@ -304,11 +322,11 @@ export default {
                             <div class="w-full md:w-6/12">
                                 <Select label="Tipo de Reserva:" v-model="form.type" :name="form.type"
                                         :error="validator.type || $page.props.errors.type">
-                                    <option value="aleatorio">
-                                        Aleatório
+                                    <option value="automatico">
+                                        Automático (Aleatório)
                                     </option>
                                     <option value="manual">
-                                        Manual
+                                        Manual (Selecionável)
                                     </option>
                                 </Select>
                             </div>
@@ -318,10 +336,16 @@ export default {
                                         :name="form.pix_expired"
                                         :error="validator.pix_expired || $page.props.errors.pix_expired">
                                     <option value="5">
-                                        5 minutos
+                                        5 minutos (recomendado)
                                     </option>
                                     <option value="10">
                                         10 minutos
+                                    </option>
+                                    <option value="30">
+                                        30 minutos
+                                    </option>
+                                    <option value="60">
+                                        1 hora
                                     </option>
                                 </Select>
                             </div>
@@ -370,10 +394,10 @@ export default {
                     <div class="pt-3">
                         <div class="flex flex-col md:flex-row gap-4">
                             <div class="w-full md:w-6/12">
-                                <Input label="Data do Sorteio" type="date"
-                                       :name="form.finish_at" class="appearance-none"
-                                       :error="validator.finish_at || $page.props.errors.date"
-                                       placeholder="dd/mm/aaaa" v-model="form.finish_at"/>
+                                <Input label="Data prevista do Sorteio" type="date"
+                                       :name="form.expected_date" class="appearance-none"
+                                       :error="validator.expected_date || $page.props.errors.date"
+                                       placeholder="dd/mm/aaaa" v-model="form.expected_date"/>
                             </div>
 
                             <div class="w-full md:w-6/12">
@@ -505,7 +529,7 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4">
+                <div class="c-content  mb-4 hidden">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
@@ -532,7 +556,7 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4">
+                <div class="c-content  mb-4 hidden">
                     <div class="pb-2 flex items-center border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
@@ -636,8 +660,11 @@ export default {
                 </div>
 
                 <div class="c-content">
-                    <div class="flex justify-end gap-4">
-                        <Button :href="route('raffles.index')" size="sm" color="outline-light">
+                    <div class="flex justify-end gap-4" v-if="$page.props.message">
+                        <p>{{ $page.props.message }}</p>
+                    </div>
+                    <div class="flex justify-end gap-4" v-else>
+                        <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
                             Cancelar
                         </Button>
                         <Button type="button" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">

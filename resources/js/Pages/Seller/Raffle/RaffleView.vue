@@ -29,7 +29,7 @@ export default {
       this.openTab = tabNumber
     },
     previousPage() {
-      window.location.href = route('raffles.index')
+      window.location.href = route('raffles.raffleIndex')
     }
   },
   mounted() {
