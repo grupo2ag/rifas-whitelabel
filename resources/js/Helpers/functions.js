@@ -1,19 +1,21 @@
+import moment from 'moment';
+
 export const maskString = (str, pattern) => {
     let ptt = '';
-    if(pattern === 'tel') ptt = '(##) #####-####';
-    if(pattern === 'cpf') ptt = '###.###.###-##';
-    if(pattern === 'cnpj') ptt = '##.###.###/####-##';
+    if (pattern === 'tel') ptt = '(##) #####-####';
+    if (pattern === 'cpf') ptt = '###.###.###-##';
+    if (pattern === 'cnpj') ptt = '##.###.###/####-##';
     str = str.toString()
 
-        let i = 0;
-        let padded = ptt.replace(/#/g, () => {
-            return str[i++];
-        });
-        return padded;
-    };
+    let i = 0;
+    let padded = ptt.replace(/#/g, () => {
+        return str[i++];
+    });
+    return padded;
+};
 
 export const monthName = (month) => {
-    let months = [ 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    let months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
     return months[month];
 };
@@ -26,12 +28,12 @@ export const monthNameAbbreviation = (month) => {
 export const formatValue = (value) => {
     let number = parseInt(value);
 
-    let result = number/100;
-    return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(result);
+    let result = number / 100;
+    return Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' }).format(result);
 };
 
 export const formatPhone = (value) => {
-    return value.replace('(','').replace(')', '').replace(' ', '').replace('-', '');
+    return value.replace('(', '').replace(')', '').replace(' ', '').replace('-', '');
 };
 
 export const formatNumber = (number, decimals, dec_point, thousands_sep) => {
@@ -55,34 +57,34 @@ export const formatNumber = (number, decimals, dec_point, thousands_sep) => {
 }
 
 export const formatInteger = (value) => {
-   return parseInt(value*100);
+    return parseInt(value * 100);
 };
 
 export const formatLimit = (value) => {
     let number = parseInt(value);
 
-    let result = number/100;
+    let result = number / 100;
     return parseInt(result);
 };
 
 export const formatBr = (value) => {
-    return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(value);
+    return Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' }).format(value);
 };
 
 export const formatTax = (value, type = 1) => {
     let number = parseInt(value);
 
-    let result = number/1000000;
-    if(type === 1) return Intl.NumberFormat('pt-br', {style: 'decimal', currency: 'BRL'}).format(result);
-    if(type === 2) return parseFloat(result).toFixed(2);
+    let result = number / 1000000;
+    if (type === 1) return Intl.NumberFormat('pt-br', { style: 'decimal', currency: 'BRL' }).format(result);
+    if (type === 2) return parseFloat(result).toFixed(2);
 };
 
 export const returnValue = (tax, number, status) => {
     let result = parseFloat(tax) * parseInt(number)
 
-    if(status === 0){
+    if (status === 0) {
         return formatValue(0);
-    } else if(status === 1){
+    } else if (status === 1) {
         return formatValue(result);
     } else {
         return formatValue(result);
@@ -98,31 +100,30 @@ export const adicionaZero = (numero) => {
 
 export const dateFormat = (date, hours, seconds = false) => {
     let dataAtual = new Date(date);
-    let data = (adicionaZero(dataAtual.getDate().toString()) + "/" + (adicionaZero(dataAtual.getMonth()+1).toString()) + "/" + dataAtual.getFullYear());
+    let data = (adicionaZero(dataAtual.getDate().toString()) + "/" + (adicionaZero(dataAtual.getMonth() + 1).toString()) + "/" + dataAtual.getFullYear());
 
-    if(hours){
+    if (hours) {
         let horas = (adicionaZero(dataAtual.getHours().toString()) + ":" + (adicionaZero(dataAtual.getMinutes()).toString()));
-        if(seconds) horas += ":" + adicionaZero(dataAtual.getSeconds()).toString();
-        return data+' '+horas;
-    }else{
+        if (seconds) horas += ":" + adicionaZero(dataAtual.getSeconds()).toString();
+        return data + ' ' + horas;
+    } else {
         return data;
     }
 };
 
-export const firstUpper = (string = '') =>{
-    string  = string.toLowerCase();
-    return string.split(' ').map(function (item){
+export const firstUpper = (string = '') => {
+    string = string.toLowerCase();
+    return string.split(' ').map(function (item) {
         return item.charAt(0).toUpperCase() + item.slice(1);
     }).join(' ');
 }
 
 export const limitString = (string, length = 20) => {
-    return (string.length <= length) ? string : string.substring(0,length) + '...';
+    return (string.length <= length) ? string : string.substring(0, length) + '...';
 }
 
-export const hourSeconds = (seconds) =>
-{
-    if(!seconds) {
+export const hourSeconds = (seconds) => {
+    if (!seconds) {
         return '00:00:00';
     }
 
@@ -132,12 +133,41 @@ export const hourSeconds = (seconds) =>
     let x = seconds.split(':');
 
 
-    if(x[0] != 0) {
+    if (x[0] != 0) {
         extenso = x[0] + ' h ';
     }
-    extenso = x[1] + ' min '+ x[2] + 's';
+    extenso = x[1] + ' min ' + x[2] + 's';
 
     return extenso;
+}
+
+export const getInitials = function (string) {
+    var names = string.split(' '),
+        initials = names[0].substring(0, 1).toUpperCase();
+
+    if (names.length > 1) {
+        initials += names[names.length - 1].substring(0, 1).toUpperCase();
+    }
+    return initials;
+};
+
+export const calcPercent = function (parcialValue, totalValue){
+    if (totalValue !== 0) {
+        const porcentagem = (parcialValue / totalValue) * 100;
+        return porcentagem.toFixed(2); // Retorna a porcentagem com uma casa decimal
+    } else {
+        return 0; // Retorna 0 se o valor total for 0 para evitar divisão por zero
+    }
+}
+
+export const translateDate = function (date) {
+    return moment(date).format('DD/MM/YYYY');
+}
+
+export const translateMoney = function (value) {
+    if (!value) value = 0;
+    else value = (parseFloat(value) / 100);
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 /*
 export const dddFormat = (phone) => {
@@ -192,8 +222,7 @@ export const dddFormat = (phone) => {
     return ddd;
 }*/
 
-export const mountUrl = (url, category, subcategory) =>
-{
+export const mountUrl = (url, category, subcategory) => {
     return route('') + category + '/' + (subcategory ? subcategory + '/' : '') + url;
 }
 
@@ -201,12 +230,12 @@ export const slugify = str =>
     str
         .toLowerCase()
         .trim()
-        .replace(/[ÀÁÂÃÄÅ]/,"A")
-        .replace(/[àáâãäå]/,"a")
-        .replace(/[ÈÉÊË]/,"E")
-        .replace(/[èéêë]/,"e")
-        .replace(/[Ç]/,"C")
-        .replace(/[ç]/,"c")
+        .replace(/[ÀÁÂÃÄÅ]/, "A")
+        .replace(/[àáâãäå]/, "a")
+        .replace(/[ÈÉÊË]/, "E")
+        .replace(/[èéêë]/, "e")
+        .replace(/[Ç]/, "C")
+        .replace(/[ç]/, "c")
         .replace(/[^\w\s-]/g, '')
         .replace(/[\s_-]+/g, '-')
         .replace(/^-+|-+$/g, '');
@@ -229,12 +258,12 @@ export const emailRegex = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,
 export const clieanString = (string) => {
     /** TIRAR ACENTOS */
 
-    string = string.replace(new RegExp('[ÁÀÂÃ]','gi'), 'a');
-    string = string.replace(new RegExp('[ÉÈÊ]','gi'), 'e');
-    string = string.replace(new RegExp('[ÍÌÎ]','gi'), 'i');
-    string = string.replace(new RegExp('[ÓÒÔÕ]','gi'), 'o');
-    string = string.replace(new RegExp('[ÚÙÛ]','gi'), 'u');
-    string = string.replace(new RegExp('[Ç]','gi'), 'c');
+    string = string.replace(new RegExp('[ÁÀÂÃ]', 'gi'), 'a');
+    string = string.replace(new RegExp('[ÉÈÊ]', 'gi'), 'e');
+    string = string.replace(new RegExp('[ÍÌÎ]', 'gi'), 'i');
+    string = string.replace(new RegExp('[ÓÒÔÕ]', 'gi'), 'o');
+    string = string.replace(new RegExp('[ÚÙÛ]', 'gi'), 'u');
+    string = string.replace(new RegExp('[Ç]', 'gi'), 'c');
 
     /** TIRAR CARACTERES ESPECIAIS */
     return string.replaceAll(/[^a-zA-Z0-9\- ]/g, "");

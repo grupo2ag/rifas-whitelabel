@@ -13,6 +13,7 @@ import {
 TableCellsIcon
 } from '@heroicons/vue/24/outline';
 import moment from 'moment';
+import * as func from '@/Helpers/functions';
 </script>
 
 <script>
@@ -26,13 +27,6 @@ export default {
     methods: {
         setToggleTabs(tabNumber) {
             this.$emit('toggleTabs', tabNumber)
-        },
-        translateDate(data) {
-            return moment(data).format('DD/MM/YYYY');
-        },
-        translateMoney(value) {
-            if (!value) value = 0;
-            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         },
         onExclude() {
             this.$swal({
@@ -114,13 +108,13 @@ export default {
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
                                 <CalendarDaysIcon class="w-6 mr-2 min-w-6 text-primary" />
-                                <p>{{ translateDate(data?.created_at) }}</p>
+                                <p>{{ func.translateDate(data?.created_at) }}</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden">
                             <div class="flex flex-row">
                                 <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>{{ translateMoney(data?.price) }}/Cota</p>
+                                <p>{{ func.translateMoney(data?.price) }}/Cota</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden ">
@@ -142,7 +136,7 @@ export default {
                         <div class="w-full ">
                             <div class="flex flex-row">
                                 <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>{{ translateMoney(data?.price) }}/Cota</p>
+                                <p>{{ func.translateMoney(data?.price) }}/Cota</p>
                             </div>
                         </div>
                         <div class="w-full ">

@@ -2,6 +2,7 @@
 import IconsSvg from "@/Components/IconsSvg/IconsSvg.vue";
 import moment from 'moment';
 import { Link } from '@inertiajs/inertia-vue3';
+import * as func from '@/Helpers/functions';
 
 </script>
 
@@ -11,32 +12,9 @@ export default {
     props: {
         infos: Object
     },
-    methods: {
-        redirectView(id) {
-         //   window.location.href = `/super/raffles/view/${id}`
-        },
-        translateDate(data) {
-            return moment(data).format('DD/MM/YYYY');
-        },
-        translateMoney(valor) {
-            if(!valor) valor = 0;
-            else valor = parseFloat(valor/100).toFixed(2);
-
-            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-        },
-        calcPercent(parcialValue, totalValue) {
-            if (totalValue !== 0) {
-                const porcentagem = (parcialValue / totalValue) * 100;
-                return porcentagem.toFixed(2); // Retorna a porcentagem com uma casa decimal
-            } else {
-                return 0; // Retorna 0 se o valor total for 0 para evitar divisão por zero
-            }
-        }
-    },
-    mounted(){
-        console.log(this.infos, "LIST CARD")
-    }
+    // mounted(){
+    //     console.log(this.infos, "LIST CARD")
+    // }
 }
 </script>
 
@@ -76,7 +54,7 @@ export default {
                 <div class="flex flex-row w-full">
                     <div class="flex items-center w-8/12">
                         <div class="border-4 radial-progress bg-primary text-content border-primary"
-                            style="--size: 4rem;" :style="{'--value':calcPercent(infos?.paid, infos?.quantity)}" role="progressbar">{{ calcPercent(infos?.paid, infos?.quantity) }}%</div>
+                            style="--size: 4rem;" :style="{'--value':func.calcPercent(infos?.paid, infos?.quantity)}" role="progressbar">{{ func.calcPercent(infos?.paid, infos?.quantity) }}%</div>
                     </div>
                     <div class="w-4/12">
                         <div class="flex flex-col flex-wrap">
@@ -87,10 +65,10 @@ export default {
                                 </div>
                             </div>
                             <div class="flex justify-end w-full mb-1">
-                                <p class="text-base font-bold">{{translateMoney(infos?.price)}}</p>
+                                <p class="text-base font-bold">{{func.translateMoney(infos?.price)}}</p>
                             </div>
                             <div class="flex justify-end w-full mb-1">
-                                <p class="text-base font-bold">{{ translateDate(infos?.created_at) }}</p>
+                                <p class="text-base font-bold">{{ func.translateDate(infos?.created_at) }}</p>
                             </div>
                         </div>
                     </div>
@@ -106,16 +84,16 @@ export default {
             </div>
             <div
                 class="flex items-center justify-end hidden w-full px-2 sm:w-full md:justify-end md:w-full xl:justify-center xl:w-2/12 xl:grid">
-                <p class="text-base font-bold">{{ translateMoney(infos?.price) }}</p>
+                <p class="text-base font-bold">{{ func.translateMoney(infos?.price) }}</p>
             </div>
             <div
                 class="flex items-center justify-start hidden w-6/12 px-2 md:justify-start md:w-full xl:justify-center xl:w-1/12 xl:grid">
                 <div class="border-4 radial-progress bg-primary text-content border-primary"
-                    style="--size: 5rem;" :style="{'--value':calcPercent(infos?.paid, infos?.quantity)}" role="progressbar">{{ calcPercent(infos?.paid, infos?.quantity) }}%</div>
+                    style="--size: 5rem;" :style="{'--value':func.calcPercent(infos?.paid, infos?.quantity)}" role="progressbar">{{ func.calcPercent(infos?.paid, infos?.quantity) }}%</div>
             </div>
             <div
                 class="flex items-center justify-end hidden w-6/12 px-2 sm:items-center md:items-center md:justify-end md:w-full xl:items-center xl:justify-center xl:w-2/12 xl:grid">
-                <p class="text-base font-bold">{{ translateDate(infos?.created_at) }}</p>
+                <p class="text-base font-bold">{{ func.translateDate(infos?.created_at) }}</p>
             </div>
             <div
                 class="flex items-center justify-end hidden w-6/12 px-2 xl:grid sm:items-center md:items-center md:justify-end md:w-full xl:items-center xl:justify-center xl:w-1/12">
