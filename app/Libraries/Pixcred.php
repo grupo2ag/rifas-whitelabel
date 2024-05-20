@@ -56,7 +56,7 @@ class Pixcred
         $statusCode = 0;
 
         if(!empty($response->status())) $statusCode = $response->status();
-
+        //dd($response->status(), $response->json());
         if ($statusCode === 200 || $statusCode === 201 || $statusCode === 202) {
             $responseBody = $response->json();
 

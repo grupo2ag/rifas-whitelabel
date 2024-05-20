@@ -9,23 +9,25 @@ import Icon from '@/Components/Icon/Icon.vue'
 import {remove} from "@ckeditor/ckeditor5-utils";
 
 const numbersStatus = (numbers, participants) => {
-      const numeros = numbers.split(',');
+      let numeros = numbers.split(',');
 
       let participantsNumeros = participants.map(function (cada){
           let partNumbers =  cada.numbers.split(',');
           if(partNumbers.length){
-              if(partNumbers.length) {
-                  return {
-                      name: cada.name,
-                      status: cada.reserved ? 'reserved' : 'paid',
-                      numbers: partNumbers
-                  };
-              }
+              //console.log(numeros, partNumbers)
+              numeros = numeros.concat(partNumbers);
+              numeros = numeros.sort();
+              return {
+                  name: cada.name,
+                  status: cada.reserved ? 'reserved' : 'paid',
+                  numbers: partNumbers
+              };
           }
 
           return [];
       })
 
+    //console.log(numeros);
     const numerosEncontrados = [];
 
     numeros.forEach(number => {
