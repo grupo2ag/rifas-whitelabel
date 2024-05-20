@@ -64,6 +64,16 @@ const getInitials = function (string) {
     return initials;
 };
 
+const manualNumbers = function (numbers) {
+    console.log('aqui', numbers);
+    let nums = [];
+    numbers.forEach((number) => {
+        nums.push(nums.number)
+    });
+
+    return nums;
+};
+
 export default {
     name: "Checkout",
     props: {
@@ -71,6 +81,7 @@ export default {
         quantity: Number,
         total: Number,
         numbers: Array,
+        manual: Array,
         raffle: Object
     },
     components: {
@@ -83,28 +94,7 @@ export default {
     data() {
         return {
             //modal: this.open
-            data: [
-                {
-                    number: 1,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 2,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 3,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 4,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                }
-            ],
+            data: !!this.manual ? manualNumbers(this.manual) : [],
             formVerify: {
                 phone: '',
                 processing: false,
@@ -138,13 +128,14 @@ export default {
         }
     },
     mounted() {
+        //console.log(this.manual)
         if (this.buyer > 0){
-            console.log('!= null')
+            //console.log('!= null')
         } else {
 
         }
 
-        console.log(this.formPurchase.buyer)
+        //console.log(this.formPurchase.buyer)
 
         yup.setLocale(pt);
         this.schemaPurchase = yup.object().shape({
@@ -219,7 +210,7 @@ export default {
                     });
             }).catch((err) => {
                 this.formVerify.processing = false;
-
+                //console.log(err)
                 err.inner.forEach((error) => {
                     this.validateVerify = {...this.validateVerify, [error.path]: error.message};
                 });
@@ -267,20 +258,6 @@ export default {
                     })
                     //FECHA LOADING
                 })
-
-                /*form.post(route('purchase'), {
-                    preserveScroll: true,
-                    onSuccess: (resp) => {
-                        this.form.processing = false;
-                        console.log('success', resp);
-                        //Inertia.visit(route('pay'))
-                    },
-                    onError: (errors) => {
-                        console.log('errors', errors);
-                        this.form.processing = false;
-                        this.errors = errors;
-                    }
-                });*/
 
             }).catch((err) => {
                 // console.log('aqui')

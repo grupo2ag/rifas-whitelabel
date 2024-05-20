@@ -115,6 +115,19 @@ class RaffleController extends Controller
                 }
             else $rifa['buyers'] = [];
 
+            $rifa['participants'] = [];
+            if($rifa->type === 'manual'){
+                $rifa['participants'] = Participant::join('customers', 'customers.id', '=', 'participants.customer_id')
+                    ->select('participants.*')
+                    ->where('participants.raffle_id', $rifa->id)
+                    ->where(function ($query){
+                        $query->where('participants.reserved', '>', '0')
+                              ->whereOr('participants.paid', '>', '0');
+                    })
+                    ->orderBy('participants.numbers', 'DESC')
+                    ->get();
+            }
+
             //dd($rifa);
 
             return Inertia::render('Site/Raffle/Raffle', ['raffle' => $rifa]);

@@ -12,10 +12,6 @@ const promotion = (raffle, quantity) => {
     if(raffle?.raffle_promotions.length){
         let promotion = raffle.raffle_promotions;
 
-        /*let maisProximo = promotion.reduce(function(anterior, corrente) {
-            return (Math.abs(corrente.quantity_numbers - quantity) < Math.abs(anterior.quantity_numbers - quantity) ? corrente.quantity_numbers : anterior.quantity_numbers);
-        });*/
-
         let discount = 0;
         let amount = 0;
         let total = 0;

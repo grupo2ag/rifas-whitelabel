@@ -207,7 +207,7 @@ export default {
         <section id="purchase" class="md:py-3">
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
-                    <PaymentExposed v-if="purchaseType === 1"/>
+                    <PaymentExposed :raffle="raffle" v-if="purchaseType === 1"/>
                     <PaymentRandom :raffle="raffle" v-else/>
                 </div>
             </div>

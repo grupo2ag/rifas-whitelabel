@@ -1,271 +1,101 @@
 <script setup>
 import * as func from '@/Helpers/functions';
+import Checkout from "@/Pages/Site/Raffle/Checkout/Checkout.vue";
 </script>
 
 <script>
 import Button from '@/Components/Button/Button.vue'
 import Icon from '@/Components/Icon/Icon.vue'
+import {remove} from "@ckeditor/ckeditor5-utils";
 
+const numbersStatus = (numbers, participants) => {
+      const numeros = numbers.split(',');
+
+      let participantsNumeros = participants.map(function (cada){
+          let partNumbers =  cada.numbers.split(',');
+          if(partNumbers.length){
+              if(partNumbers.length) {
+                  return {
+                      name: cada.name,
+                      status: cada.reserved ? 'reserved' : 'paid',
+                      numbers: partNumbers
+                  };
+              }
+          }
+
+          return [];
+      })
+
+    const numerosEncontrados = [];
+
+    numeros.forEach(number => {
+        let encontrado = false;
+        participantsNumeros.forEach(participant => {
+            if (participant.numbers.includes(number)) {
+                numerosEncontrados.push({
+                    buyer: participant.name,
+                    status: participant.status,
+                    number: number
+                });
+                encontrado = true;
+            }
+        });
+        if (!encontrado) {
+            numerosEncontrados.push({
+                buyer: '',
+                status: 'available',
+                number: number
+            });
+        }
+    });
+
+    return numerosEncontrados;
+
+}
+
+const promotion = (raffle, quantity) => {
+    if(raffle?.raffle_promotions.length){
+        let promotion = raffle.raffle_promotions;
+
+        let discount = 0;
+        let amount = 0;
+        let total = 0;
+
+        for(let i = 0; i < promotion.length; i++){
+            let pm = promotion[i].quantity_numbers
+
+            if(quantity >= pm){
+                discount = promotion[i].discount;
+                amount =  promotion[i].amount;
+                total = amount * quantity;
+            }
+        }
+
+        return total > 0 ? [discount, amount, total] : false;
+    }
+
+    return false;
+}
 export default {
     name: "PaymentExposed",
     components: {
         Button,
         Icon,
     },
+    props:{
+        raffle: Object
+    },
     data() {
         return {
-            data: [
-                {
-                    number: 1,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 2,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 3,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 4,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 5,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 6,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 7,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 8,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 9,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 10,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 11,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 12,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 13,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 14,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 15,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 16,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 17,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 18,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 19,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 20,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 21,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 22,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 23,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 24,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 25,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 26,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 27,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 28,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 29,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 30,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 31,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 32,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 33,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 34,
-                    status: 'paid',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 35,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 36,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 37,
-                    status: 'reserved',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 38,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 39,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 40,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 41,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 42,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 43,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 44,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 45,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 46,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 47,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 48,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 49,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                }
-            ],
+            data: numbersStatus(this.raffle.r_numbers, this.raffle.participants),
             items: [],
             selected: [],
             showModal: false,
-            value: 199,
-            total: 0
+            showCheckout: false,
+            value: this.raffle.price,
+            total: 0,
+            min: this.raffle.minimum_purchase,
+            max: this.raffle.maximum_purchase
         }
     },
     methods: {
@@ -285,16 +115,28 @@ export default {
             }
         },
         addItem(number, status) {
+
             let active = this.$refs['numb_' + number][0].getAttribute('active')
 
             if (status === 'available') {
                 if (active !== 'true') {
-                    this.data.filter((item) =>
-                        item.number === number ? this.selected.push(item) : '');
+                    this.data.filter((item) => item.number === number ? this.selected.push(item) : '');
 
                     this.$refs['numb_' + number][0].setAttribute('active', true)
 
-                    this.total = this.selected.length * this.value
+                    let temPromo = promotion(this.raffle, this.selected.length)
+                    //console.log(temPromo, this.selected.length);
+                    if(temPromo){
+                        if (this.selected.length <= this.max) {
+                            this.total = temPromo[2]
+                            this.value = temPromo[1]
+                        }else this.removeItem(number)
+                    }else{
+                        if (this.selected.length <= this.max) {
+                            this.value = this.raffle.price
+                            this.total = this.selected.length * this.value
+                        }else this.removeItem(number)
+                    }
 
                     this.showModal = true
                 } else {
@@ -313,11 +155,38 @@ export default {
                 this.showModal = false
             }
 
-            this.total = this.selected.length * this.value
+            let temPromo = promotion(this.raffle, this.selected.length)
+
+            if(temPromo){
+                if (this.selected.length >= this.min) {
+                    this.total = temPromo[2]
+                    this.value = temPromo[1]
+                }
+            }else{
+                    this.value = this.raffle.price
+                    this.total = this.selected.length * this.value
+            }
+
+            //this.total = this.selected.length * this.value
 
             this.$refs['numb_' + number][0].setAttribute('active', false)
-        }
+        },
+        onReserved(){
+            console.log(this.selected)
+        },
+        openModal() {
+            this.showCheckout = true
+            document.body.classList.add('active');
+        },
+        closeModal() {
+            this.showCheckout = false
+            document.body.classList.remove('active');
+        },
     },
+    mounted() {
+        //let teste = numbersStatus(this.raffle.r_numbers, this.raffle.participants)
+        //console.log(teste);
+    }
 }
 </script>
 
@@ -354,7 +223,7 @@ export default {
         </div>
 
         <div class="border-t border-black/20">
-            <div class="grid grid-cols-4 md:grid-cols-12 gap-2 md:gap-1 mt-5">
+            <div class="grid grid-cols-4 md:grid-cols-10 gap-2 md:gap-1 mt-5">
                 <template v-for="(item, index) in data" :key="index">
                     <button type="button" :ref="'numb_' + item.number"
                             class="c-raffle__number"
@@ -394,7 +263,7 @@ export default {
                         </div>
 
                         <div class="w-full md:w-6/12">
-                            <Button color="success" class="w-full uppercase font-bold pulsate-fwd">
+                            <Button @click="openModal" type="button" color="success" class="w-full uppercase font-bold pulsate-fwd">
                                 <Icon name="icon-check-circle" class="h-6 mr-2 stroke-success-bw"/>
                                 Reservar
                             </Button>
@@ -404,6 +273,7 @@ export default {
             </div>
         </div>
     </Transition>
+    <Checkout :raffle="raffle" :unit="value" :quantity="selected.length" :manual="selected" :total="total" :open="showCheckout" @close="closeModal"/>
 </template>
 
 <style src="./style.scss" lang="scss" scoped/>
