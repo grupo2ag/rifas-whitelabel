@@ -134,7 +134,7 @@ export default {
                             </li>
                             <li v-if="status === 'PAID'" class="c-details__item">
                                 Quantidade
-                                <p> {{ status != 'PAID' ? raffle.reserved :  raffle.pago }} </p>
+                                <p> {{ status !== 'PAID' ? raffle.reserved :  raffle.paid }} </p>
                             </li>
                             <li class="c-details__item font-bold text-neutral">
                                 <span class=""></span>Valor Total
