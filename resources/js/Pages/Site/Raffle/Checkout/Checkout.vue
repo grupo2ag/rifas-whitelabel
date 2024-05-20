@@ -254,7 +254,7 @@ export default {
             }).catch((err) => {
                 // console.log('aqui')
                 this.formVerify.processing = false;
-
+                console.log(err)
                 err.inner.forEach((error) => {
                     this.validatePurchase = {...this.validatePurchase, [error.path]: error.message};
                 });
