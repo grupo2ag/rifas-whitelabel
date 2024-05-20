@@ -208,7 +208,7 @@ export default {
         <section id="purchase" class="md:py-3">
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
-                    <PaymentExposed :raffle="raffle" v-if="purchaseType === 1"/>
+                    <PaymentExposed v-if="purchaseType === 1"/>
                     <PaymentRandom :raffle="raffle" v-else/>
                 </div>
             </div>
@@ -301,8 +301,6 @@ export default {
                             <p class="px-4 py-1.5 bg-neutral/10 text-sm rounded-full">{{item.total}} Números</p>
                         </li>
 
-
-
                     </ul>
                 </div>
             </div>
@@ -324,6 +322,7 @@ export default {
                 </div>
             </div>
         </section>
+
     </App>
 </template>
 
