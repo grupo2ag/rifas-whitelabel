@@ -15,14 +15,14 @@ const props = defineProps({
     }
 });
 
-const defaultClasses = computed(() => 'whitespace-nowrap rounded-lg text-center focus:outline-none transition');
+const defaultClasses = computed(() => 'whitespace-nowrap  text-center focus:outline-none transition');
 
 const sizeClasses = computed(() => {
     switch (props.size) {
         case 'xs':
-            return 'text-xs px-1 py-1';
+            return 'text-xs px-2 py-1 rounded-lg';
         case 'sm':
-            return 'text-sm px-4 py-1.5';
+            return 'text-sm px-3 py-1.5 rounded-xl';
         case 'lg':
             return 'text-lg px-7 py-3';
         default:
@@ -32,6 +32,8 @@ const sizeClasses = computed(() => {
 
 const colorsClasses = computed(() => {
     switch (props.color) {
+        case 'primary':
+            return 'bg-primary text-primary-bw';
         case 'success':
             return 'bg-success text-success-bw';
         case 'warning':
@@ -46,8 +48,7 @@ const colorsClasses = computed(() => {
 </script>
 
 <template>
-    <span class="py-0.5 px-3 text-sm rounded-lg"
-          :class="[defaultClasses, sizeClasses, colorsClasses]">
+    <span :class="[defaultClasses, sizeClasses, colorsClasses]">
         <slot/>
     </span>
 </template>

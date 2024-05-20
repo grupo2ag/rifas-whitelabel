@@ -91,7 +91,8 @@ export default {
                 <div class="c-content flex flex-col md:flex-row gap-8">
                     <div class="w-full md:w-7/12 flex flex-col items-start">
                         <h1 class="text-3xl text-neutral font-bold uppercase mb-1 md:hidden">{{ raffle.title }}</h1>
-                        <p class="text-xs px-3 py-1 bg-primary text-primary-bw rounded-md mb-4 md:hidden">Corra</p>
+
+                        <Badge color="primary" size="sm" class="mb-4 md:hidden">Corra</Badge>
 
                         <div class="w-full flex flex-col gap-6">
                             <div class="w-full flex flex-col md:flex-row gap-3 md:gap-4">
@@ -135,7 +136,7 @@ export default {
                             <div class="flex flex-col items-start">
                                 <h1 class="text-2xl md:text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">{{ raffle.title }}</h1>
 
-                                <Badge color="primary" class="mb-2 hidden md:block">Corra</Badge>
+                                <Badge color="primary" size="sm" class="mb-2 hidden md:block">Corra</Badge>
 
                                 <p class="text-neutral/70">
                                     {{ raffle?.subtitle }}
