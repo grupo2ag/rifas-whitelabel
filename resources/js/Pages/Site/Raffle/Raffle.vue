@@ -217,22 +217,20 @@ export default {
         <section class="md:py-3">
             <div class="md:container">
                 <div class="c-content flex flex-col">
-                    <p class="text-lg font-bold text-neutral mb-2">Promoçoes</p>
-
-                    <ul v-for="(item, index) in raffle.raffle_promotions" :key="index">
-                        <li class="text-neutral/70 font-bold">Comprando acima de {{item.quantity_numbers}}, o valor por cota é {{ parseFloat( (item.amount/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section class="md:py-3">
-            <div class="md:container">
-                <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Prêmios</p>
 
-                    <ul v-for="(item, index) in raffle.raffle_awards" :key="index">
-                        <li class="text-neutral/70 font-bold">{{item.order}} {{item.description}}</li>
+                    <ul v-for="(item, index) in raffle.raffle_awards" :key="index" class="grid gap-2">
+                        <!--                        <li class="text-neutral/70 font-bold"> {{item.description}}</li>-->
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{item.order}}</p><span class="text-primary px-2">|</span>
+                            <p class="flex-1">{{item.description}}</p>
+                        </li>
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{item.order}}</p><span class="text-primary px-2">|</span>
+                            <p class="flex-1">{{item.description}}</p>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -241,10 +239,14 @@ export default {
         <section class="md:py-3">
             <div class="md:container">
                 <div class="c-content flex flex-col">
-                    <p class="text-lg font-bold text-neutral mb-2">Ranking Compradores</p>
+                    <p class="text-lg font-bold text-neutral mb-2">Promoções</p>
 
-                    <ul v-for="(item, index) in raffle.buyers" :key="index">
-                        <li class="text-neutral/70 font-bold">{{index+1}} {{item.total}}-{{item.name}}</li>
+                    <ul v-for="(item, index) in raffle.raffle_promotions" :key="index">
+<!--                        <li class="text-neutral/70 font-bold">Comprando acima de {{item.quantity_numbers}}, o valor por cota é {{ parseFloat( (item.amount/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</li>-->
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="flex-1">Comprando acima de {{item.quantity_numbers}}, o valor por cota é {{ parseFloat( (item.amount/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</p>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -257,6 +259,50 @@ export default {
 
                     <ul v-for="(item, index) in raffle.raffle_premium_numbers" :key="index">
                         <li class="text-neutral/70 font-bold">{{index+1}} {{item.number_premium}} {{item.winner_name}}</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="md:py-3">
+            <div class="md:container">
+                <div class="c-content flex flex-col">
+                    <p class="text-lg font-bold text-neutral mb-2">Ranking Compradores</p>
+
+                    <ul v-for="(item, index) in raffle.buyers" :key="index" class="grid gap-2">
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{index+1}}</p><span class="text-primary px-2">|</span>
+                            <p class="flex-1">{{item.name}}</p>
+                            <p class="px-4 py-1.5 bg-neutral/10 text-sm rounded-full">{{item.total}} Números</p>
+                        </li>
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{index+1}}</p><span class="text-primary px-2">|</span>
+                            <p class="flex-1">{{item.name}}</p>
+                            <p class="px-4 py-1.5 bg-neutral/10 text-sm rounded-full">{{item.total}} Números</p>
+                        </li>
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{index+1}}</p><span class="text-primary px-2">|</span>
+                            <p class="flex-1">{{item.name}}</p>
+                            <p class="px-4 py-1.5 bg-neutral/10 text-sm rounded-full">{{item.total}} Números</p>
+                        </li>
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{index+1}}</p><span class="text-primary px-2">|</span>
+                            <p class="flex-1">{{item.name}}</p>
+                            <p class="px-4 py-1.5 bg-neutral/10 text-sm rounded-full">{{item.total}} Números</p>
+                        </li>
+
+                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                            <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{index+1}}</p><span class="text-primary px-2">|</span>
+                            <p class="flex-1">{{item.name}}</p>
+                            <p class="px-4 py-1.5 bg-neutral/10 text-sm rounded-full">{{item.total}} Números</p>
+                        </li>
+
+
+
                     </ul>
                 </div>
             </div>
