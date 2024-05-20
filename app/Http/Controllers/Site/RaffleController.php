@@ -115,6 +115,19 @@ class RaffleController extends Controller
                 }
             else $rifa['buyers'] = [];
 
+            $rifa['participants'] = [];
+            if($rifa->type === 'manual'){
+                $rifa['participants'] = Participant::join('customers', 'customers.id', '=', 'participants.customer_id')
+                    ->select('participants.*')
+                    ->where('participants.raffle_id', $rifa->id)
+                    ->where(function ($query){
+                        $query->where('participants.reserved', '>', '0')
+                              ->whereOr('participants.paid', '>', '0');
+                    })
+                    ->orderBy('participants.numbers', 'DESC')
+                    ->get();
+            }
+
             //dd($rifa);
 
             return Inertia::render('Site/Raffle/Raffle', ['raffle' => $rifa]);
@@ -123,20 +136,21 @@ class RaffleController extends Controller
         return redirect('/');
     }
 
-    public function verify($phone)
+    public function verify($cpf)
     {
-        $phone = '55 '.$phone;
+       // $phone = '55 '.$phone;
 
-        $data = Customer::where('phone', $phone)->first();
+        //$data = Customer::where('phone', $phone)->first();
+        $data = Customer::where('cpf', $cpf)->first();
 
         $return = [];
         if(!empty($data->id)){
-            $phone = str_replace('55 ', '', $phone);
+            //$phone = str_replace('55 ', '', $phone);
             $return = [
                 'buyer' => $data->id,
                 'name' => $data->name,
                 'cpf' => !empty($data->cpf) ? hideString($data->cpf, 3,3) : '',
-                'phone' => !empty($phone) ? hideString($phone, 8, 3) : '',
+                'phone' => !empty($data->phone) ? hideString($data->phone, 8, 3) : '',
                 'email' => !empty($data->email) ? hideString($data->email, 3,3) : '',
             ];
         }

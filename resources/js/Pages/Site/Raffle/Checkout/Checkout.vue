@@ -64,6 +64,16 @@ const getInitials = function (string) {
     return initials;
 };
 
+const manualNumbers = function (numbers) {
+    console.log('aqui', numbers);
+    let nums = [];
+    numbers.forEach((number) => {
+        nums.push(nums.number)
+    });
+
+    return nums;
+};
+
 export default {
     name: "Checkout",
     props: {
@@ -71,6 +81,7 @@ export default {
         quantity: Number,
         total: Number,
         numbers: Array,
+        manual: Array,
         raffle: Object
     },
     components: {
@@ -82,6 +93,8 @@ export default {
     },
     data() {
         return {
+            //modal: this.open
+            data: !!this.manual ? manualNumbers(this.manual) : [],
             formVerify: {
                 cpf: '',
                 processing: false,
@@ -238,28 +251,36 @@ export default {
                     //FECHA LOADING
                 })
 
-                /*form.post(route('purchase'), {
-                    preserveScroll: true,
-                    onSuccess: (resp) => {
-                        this.form.processing = false;
-                        console.log('success', resp);
-                        //Inertia.visit(route('pay'))
-                    },
-                    onError: (errors) => {
-                        console.log('errors', errors);
-                        this.form.processing = false;
-                        this.errors = errors;
-                    }
-                });*/
-
             }).catch((err) => {
                 // console.log('aqui')
                 this.formVerify.processing = false;
-
+                console.log(err)
                 err.inner.forEach((error) => {
                     this.validatePurchase = {...this.validatePurchase, [error.path]: error.message};
                 });
             });
+        },
+        validatorVerify($attribute) {
+            Object.keys(this.validateVerify).forEach(key => {
+                if ($attribute === key) {
+                    this.validateVerify[key] = ''
+                }
+            });
+
+            this.schemaVerify
+                .validate(this.formVerify, {abortEarly: false})
+                .then(() => {
+                    // this.errors.user = {};
+                })
+                .catch(err => {
+                    //   this.errors.user = {};
+
+                    err.inner.forEach((error) => {
+                        if ($attribute === error.path) {
+                            this.validateVerify = {...this.validateVerify, [error.path]: error.message};
+                        }
+                    });
+                });
         },
         validatorPurchase($attribute) {
             Object.keys(this.validatePurchase).forEach(key => {
