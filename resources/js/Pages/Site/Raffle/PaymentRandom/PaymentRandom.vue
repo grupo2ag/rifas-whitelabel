@@ -168,13 +168,12 @@ export default {
                         <span class="text-3xl font-bold">+ {{ item.quantity_numbers }}</span>
                         <span class="text-xs">Selecionar</span>
 
-
                         <span v-if="item.popular" class="c-recomend">{{ item.popular ? 'Popular' : '' }}</span>
                     </Button>
                 </template>
             </div>
 
-            <div class="px-5 py-3 w-full flex items-center justify-center gap-2 bg-base-100 mb-3 rounded-xl">
+            <div class="px-5 py-3 w-full flex items-center justify-center gap-2 bg-base-100 mb-2 rounded-xl">
                 <div class="w-6/12 md:w-3/12 mx-auto flex items-center">
                     <button type="button" class="c-btn-count"
                             @click="removeItem">
@@ -190,7 +189,7 @@ export default {
                 </div>
             </div>
 
-            <div class="px-5 py-3 w-full flex items-center justify-between border border-primary gap-4 mb-3 rounded-xl">
+            <div class="px-5 py-3 w-full flex items-center justify-center gap-2 bg-base-100 mb-3 rounded-xl">
                 <p class="w-6/12 text-sm text-neutral">{{ quantity }} x {{ func.formatValue(value) }} </p>
 
                 <p class="w-6/12 text-right text-sm md:text-sm text-neutral">

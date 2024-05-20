@@ -96,7 +96,7 @@ export default {
             //modal: this.open
             data: !!this.manual ? manualNumbers(this.manual) : [],
             formVerify: {
-                phone: '',
+                cpf: '',
                 processing: false,
             },
             formPurchase: {
@@ -114,7 +114,7 @@ export default {
             schemaVerify: {},
             schemaPurchase: {},
             validateVerify: {
-                phone: '',
+                cpf: '',
             },
             validatePurchase: {
                 name: '',
@@ -128,15 +128,6 @@ export default {
         }
     },
     mounted() {
-        //console.log(this.manual)
-        if (this.buyer > 0){
-            //console.log('!= null')
-        } else {
-
-        }
-
-        //console.log(this.formPurchase.buyer)
-
         yup.setLocale(pt);
         this.schemaPurchase = yup.object().shape({
 
@@ -171,7 +162,8 @@ export default {
         })
 
         this.schemaVerify = yup.object().shape({
-            phone: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
+            cpf: yup.string().min(13, 'CPF incompleto').required('Obrigatório').test('test-invalid-cpf', 'CPF Inválido', value => cpfIsValid(value))
+                .required('CPF é obrigatório'),
         })
     },
     methods: {
@@ -185,10 +177,10 @@ export default {
                 .validate(this.formVerify, {abortEarly: false}).then(() => {
                 this.formVerify.processing = true;
 
-                fetch(route('verify', this.formVerify.phone)).then(
+                fetch(route('verify', this.formVerify.cpf)).then(
                     resp => {
                         resp.json().then((data) => {
-                            if (!!data.phone) {
+                            if (!!data.cpf) {
                                 this.customer = data;
 
                                 this.formPurchase.name = this.customer.name
@@ -199,7 +191,7 @@ export default {
 
                                 this.step = 'CONFIRM'
                             } else {
-                                this.formPurchase.phone = this.formVerify.phone
+                                this.formPurchase.cpf = this.formVerify.cpf
                                 this.step = 'PURCHASE'
                             }
                         }).catch(error => {
@@ -210,7 +202,7 @@ export default {
                     });
             }).catch((err) => {
                 this.formVerify.processing = false;
-                //console.log(err)
+
                 err.inner.forEach((error) => {
                     this.validateVerify = {...this.validateVerify, [error.path]: error.message};
                 });
@@ -311,25 +303,6 @@ export default {
                     });
                 });
         },
-        clearVerify() {
-            this.formVerify = {
-                phone: ''
-            };
-        },
-        clearPurchase() {
-            this.formPurchase = {
-                name: '',
-                phone: '',
-                confirmPhone: '',
-                email: '',
-                cpf: '',
-                buyer: '',
-                raffle_id: this.raffle.id,
-                user_id: this.raffle.user_id,
-                quantity: this.quantity,
-                total: this.total
-            }
-        },
         returnVerify() {
             this.step = 'VERIFY';
 
@@ -341,7 +314,7 @@ export default {
             }
 
             this.formVerify = {
-                phone: ''
+                cpf: ''
             };
         }
     },
@@ -422,23 +395,10 @@ export default {
 
             <template v-if="step === 'VERIFY'">
                 <form @submit.prevent="onVerify" class="pt-3 mt-3 border-t border-base-100">
-
-                    <!--                    <VuePhoneNumberInput v-model="v-model="formVerify.phone"" />-->
-
-                    <!--                    <phone-input
-                                            @phone="phone = $event"
-                                            @country="country = $event"
-                                            @phoneData="phoneData = $event"
-                                            name="phone-number-input"
-                                            label="Enter your phone"
-                                            required
-                                            :value="formVerify.phone"
-                                        />-->
-
                     <div class="w-full">
-                        <Input type="tel" label="Telefone" :name="formVerify.phone" placeholder="(00) 00000-0000"
-                               autocomplete="tel" :error="validateVerify.phone" v-model="formVerify.phone"
-                               v-mask="['(##) #####-####', '(##) ####-####']"/>
+                        <Input type="tel" label="CPF" :name="formVerify.cpf" placeholder="000.000.000-00"
+                               autocomplete="tel" :error="validateVerify.cpf" v-model="formVerify.cpf"
+                               v-mask="'###.###.###-##'"/>
                     </div>
 
                     <div class="p-2 mb-3 bg-warning rounded-xl">
@@ -446,7 +406,7 @@ export default {
                         <span
                             class="flex items-center justify-center w-5 h-5 rounded-full bg-warning-bw/20 text-warning-bw">!
                         </span>
-                            Informe seu telefone para continuar.</p>
+                            Informe seu cpf para continuar.</p>
                     </div>
 
                     <p class="mb-2 text-xs text-neutral/70">
@@ -480,10 +440,6 @@ export default {
                             :disabled="formPurchase.processing" :loading="formPurchase.processing">
                         Concluir Reserva
                     </Button>
-
-                    <!--                    <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
-                                            Outra Conta
-                                        </Button>-->
                 </form>
             </template>
 
