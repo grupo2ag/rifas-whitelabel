@@ -104,7 +104,7 @@ export default {
                     </swiper-slide>
 
                     <div class="swipper-navigation">
-                        <div class=" px-4 md:w-[100%] mx-auto flex justify-between">
+                        <div class="px-4 md:w-[100%] mx-auto flex justify-between">
                             <button type="button" class="swiper-nav-button custom-prev-button" @click="goPrev">
                                 <Icon name="icon-carret-left" class="w-4 h-4 mr-0.5 fill-primary" />
                             </button>
