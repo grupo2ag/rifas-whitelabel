@@ -9,36 +9,55 @@ defineProps({
 <script>
 export default {
     name: "CardRaffle",
-    // methods: {
-
-    // },
-    mounted() {
-        console.log(this.data)
+    methods: {
+        redirect() {
+            window.location.href = `/raffles/view/${this.data?.id}`
+        }
     }
 }
 </script>
 
 <template>
-
-    <div class="card bg-[#dedede]">
+    <!-- <Link :href="route('raffles.raffleView', { id: data?.id })"> -->
+    <div class="card bg-base-100 hover:bg-base-200" role="button" @click="redirect()">
         <div class="flex flex-row mb-2">
             <div class="w-full">
                 <!-- adicionar imagem dinamica -->
                 <!-- <figure> -->
-                    <img src="https://mundoemrevista.com.br/wp-content/uploads/2024/01/trevo-de-quatro-folhas.webp" alt="" />
+                <img src="https://mundoemrevista.com.br/wp-content/uploads/2024/01/trevo-de-quatro-folhas.webp"
+                    alt="" />
                 <!-- </figure> -->
             </div>
         </div>
-        <div class="flex flex-row flex-wrap px-2 h-30">
+        <div class="flex flex-row flex-wrap px-3 mb-4 h-30">
             <div class="w-full mb-2">
-                <div class="text-primary card-title">{{ data?.title }}</div>
+                <div class="sm:hidden text-primary card-title">{{ func.truncateString(data?.title, 18) }}</div>
+                <div class="hidden sm:grid text-primary card-title">{{ func.truncateString(data?.title, 50) }}</div>
             </div>
             <div class="flex w-full ">
                 <div class="flex flex-row w-full">
                     <div class="flex items-center w-8/12">
-                        <div class="border-4 radial-progress bg-primary text-content border-primary"
+                        <div class="border-4 sm:hidden radial-progress bg-primary text-content border-primary"
                             style="--size: 4rem;" :style="{ '--value': func.calcPercent(data?.paid, data?.quantity) }"
                             role="progressbar">{{ func.calcPercent(data?.paid, data?.quantity) }}%</div>
+                        <div class="hidden sm:flex flex-row flex-wrap items-center !w-full">
+                            <div class="w-full">
+                                <small class="text-base">Total Vendidos</small>
+                            </div>
+                            <div class="w-full">
+                                <div class="flex flex-row">
+                                    <progress class="w-full h-6 progress progress-success"
+                                        :value="func.calcPercent(data?.paid, data?.quantity)" max="100"></progress>
+                                    <small class="ml-2 text-base">{{ func.calcPercent(data?.paid, data?.quantity)
+                                        }}%</small>
+                                </div>
+                            </div>
+                            <div class="flex justify-center w-full">
+                                <small class="text-base">
+                                    {{ data?.paid + '/' + data?.quantity }}
+                                </small>
+                            </div>
+                        </div>
                     </div>
                     <div class="w-4/12">
                         <div class="flex flex-col flex-wrap">
@@ -59,15 +78,12 @@ export default {
                 </div>
             </div>
         </div>
-        <!-- <div class="flex flex-row flex-wrap items-end mb-4">
-            <div class="justify-start w-6/12 px-3">
-                <div class="border-4 radial-progress bg-primary text-content border-primary"
-                            style="--size: 4rem;" :style="{'--value':func.calcPercent(data?.paid, data?.quantity)}" role="progressbar">{{ func.calcPercent(data?.paid, data?.quantity) }}%</div>
-            </div>
-            <div class="justify-end w-6/12 px-3 card-actions">
-                <button class="text-white btn btn-xs btn-primary">+ Detalhes</button>
+        <!-- <div class="flex flex-row justify-center mb-4">
+            <div class="flex w-5/12">
+                <button class="border-none btn btn-block bg-primary text-primary-bw btn-sm">+ Detalhes</button>
             </div>
         </div> -->
     </div>
+    <!-- </Link> -->
 
 </template>

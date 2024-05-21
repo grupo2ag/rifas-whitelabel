@@ -160,6 +160,16 @@ export const calcPercent = function (parcialValue, totalValue){
     }
 }
 
+export const getColorCup = function (index) {
+    index = index.toString();
+    const colors = {
+        '0' : 'text-yellow',
+        '1' : 'text-gray',
+        '2' : 'text-[#b54a07]'
+    }
+    return colors[index]
+}
+
 export const translateDate = function (date) {
     return moment(date).format('DD/MM/YYYY');
 }
@@ -169,6 +179,59 @@ export const translateMoney = function (value) {
     else value = (parseFloat(value) / 100);
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
+
+export const truncateString = function(str, limit) {
+    if (str && limit && str.length > limit) {
+      return str.substring(0, limit) + '...';
+    }
+    return str;
+}
+
+export const getDatesOfGrafics = function(dates) {
+    return dates.map(date => translateDate(date.date));
+}
+export const getValuesOfGrafics = function(dates) {
+    return dates.map(date => date.value);
+}
+
+export const optionsOfGrafics = function(data, colors) {
+    return {
+        chart: {
+            height: 350
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        xaxis: {
+            categories: getDatesOfGrafics(data)
+        },
+        tooltip: {
+            x: {
+                format: 'dd/MM/yyyy'
+            },
+        },
+        colors: colors ?? []
+    }
+}
+export const seriesOfGrafics = function(names, datas) {
+    if ((!datas || !names) || (!Array.isArray(datas) || !Array.isArray(names))) return [];
+
+    const series = [];
+    for (let i = 0; i < datas.length; i++) {
+        series.push(
+            {
+                name: names[i],
+                data: getValuesOfGrafics(datas[i])
+            }
+        )
+    }
+
+    return series;
+}
+
 /*
 export const dddFormat = (phone) => {
     let states = [
