@@ -18,21 +18,9 @@ export default {
     props: {
         data: Object
     },
-    methods: {
-        getColorCup(index) {
-            index = index.toString();
-
-            const colors = {
-                '0' : 'text-yellow',
-                '1' : 'text-gray',
-                '2' : 'text-[#b54a07]'
-            }
-            return colors[index]
-        },
-    },
-    mounted() {
-        console.log(this.data);
-    }
+    // mounted() {
+    //     console.log(this.data);
+    // }
 }
 </script>
 <template>
@@ -41,7 +29,7 @@ export default {
             <StatsRaffleSale :userName="participant?.name" :value="func.translateMoney(participant?.total_value)" :textBottom="participant?.email"
                 :shortName="func.getInitials(participant?.name)">
                 <template #cup>
-                    <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle" :class="getColorCup(index)">
+                    <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle" :class="func.getColorCup(index)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4 lg:w-6 lg:h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"

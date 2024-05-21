@@ -63,7 +63,7 @@ export default {
         <div class="mb-4 rounded">
             <Popper content="Meios de Pagamento" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
-                <NavLink :active="false">
+                <NavLink :href="route('paymentMethods')" :active="false">
                     <CurrencyDollarIcon class="w-6 h-6 text-content" />
                 </NavLink>
             </Popper>

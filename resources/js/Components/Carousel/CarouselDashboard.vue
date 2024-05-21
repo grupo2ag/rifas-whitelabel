@@ -35,9 +35,9 @@ export default {
     props: {
         data: Array
     },
-    mounted() {
-        console.log(this.data, 'CAROUSEL')
-    },
+    // mounted() {
+    //     console.log(this.data, 'CAROUSEL')
+    // },
     components: {
         Link,
         Icon,
@@ -48,7 +48,7 @@ export default {
     },
     data() {
         return {
-            modules: [Autoplay, Navigation, Keyboard, Pagination],
+            modules: [Autoplay, Navigation, Keyboard],
         }
     },
     methods: {
@@ -64,12 +64,15 @@ export default {
 
 <template>
     <section class="c-hero" id="hero">
+        <div class="flex justify-center w-full px-4">
+            <h1 class="text-base text-xl font-medium title-font">Rifas Recentes</h1>
+        </div>
         <div class="container flex">
             <div class="w-full">
                 <swiper ref="swiper" :keyboard="true" :slidesPerView="1" :spaceBetween="5" :loop="true" :autoplay="data && data?.length > 5 && {
-                delay: 4500,
-                disableOnInteraction: false,
-            }"  :breakpoints="{
+                    delay: 4500,
+                    disableOnInteraction: false,
+                }" :breakpoints="{
 
                     '768': {
                         slidesPerView: 1,
@@ -80,12 +83,13 @@ export default {
                     },
                 }" :pagination="{
                     clickable: true,
-                }" :navigation="{ nextEl: '.custom-next-button', prevEl: '.custom-prev-button' }" :allowTouchMove="false"
-                    :grabCursor="false" :centeredSlides="true" :modules="modules" class="swiper-hero">
+                }" :navigation="{ nextEl: '.custom-next-button', prevEl: '.custom-prev-button' }"
+                    :allowTouchMove="false" :grabCursor="false" :centeredSlides="true" :modules="modules"
+                    class="swiper-hero">
 
                     <swiper-slide class="flex justify-center" v-for="(item, key) in data" :key="key">
                         <div class="w-8/12 h-full overflow-hidden md:rounded-2xl border-base-200 ">
-                            <div class="aspect-[2/3] md:aspect-[4/1.8]">
+                            <div>
                                 <CardRaffle :data="item" />
                             </div>
                         </div>
@@ -93,11 +97,13 @@ export default {
 
                     <div v-if="data?.length > 1" class="swipper-navigation">
                         <div class="flex justify-between w-full mx-auto ">
-                            <button type="button" class="swiper-nav-button custom-prev-button bg-base-100" @click="goPrev">
+                            <button type="button" class="swiper-nav-button custom-prev-button bg-base-100"
+                                @click="goPrev">
                                 <Icon name="icon-carret-left" class="w-4 h-4 mr-0.5 fill-primary" />
                             </button>
 
-                            <button type="button" class="swiper-nav-button custom-next-button bg-base-100" @click="goNext">
+                            <button type="button" class="swiper-nav-button custom-next-button bg-base-100"
+                                @click="goNext">
                                 <Icon name="icon-carret-right" class="w-4 h-4 ml-0.5 fill-primary" />
                             </button>
                         </div>

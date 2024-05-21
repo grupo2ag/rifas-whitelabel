@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class GatewayConfiguration
- * 
+ *
  * @property int $id
  * @property string|null $token
  * @property string|null $login
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Gateway $gateway
  * @property User $user
  *

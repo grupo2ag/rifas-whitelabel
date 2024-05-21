@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Raffle::class);
     }
+
+    public function gatewayConfigurations()
+    {
+        return $this->hasMany(GatewayConfiguration::class);
+    }
 }
