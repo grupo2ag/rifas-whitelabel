@@ -64,6 +64,15 @@ const getInitials = function (string) {
     return initials;
 };
 
+const manualNumbers = function (numbers) {
+    let nums = [];
+    numbers.forEach((number) => {
+        nums.push(number.number)
+    });
+
+    return nums;
+};
+
 export default {
     name: "Checkout",
     props: {
@@ -71,6 +80,7 @@ export default {
         quantity: Number,
         total: Number,
         numbers: Array,
+        manual: Array,
         raffle: Object
     },
     components: {
@@ -83,30 +93,9 @@ export default {
     data() {
         return {
             //modal: this.open
-            data: [
-                {
-                    number: 1,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 2,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 3,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                },
-                {
-                    number: 4,
-                    status: 'available',
-                    buyer: 'Luiz Meirelles'
-                }
-            ],
+            //data: this.manual.length ? manualNumbers(this.manual) : [],
             formVerify: {
-                phone: '',
+                cpf: '',
                 processing: false,
             },
             formPurchase: {
@@ -117,14 +106,16 @@ export default {
                 cpf: '',
                 buyer: '',
                 raffle_id: this.raffle.id,
+                raffle_type: this.raffle.type,
                 user_id: this.raffle.user_id,
                 quantity: this.quantity,
-                total: this.total
+                total: this.total,
+                manual: []
             },
             schemaVerify: {},
             schemaPurchase: {},
             validateVerify: {
-                phone: '',
+                cpf: '',
             },
             validatePurchase: {
                 name: '',
@@ -138,14 +129,6 @@ export default {
         }
     },
     mounted() {
-        if (this.buyer > 0){
-            console.log('!= null')
-        } else {
-
-        }
-
-        console.log(this.formPurchase.buyer)
-
         yup.setLocale(pt);
         this.schemaPurchase = yup.object().shape({
 
@@ -180,7 +163,8 @@ export default {
         })
 
         this.schemaVerify = yup.object().shape({
-            phone: yup.string().min(14, 'Telefone inválido').required('Obrigatório'),
+            cpf: yup.string().min(13, 'CPF incompleto').required('Obrigatório').test('test-invalid-cpf', 'CPF Inválido', value => cpfIsValid(value))
+                .required('CPF é obrigatório'),
         })
     },
     methods: {
@@ -194,21 +178,22 @@ export default {
                 .validate(this.formVerify, {abortEarly: false}).then(() => {
                 this.formVerify.processing = true;
 
-                fetch(route('verify', this.formVerify.phone)).then(
+                fetch(route('verify', this.formVerify.cpf)).then(
                     resp => {
                         resp.json().then((data) => {
-                            if (!!data.phone) {
+                            if (!!data.cpf) {
                                 this.customer = data;
 
                                 this.formPurchase.name = this.customer.name
                                 this.formPurchase.phone = this.customer.phone
                                 this.formPurchase.email = this.customer.email
                                 this.formPurchase.buyer = this.customer.buyer
-                                //this.formPurchase.cpf = this.customer.cpf
+                                this.formPurchase.cpf = this.customer.cpf
+                                this.formPurchase.manual = this.manual?.length > 0 ? manualNumbers(this.manual)  : []
 
                                 this.step = 'CONFIRM'
                             } else {
-                                this.formPurchase.phone = this.formVerify.phone
+                                this.formPurchase.cpf = this.formVerify.cpf
                                 this.step = 'PURCHASE'
                             }
                         }).catch(error => {
@@ -226,9 +211,6 @@ export default {
             });
         },
         onPurchase() {
-            //const form = useForm(this.formPurchase);
-
-            // this.validatorPurchase();
 
             this.schemaPurchase
                 .validate(this.formPurchase, {abortEarly: false}).then(() => {
@@ -238,54 +220,43 @@ export default {
                     .then((res) => {
                         let resposta = res.data
 
-                        if (!resposta.pix.order_id) {
-                            this.formVerify.processing = false;
-                        } else {
+                        if (resposta.pix === false){
+                            this.formVerify.processing = true;
+                            Inertia.visit(route('reserved', resposta.participant));
+                        }else if(typeof resposta.pix.order_id === "string" && resposta.pix.order_id.length > 0 && resposta.pix.order_id !== null){
                             this.formVerify.processing = true;
                             console.log(resposta, resposta.pix.order_id);
                             Inertia.visit(route('pay', resposta.pix.order_id));
+                        }else{
+                            this.formVerify.processing = false;
                         }
                         //FECHA LOADING
                     }).catch((errors) => {
-                    console.log('errors', errors);
-                    this.formVerify.processing = false;
-                    this.errors = errors;
+                        console.log('errors', errors);
+                        this.formVerify.processing = false;
+                        this.errors = errors;
 
-                    this.closeModal()
+                        this.closeModal()
 
-                    this.$swal({
-                        html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
-                        confirmButtonText: "Ok",
-                        icon: 'error',
-                        type: 'error',
-                        allowOutsideClick: true,
-                        customClass: {
-                            confirmButton: 'sw-btn sw-btn--red',
-                            popup: 'sw-popup',
-                            title: 'sw-title',
-                        }
-                    })
+                        this.$swal({
+                            html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
+                            confirmButtonText: "Ok",
+                            icon: 'error',
+                            type: 'error',
+                            allowOutsideClick: true,
+                            customClass: {
+                                confirmButton: 'sw-btn sw-btn--red',
+                                popup: 'sw-popup',
+                                title: 'sw-title',
+                            }
+                        })
                     //FECHA LOADING
                 })
-
-                /*form.post(route('purchase'), {
-                    preserveScroll: true,
-                    onSuccess: (resp) => {
-                        this.form.processing = false;
-                        console.log('success', resp);
-                        //Inertia.visit(route('pay'))
-                    },
-                    onError: (errors) => {
-                        console.log('errors', errors);
-                        this.form.processing = false;
-                        this.errors = errors;
-                    }
-                });*/
 
             }).catch((err) => {
                 // console.log('aqui')
                 this.formVerify.processing = false;
-
+                console.log(err)
                 err.inner.forEach((error) => {
                     this.validatePurchase = {...this.validatePurchase, [error.path]: error.message};
                 });
@@ -334,25 +305,6 @@ export default {
                     });
                 });
         },
-        clearVerify() {
-            this.formVerify = {
-                phone: ''
-            };
-        },
-        clearPurchase() {
-            this.formPurchase = {
-                name: '',
-                phone: '',
-                confirmPhone: '',
-                email: '',
-                cpf: '',
-                buyer: '',
-                raffle_id: this.raffle.id,
-                user_id: this.raffle.user_id,
-                quantity: this.quantity,
-                total: this.total
-            }
-        },
         returnVerify() {
             this.step = 'VERIFY';
 
@@ -364,7 +316,7 @@ export default {
             }
 
             this.formVerify = {
-                phone: ''
+                cpf: ''
             };
         }
     },
@@ -445,23 +397,10 @@ export default {
 
             <template v-if="step === 'VERIFY'">
                 <form @submit.prevent="onVerify" class="pt-3 mt-3 border-t border-base-100">
-
-                    <!--                    <VuePhoneNumberInput v-model="v-model="formVerify.phone"" />-->
-
-                    <!--                    <phone-input
-                                            @phone="phone = $event"
-                                            @country="country = $event"
-                                            @phoneData="phoneData = $event"
-                                            name="phone-number-input"
-                                            label="Enter your phone"
-                                            required
-                                            :value="formVerify.phone"
-                                        />-->
-
                     <div class="w-full">
-                        <Input type="tel" label="Telefone" :name="formVerify.phone" placeholder="(00) 00000-0000"
-                               autocomplete="tel" :error="validateVerify.phone" v-model="formVerify.phone"
-                               v-mask="['(##) #####-####', '(##) ####-####']"/>
+                        <Input type="tel" label="CPF" :name="formVerify.cpf" placeholder="000.000.000-00"
+                               autocomplete="tel" :error="validateVerify.cpf" v-model="formVerify.cpf"
+                               v-mask="'###.###.###-##'"/>
                     </div>
 
                     <div class="p-2 mb-3 bg-warning rounded-xl">
@@ -469,7 +408,7 @@ export default {
                         <span
                             class="flex items-center justify-center w-5 h-5 rounded-full bg-warning-bw/20 text-warning-bw">!
                         </span>
-                            Informe seu telefone para continuar.</p>
+                            Informe seu cpf para continuar.</p>
                     </div>
 
                     <p class="mb-2 text-xs text-neutral/70">
@@ -503,10 +442,6 @@ export default {
                             :disabled="formPurchase.processing" :loading="formPurchase.processing">
                         Concluir Reserva
                     </Button>
-
-                    <!--                    <Button type="button" color="outline-primary" class="w-full" @click="returnVerify">
-                                            Outra Conta
-                                        </Button>-->
                 </form>
             </template>
 

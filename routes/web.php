@@ -53,6 +53,7 @@ Route::get('/account', function () {
 
 Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('/pay/{order}', [RaffleController::class, 'pay'])->name('pay');
+Route::get('/reserved/{participant}', [RaffleController::class, 'reserved'])->name('reserved');
 Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
 Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 

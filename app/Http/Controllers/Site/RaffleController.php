@@ -115,6 +115,19 @@ class RaffleController extends Controller
                 }
             else $rifa['buyers'] = [];
 
+            $rifa['participants'] = [];
+            if($rifa->type === 'manual'){
+                $rifa['participants'] = Participant::join('customers', 'customers.id', '=', 'participants.customer_id')
+                    ->select('participants.*')
+                    ->where('participants.raffle_id', $rifa->id)
+                    ->where(function ($query){
+                        $query->where('participants.reserved', '>', '0')
+                              ->whereOr('participants.paid', '>', '0');
+                    })
+                    ->orderBy('participants.numbers', 'DESC')
+                    ->get();
+            }
+
             //dd($rifa);
 
             return Inertia::render('Site/Raffle/Raffle', ['raffle' => $rifa]);
@@ -123,20 +136,21 @@ class RaffleController extends Controller
         return redirect('/');
     }
 
-    public function verify($phone)
+    public function verify($cpf)
     {
-        $phone = '55 '.$phone;
+       // $phone = '55 '.$phone;
 
-        $data = Customer::where('phone', $phone)->first();
+        //$data = Customer::where('phone', $phone)->first();
+        $data = Customer::where('cpf', $cpf)->first();
 
         $return = [];
         if(!empty($data->id)){
-            $phone = str_replace('55 ', '', $phone);
+            //$phone = str_replace('55 ', '', $phone);
             $return = [
                 'buyer' => $data->id,
                 'name' => $data->name,
                 'cpf' => !empty($data->cpf) ? hideString($data->cpf, 3,3) : '',
-                'phone' => !empty($phone) ? hideString($phone, 8, 3) : '',
+                'phone' => !empty($data->phone) ? hideString($data->phone, 8, 3) : '',
                 'email' => !empty($data->email) ? hideString($data->email, 3,3) : '',
             ];
         }
@@ -176,14 +190,16 @@ class RaffleController extends Controller
             $registration_data = [
                 'name' => $name,
                 'phone' => $phone,
-                'email' => $email
+                'email' => $email,
+                'cpf' => Str::trim($request->cpf)
             ];
         }else{
             $return = Customer::find($request->buyer);
             $registration_data = [
                 'name' => $return->name,
                 'phone' => $return->phone,
-                'email' => $return->email
+                'email' => $return->email,
+                'cpf' => $return->cpf,
             ];
         }
 
@@ -201,7 +217,10 @@ class RaffleController extends Controller
         $return['user_id'] = $request->user_id;
 
         if(!empty($return->id)){
-            $pix = numbers_reserve($request->raffle_id, $request->quantity, $return->id, $registration_data, false);
+
+            if(!empty($request->raffle_type) && $request->raffle_type === 'manual'){
+                $pix = numbers_reserve($request->raffle_id, $request->quantity, $return->id, $registration_data, false, $request->manual);
+            }else $pix = numbers_reserve($request->raffle_id, $request->quantity, $return->id, $registration_data, false);
 
             if(!$pix['errors']){
                 unset($pix['numbers']);
@@ -244,7 +263,8 @@ class RaffleController extends Controller
             if(!empty($rifa->id)){
                 $image = RaffleImage::where('raffle_id', $rifa->raffle_id)->where('highlight', 1)->first();
                 if(!empty($image)){
-                    $mountUrl = config('filesystems.disks.s3.path').'/images/'.$rifa->raffle_id.'/'.$image->path;
+                    //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$rifa->raffle_id.'/'.$image->path;
+                    $mountUrl =$image->path;
                     $rifa['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($mountUrl, now()->addMinutes(30));
                 }
 
@@ -252,6 +272,49 @@ class RaffleController extends Controller
                 if($rifa->pago) $status = 'PAID';
                 //else $status = 'CANCELED';
 
+                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status]);
+            }
+        } else {
+            return back();
+        }
+    }
+
+    public function reserved($participant)
+    {
+        if($participant){
+            $rifa = Participant::join('raffles', 'raffles.id', 'participants.raffle_id')
+                ->where('participants.id', $participant)
+                ->where('participants.paid', 0)
+                ->first([
+                    'participants.name',
+                    'participants.phone',
+                    'participants.email',
+                    'participants.document',
+                    'participants.numbers',
+                    'participants.reserved',
+                    'participants.raffle_id',
+                    'participants.numbers',
+                    'participants.amount',
+                    'participants.expired_at as expired',
+                    'raffles.price',
+                    'raffles.title',
+                    'raffles.subtitle',
+                    'raffles.pix_expired'
+                ]);
+
+            if(!empty($rifa->raffle_id)){
+                $image = RaffleImage::where('raffle_id', $rifa->raffle_id)->where('highlight', 1)->first();
+
+                if(!empty($image)){
+                    //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$rifa->raffle_id.'/'.$image->path;
+                    $mountUrl = $image->path;
+                    $rifa['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($mountUrl, now()->addMinutes(30));
+                }
+                //dd($rifa);
+                //$status = 'PROCESSING';
+                if ($rifa->reserved) $status = 'RESERVED';
+                else $status = 'CANCELED';
+                //dd(['raffle' => $rifa, 'status' => $status]);
                 return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status]);
             }
         } else {

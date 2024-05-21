@@ -10,8 +10,7 @@ import {
     BanknotesIcon,
     ReceiptPercentIcon,
     DocumentTextIcon,
-    TableCellsIcon,
-FlagIcon
+TableCellsIcon
 } from '@heroicons/vue/24/outline';
 import moment from 'moment';
 import * as func from '@/Helpers/functions';
@@ -86,7 +85,8 @@ export default {
         <div class="w-full p-2 mb-4 rounded-lg bg-base-200">
             <div class="flex flex-row flex-wrap">
                 <div class="w-4/12 lg:w-2/12 lg:h-[10rem]">
-                    <img :src="data?.image?.path" alt="Preview" class="object-cover w-full h-full rounded-lg">
+                    <img :src="data?.image"
+                        alt="Preview" class="object-cover w-full h-full rounded-lg">
                 </div>
                 <div class="flex w-8/12 lg:w-4/12">
                     <div class="flex flex-row flex-wrap px-2">
@@ -126,6 +126,7 @@ export default {
                         <div class="w-full mb-2">
                             <div class="flex flex-row ">
                                 <LinkIcon class="hidden w-6 mr-2 lg:grid text-primary" />
+                                <a target="_blank" :href="!data?.visible ? route('raffle', 'visualizar|raffle-'+data?.link) : route('raffle', data?.link)">clique</a>
                                 <p class="break-all link link-primary">{{ data?.link }}</p>
                             </div>
                         </div>
@@ -180,7 +181,7 @@ export default {
                     <DocumentTextIcon class="w-6 mr-2 text-primary" />
                     <h2 class="text-base text-xl font-medium title-font">Descrição</h2>
                 </div>
-                <div v-html="data?.description"></div>
+                <p class="mx-2" v-html="data?.description"></p>
             </div>
         </div> -->
         <div class="w-full">

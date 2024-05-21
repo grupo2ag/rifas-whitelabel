@@ -347,6 +347,15 @@ export default {
                                     <option value="60">
                                         1 hora
                                     </option>
+                                    <option value="1440">
+                                        1 dia
+                                    </option>
+                                    <option value="10080">
+                                        1 semana
+                                    </option>
+                                    <option value="43200">
+                                        1 mês
+                                    </option>
                                 </Select>
                             </div>
                         </div>
