@@ -8,6 +8,7 @@ import Icon from "@/Components/Icon/Icon.vue";
 import Waiting from "@/Pages/Site/Payment/Components/Waiting.vue";
 import Approved from "@/Pages/Site/Payment/Components/Approved.vue";
 import Cancel from "@/Pages/Site/Payment/Components/Cancel.vue";
+import Reserved from "@/Pages/Site/Payment/Components/Reserved.vue";
 
 export default {
     name: "ResponseIndex",
@@ -16,6 +17,7 @@ export default {
         Waiting,
         Approved,
         Cancel,
+        Reserved,
         LoadingScreen,
         Button,
         VueCountdown,
@@ -45,6 +47,7 @@ export default {
         }
     },
     mounted() {
+        //console.log('aqui', this.raffle, this.status)
         let expire_date = new Date(this.raffle.expired);
         const actualDate = new Date()
         this.expire_time = expire_date - actualDate
@@ -52,12 +55,16 @@ export default {
        if(this.expire_time < 0){
             this.status = 'CANCELED'
         }
+
+        console.log(expire_date, this.expire_time)
     },
     created(){
-        Echo.channel(`Processed.Pix.${this.raffle.pix_id}`).listen('PixPayment', (e) => {
-            console.log('websocket', e, this.raffle.pix_id)
-            this.status = 'PAID'
-        });
+        if(typeof this.raffle.pix_id === "string" && this.raffle.pix_id.length > 0 && this.raffle.pix_id !== null){
+            Echo.channel(`Processed.Pix.${this.raffle.pix_id}`).listen('PixPayment', (e) => {
+                console.log('websocket', e, this.raffle.pix_id)
+                this.status = 'PAID'
+            });
+        }
     },
    /* watch:{
         'expire_time': function() {
@@ -78,6 +85,8 @@ export default {
                 <Approved v-else-if="status == 'PAID'"/>
 
                 <Cancel v-else-if="status == 'CANCELED' || status == 'REFUNDED' || status == 'CHARGEBACK'"/>
+
+                <Reserved :raffle="raffle" v-else-if="status == 'RESERVED'"/>
 
                 <div class="w-full flex flex-col items-start md:gap-5">
                     <div class="c-content flex w-full flex-col">
@@ -117,11 +126,11 @@ export default {
                             </li>
                             <li class="c-details__item">
                                 Situação
-                                <p>{{ status === 'PAID' ? 'Pago' : status === 'CANCELED' ? 'Cancelado' : 'Aguardando Pagamento'}}</p>
+                                <p>{{ status === 'PAID' ? 'Pago' : status === 'CANCELED' ? 'Cancelado' : status === 'RESERVED' ? 'Reservado' : 'Aguardando Pagamento'}}</p>
                             </li>
                             <li class="c-details__item">
                                 Titulos
-                                <template v-if="status != 'PAID'">
+                                <template v-if="status != 'PAID' && status != 'RESERVED'">
                                     <p>Os titulos são liberados após o pagamento</p>
                                 </template>
                                 <template v-else>

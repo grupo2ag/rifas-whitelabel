@@ -65,10 +65,9 @@ const getInitials = function (string) {
 };
 
 const manualNumbers = function (numbers) {
-    console.log('aqui', numbers);
     let nums = [];
     numbers.forEach((number) => {
-        nums.push(nums.number)
+        nums.push(number.number)
     });
 
     return nums;
@@ -94,7 +93,7 @@ export default {
     data() {
         return {
             //modal: this.open
-            data: !!this.manual ? manualNumbers(this.manual) : [],
+            //data: this.manual.length ? manualNumbers(this.manual) : [],
             formVerify: {
                 cpf: '',
                 processing: false,
@@ -107,9 +106,11 @@ export default {
                 cpf: '',
                 buyer: '',
                 raffle_id: this.raffle.id,
+                raffle_type: this.raffle.type,
                 user_id: this.raffle.user_id,
                 quantity: this.quantity,
-                total: this.total
+                total: this.total,
+                manual: []
             },
             schemaVerify: {},
             schemaPurchase: {},
@@ -187,7 +188,8 @@ export default {
                                 this.formPurchase.phone = this.customer.phone
                                 this.formPurchase.email = this.customer.email
                                 this.formPurchase.buyer = this.customer.buyer
-                                //this.formPurchase.cpf = this.customer.cpf
+                                this.formPurchase.cpf = this.customer.cpf
+                                this.formPurchase.manual = this.manual?.length > 0 ? manualNumbers(this.manual)  : []
 
                                 this.step = 'CONFIRM'
                             } else {
@@ -209,9 +211,6 @@ export default {
             });
         },
         onPurchase() {
-            //const form = useForm(this.formPurchase);
-
-            // this.validatorPurchase();
 
             this.schemaPurchase
                 .validate(this.formPurchase, {abortEarly: false}).then(() => {
@@ -221,33 +220,36 @@ export default {
                     .then((res) => {
                         let resposta = res.data
 
-                        if (!resposta.pix.order_id) {
-                            this.formVerify.processing = false;
-                        } else {
+                        if (resposta.pix === false){
+                            this.formVerify.processing = true;
+                            Inertia.visit(route('reserved', resposta.participant));
+                        }else if(typeof resposta.pix.order_id === "string" && resposta.pix.order_id.length > 0 && resposta.pix.order_id !== null){
                             this.formVerify.processing = true;
                             console.log(resposta, resposta.pix.order_id);
                             Inertia.visit(route('pay', resposta.pix.order_id));
+                        }else{
+                            this.formVerify.processing = false;
                         }
                         //FECHA LOADING
                     }).catch((errors) => {
-                    console.log('errors', errors);
-                    this.formVerify.processing = false;
-                    this.errors = errors;
+                        console.log('errors', errors);
+                        this.formVerify.processing = false;
+                        this.errors = errors;
 
-                    this.closeModal()
+                        this.closeModal()
 
-                    this.$swal({
-                        html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
-                        confirmButtonText: "Ok",
-                        icon: 'error',
-                        type: 'error',
-                        allowOutsideClick: true,
-                        customClass: {
-                            confirmButton: 'sw-btn sw-btn--red',
-                            popup: 'sw-popup',
-                            title: 'sw-title',
-                        }
-                    })
+                        this.$swal({
+                            html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
+                            confirmButtonText: "Ok",
+                            icon: 'error',
+                            type: 'error',
+                            allowOutsideClick: true,
+                            customClass: {
+                                confirmButton: 'sw-btn sw-btn--red',
+                                popup: 'sw-popup',
+                                title: 'sw-title',
+                            }
+                        })
                     //FECHA LOADING
                 })
 

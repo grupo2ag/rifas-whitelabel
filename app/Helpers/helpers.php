@@ -164,42 +164,44 @@ if(!function_exists('numbers_reserve')) {
                 if(empty($participant->id)){
                     //throw new Exception('Erro geração do pix');
                     setLogErros('HELPERS->numbers_reserve', 'Erro inserir participant', $participant, 'catch', $raffleId);
-                    return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente.'];
+                    return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente. code => 02'];
                     DB::rollBack();
                 }
 
-                $expired_time = (int)$minutes*60;
-                $pix_data = [
-                    "value" => $amount,
-                    "payer_name" => $registration_data['name'],
-                    "payer_doc" => !empty($registration_data['cpf']) ? $registration_data['cpf'] : null,
-                    "expiration_time" => $expired_time,
-                    "description" => $rifa->title.'-'.$raffleId,
-                    "order_id" => UUID::uuid4(),
-                    "participant" => $participant->id
-                ];
-                $generate = pixcred_generate($raffleId, $pix_data);
+                if(empty($numbers)){
+                    $expired_time = (int)$minutes*60;
+                    $pix_data = [
+                        "value" => $amount,
+                        "payer_name" => $registration_data['name'],
+                        "payer_doc" => !empty($registration_data['cpf']) ? $registration_data['cpf'] : null,
+                        "expiration_time" => $expired_time > 86400 ? 86400 : $expired_time,
+                        "description" => $rifa->title.'-'.$raffleId,
+                        "order_id" => UUID::uuid4(),
+                        "participant" => $participant->id
+                    ];
+                    $generate = pixcred_generate($raffleId, $pix_data);
 
-                if(!$generate){
-                    //throw new Exception('Erro geração do pix');
-                    setLogErros('HELPERS->pixcred_generate', 'Erro geração do pix', $pix_data, 'catch', $raffleId);
-                    return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente.'];
-                    DB::rollBack();
-                }
+                    if(!$generate){
+                        //throw new Exception('Erro geração do pix');
+                        setLogErros('HELPERS->pixcred_generate', 'Erro geração do pix', $pix_data, 'catch', $raffleId);
+                        return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente. code => 10'];
+                        DB::rollBack();
+                    }
 
-                Charge::create([
-                    'pix_id' => $generate['order_id'],
-                    'pix_code' => $generate['pix_link'],
-                    'amount' => $amount,
-                    'json' => json_encode($generate),
-                    'expired' => $expired,
-                    'participant_id' => $participant->id
-                ]);
+                    Charge::create([
+                        'pix_id' => $generate['order_id'],
+                        'pix_code' => $generate['pix_link'],
+                        'amount' => $amount,
+                        'json' => json_encode($generate),
+                        'expired' => $expired,
+                        'participant_id' => $participant->id
+                    ]);
+                }else $generate = false;
 
                 DB::commit();
             }catch (QueryException $e){
                 setLogErros('HELPERS->numbers_reserve', $e->getMessage(), [$raffleId, $qttNumbers, $customerId, $registration_data, $paid,  $numbers], 'catch', $raffleId);
-                return ['errors' => true, 'message' => 'Problema ao efetuar reserva, tente novamente.'];
+                return ['errors' => true, 'message' => 'Problema ao efetuar reserva, tente novamente. code 20'];
                 DB::rollBack();
             }
 
