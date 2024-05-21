@@ -232,7 +232,7 @@ export default {
                         }
                         //FECHA LOADING
                     }).catch((errors) => {
-                        console.log('errors', errors);
+                        this.numbers = [];
                         this.formVerify.processing = false;
                         this.errors = errors;
 
