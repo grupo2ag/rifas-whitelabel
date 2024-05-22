@@ -1,5 +1,6 @@
 <script setup>
 import * as func from '@/Helpers/functions';
+import Approved from "@/Pages/Site/Payment/Components/Approved.vue";
 </script>
 
 <script>
@@ -23,11 +24,26 @@ export default {
         VueCountdown,
     },
     props: {
-        raffle: Number
+        raffle: Object
     },
     data() {
         return {
-            expire_time: (this.raffle.expired*60)*1000
+            expire_time: (this.raffle.expired*60)*1000,
+            pixGenerate: false,
+            componentKey: {}
+        }
+    },
+    methods: {
+        async gerarPix(){
+            //console.log(this.raffle)
+            let resp = await axios.get(route('generate', this.raffle.id))
+                .then((res) => {
+                    return res.data.raffle
+                }).catch((errors) => {
+                    //console.log(errors)
+                })
+            //console.log(resp);
+            this.$inertia.visit(route('pay',resp.pix_id))
         }
     },
     mounted() {
@@ -46,7 +62,6 @@ export default {
 <template>
     <div class="c-content flex flex-col justify-center flex-1 gap-3">
 
-
         <h2 class="text-2xl font-semibold text-center text-neutral mt-2">
             Sua Reserva!
         </h2>
@@ -58,13 +73,13 @@ export default {
                            :transform="transformSlotProps" v-slot="{ days, hours, minutes, seconds}">
                 {{ days }} dias, {{ hours }} : {{ minutes }} : {{ seconds }}
             </vue-countdown>
-            <br>para efetuar o pagamento,<br> após esse tempo a reserva irá expirar.
+            <br>para efetuar o pagamento dessa reserva,<br> após esse periodo a reserva irá expirar.
             <br>
             <br>
             Pagamento com baixa automatica no sistema
         </h4>
 
-        <Button>
+        <Button v-if="!pixGenerate" type="button" @click="this.gerarPix()">
             PAGAR
         </Button>
     </div>

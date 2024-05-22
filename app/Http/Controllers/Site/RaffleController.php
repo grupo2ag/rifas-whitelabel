@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Ramsey\Uuid\Uuid;
 use function Laravel\Prompts\select;
 
 class RaffleController extends Controller
@@ -284,16 +285,19 @@ class RaffleController extends Controller
     public function reserved($participant)
     {
         if($participant){
+
             $rifa = Participant::join('raffles', 'raffles.id', 'participants.raffle_id')
                 ->where('participants.id', $participant)
-                ->where('participants.paid', 0)
+                //->where('participants.paid', 0)
                 ->first([
+                    'participants.id',
                     'participants.name',
                     'participants.phone',
                     'participants.email',
                     'participants.document',
                     'participants.numbers',
                     'participants.reserved',
+                    'participants.paid',
                     'participants.raffle_id',
                     'participants.numbers',
                     'participants.amount',
@@ -304,7 +308,7 @@ class RaffleController extends Controller
                     'raffles.pix_expired'
                 ]);
 
-            if(!empty($rifa->raffle_id)){
+            if(!empty($rifa->raffle_id) && !empty($rifa->reserved)){
                 $image = RaffleImage::where('raffle_id', $rifa->raffle_id)->where('highlight', 1)->first();
 
                 if(!empty($image)){
@@ -313,17 +317,22 @@ class RaffleController extends Controller
                     $rifa['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($mountUrl, now()->addMinutes(30));
                 }
                 //dd($rifa);
-                //$status = 'PROCESSING';
+                $status = 'PROCESSING';
                 if ($rifa->reserved) $status = 'RESERVED';
-                else $status = 'CANCELED';
+                //else $status = 'CANCELED';
 
                 $rifa['expired'] = Carbon::parse($rifa->expired_at)->subMinutes(Raffle::TOLERANCIA_PAGAMENTO);
 
                 //dd(['raffle' => $rifa, 'status' => $status]);
                 return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status]);
+            }else{
+                $status = 'PROCESSING';
+                if($rifa->paid) $status = 'PAID';
+                //dd(['raffle' => $rifa, 'status' => $status]);
+                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status]);
             }
         } else {
-            return back();
+            return redirect('/');
         }
     }
 
@@ -421,5 +430,90 @@ class RaffleController extends Controller
             return response()->json(['raffle' => $rifa], 200);
         }
         return response()->json(false, 403);
+    }
+
+    public function generate($participantID)
+    {
+        $rifa = Charge::leftJoin('charge_paids', 'charge_paids.charge_id', 'charges.id')
+            ->join('participants', 'participants.id', 'charges.participant_id')
+            ->join('raffles', 'raffles.id', 'participants.raffle_id')
+            ->where('participants.id', $participantID)
+            ->where('participants.paid', 0)
+            ->where('charges.expired', '>', now())
+            ->first([
+                'charges.*',
+                'participants.name',
+                'participants.phone',
+                'participants.email',
+                'participants.document',
+                'participants.numbers',
+                'participants.reserved',
+                'participants.raffle_id',
+                'participants.numbers',
+                'raffles.price',
+                'raffles.title',
+                'raffles.subtitle',
+                'raffles.pix_expired',
+                'charge_paids.id as pago'
+            ]);
+
+        if($rifa){
+            return response()->json(['raffle' => $rifa]);
+        }
+
+        $participant = Participant::join('raffles', 'raffles.id', 'participants.raffle_id')
+                                  ->where('participants.id', $participantID)
+                                  ->where('participants.paid', 0)
+                                  ->first(['participants.name',
+                                          'participants.id',
+                                          'participants.phone',
+                                          'participants.email',
+                                          'participants.document',
+                                          'participants.amount',
+                                          'participants.numbers',
+                                          'participants.reserved',
+                                          'participants.raffle_id',
+                                          'participants.numbers',
+                                          'raffles.price',
+                                          'raffles.title',
+                                          'raffles.subtitle',
+                                          'raffles.pix_expired']);
+
+        if($participant){
+
+            $minutes = !empty($participant->pix_expired) ? $participant->pix_expired : 5;
+            $expired = Carbon::now()->addMinutes($minutes);
+
+            $expired_time = (int)$minutes*60;
+
+            $pix_data = [
+                "value" => $participant->amount,
+                "payer_name" => $participant->name,
+                "payer_doc" => !empty($participant->document) ?$participant->document : null,
+                "expiration_time" => $expired_time > 86400 ? 86400 : $expired_time,
+                "description" => $participant->title.'-'.$participant->raffle_id,
+                "order_id" => UUID::uuid4(),
+                "participant" => $participant->id
+            ];
+
+            $generator = pixcred_generate($participant->raffle_id, $pix_data);
+
+            $charge = Charge::create([
+                'pix_id' => $generator['order_id'],
+                'pix_code' => $generator['pix_link'],
+                'amount' => $pix_data['value'],
+                'json' => json_encode($generator),
+                'expired' => $expired,
+                'participant_id' => $participant->id
+            ]);
+
+            $participant['pago'] = null;
+            $participant['pix_id'] = $charge->pix_id;
+            $participant['pix_code'] = $charge->pix_code;
+            $participant['json'] = $charge->json;
+            $participant['expired'] = $charge->expired;
+            //dd($participant);
+            return response()->json(['raffle' => $participant]);
+        }else return redirect('/');
     }
 }

@@ -22,7 +22,7 @@ if(!function_exists('pixcred_generate')) {
             ->leftJoin('gateway_configurations', 'gateway_configurations.user_id', 'raffles.user_id')
             ->whereRaw('gateway_configurations.gateway_id = gateways.id')
             ->where('raffles.id', $raffleId)
-            ->first(['gateway_configurations.*','gateways.*']);
+            ->first(['gateway_configurations.*','gateways.*', 'raffles.type', 'raffles.pix_expired']);
 
         if(empty($rifa->token) || empty($rifa->login)) {
             setLogErros('Libraries->Pixcred', 'Rifa faltando gateway', $rifa, 'algum dado do gateway vazio', $raffleId );
