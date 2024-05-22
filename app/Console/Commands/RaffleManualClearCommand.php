@@ -27,7 +27,7 @@ class RaffleManualClearCommand extends Command
      */
     public function handle()
     {
-        $exclui = Raffle::where('expired', '<', now()->subMinutes(Raffle::TOLERANCIA_PAGAMENTO))
+        $exclui = Raffle::where('expired_at', '<', now()->subMinutes(Raffle::TOLERANCIA_PAGAMENTO))
             ->join('participants', 'participants.raffle_id', 'raffles.id')
             ->where('participants.paid', 0)
             ->where('raffles.type', 'manual')

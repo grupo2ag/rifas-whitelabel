@@ -123,10 +123,10 @@ class RaffleController extends Controller
                 $rifa['participants'] = Participant::join('customers', 'customers.id', '=', 'participants.customer_id')
                     ->select('participants.*')
                     ->where('participants.raffle_id', $rifa->id)
-                    ->where(function ($query){
+                    /*->where(function ($query){
                         $query->where('participants.reserved', '>', '0')
                               ->whereOr('participants.paid', '>', '0');
-                    })
+                    })*/
                     ->orderBy('participants.numbers', 'DESC')
                     ->get();
             }
