@@ -83,16 +83,16 @@ export default {
             //console.log(this.quantity, this.min, this.value, temPromo);
             if(temPromo){
                 if (this.quantity >= this.min) {
-
+                    this.quantity--
                     this.total = temPromo[2]
                     this.value = temPromo[1]
-                }
+                }else this.quantity++
             }else{
                 this.value = this.raffle.price
-                if (this.quantity >= this.min) {
 
+                if (this.quantity >= this.min) {
                     this.total = this.quantity * this.value
-                }
+                }else this.quantity++
             }
         },
         addItem() {
