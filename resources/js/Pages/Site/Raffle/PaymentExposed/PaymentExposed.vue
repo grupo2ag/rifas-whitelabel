@@ -8,7 +8,7 @@ import Button from '@/Components/Button/Button.vue'
 import Icon from '@/Components/Icon/Icon.vue'
 import {remove} from "@ckeditor/ckeditor5-utils";
 
-const numbersStatus = (numbers, participants) => {
+const numbersStatus_ = (numbers, participants) => {
       let numeros = numbers.split(',');
 
       let participantsNumeros = participants.map(function (cada){
@@ -40,6 +40,7 @@ const numbersStatus = (numbers, participants) => {
                     number: number
                 });
                 encontrado = true;
+                this.removeItem(number) //Para o Broadcasting
             }
         });
         if (!encontrado) {
@@ -85,11 +86,12 @@ export default {
         Icon,
     },
     props:{
-        raffle: Object
+        raffle: Object,
+        updateComponent: Object
     },
     data() {
         return {
-            data: numbersStatus(this.raffle.r_numbers, this.raffle.participants),
+            data: [],
             items: [],
             selected: [],
             showModal: false,
@@ -101,6 +103,57 @@ export default {
         }
     },
     methods: {
+        numbersStatus(numbers, participants){
+            let numeros = numbers.split(',');
+
+            let participantsNumeros = participants.map(function (cada){
+                let partNumbers =  cada.numbers.split(',');
+                if(partNumbers.length){
+                    //console.log(numeros, partNumbers)
+                    numeros = numeros.concat(partNumbers);
+                    numeros = numeros.sort();
+                    return {
+                        name: cada.name,
+                        status: cada.reserved ? 'reserved' : 'paid',
+                        numbers: partNumbers
+                    };
+                }
+
+                return [];
+            })
+
+            //console.log(numeros);
+            const numerosEncontrados = [];
+
+            numeros.forEach(number => {
+                let encontrado = false;
+                participantsNumeros.forEach(participant => {
+                    if (participant.numbers.includes(number)) {
+                        numerosEncontrados.push({
+                            buyer: participant.name,
+                            status: participant.status,
+                            number: number
+                        });
+                        encontrado = true;
+
+                        if(this.selected.length){
+                            //console.log('select', this.selected)
+                            this.removeItem(number);
+                        }
+                    }
+                });
+                if (!encontrado) {
+                    numerosEncontrados.push({
+                        buyer: '',
+                        status: 'available',
+                        number: number
+                    });
+                }
+            });
+
+            return numerosEncontrados;
+
+        },
         filterItems(status) {
             if (status === 'all') {
                 document.querySelectorAll(".c-raffle__number").forEach(function (el) {
@@ -185,9 +238,20 @@ export default {
             document.body.classList.remove('active');
         },
     },
+    watch: {
+        updateComponent: {
+            immediate: true,
+            handler (val, oldVal) {
+                if(!!val.r_numbers) {
+                    //console.log('val', val.r_numbers);
+                    //console.log('oldVal', oldVal);
+                    this.data = this.numbersStatus(val.r_numbers, val.participants);
+                }else this.data = this.numbersStatus(this.raffle.r_numbers, this.raffle.participants)
+            }
+        }
+    },
     mounted() {
-        //let teste = numbersStatus(this.raffle.r_numbers, this.raffle.participants)
-        //console.log(teste);
+
     }
 }
 </script>
@@ -226,8 +290,9 @@ export default {
 
         <div class="border-t border-black/20">
             <div class="grid grid-cols-4 md:grid-cols-10 gap-2 md:gap-1 mt-5">
-                <template v-for="(item, index) in data" :key="index">
+                <template v-for="item in data" :key="item.id">
                     <button type="button" :ref="'numb_' + item.number"
+                            :id="item.number"
                             class="c-raffle__number"
                             :class="item.status === 'paid' ? 'c-raffle__number--paid' : item.status === 'reserved' ? 'c-raffle__number--reserved' : 'c-raffle__number--available'"
                             @click="addItem(item.number, item.status)">
@@ -244,7 +309,7 @@ export default {
                 <div class="w-full px-6 flex flex-col md:flex-row items-center gap-3 md:gap-8">
                     <div
                         class="w-full md:w-auto flex-1 pb-3 md:pb-0 flex items-start flex-wrap gap-1 border-b md:border-none border-base-100">
-                        <template v-for="item in selected">
+                        <template v-for="item in selected" :key="item.id">
                             <div class="bg-primary text-primary-bw px-3 py-1.5 flex items-center rounded-md gap-1">
                                 <p class="text-xs uppercase text-primary-bw">
                                     {{ item.number }}
@@ -261,7 +326,7 @@ export default {
                             <p class="text-xs text-neutral/70">{{ selected.length }} número(s) selecionado(s)</p>
 
                             <p class="text-sm md:text-sm text-neutral">Total <span
-                                class="text-2xl font-black">R$ {{ func.formatValue(this.total) }}</span></p>
+                                class="text-2xl font-black">R$ {{ func.formatValue(total) }}</span></p>
                         </div>
 
                         <div class="w-full md:w-6/12">

@@ -2,7 +2,6 @@
 
 use App\Libraries\Pixcred;
 use App\Models\Charge;
-use App\Models\Customer;
 use App\Models\LogError;
 use App\Models\Participant;
 use App\Models\Raffle;
@@ -11,8 +10,8 @@ use App\Models\RafflePremiumNumber;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 if(!function_exists('pixcred_generate')) {
 
@@ -196,7 +195,10 @@ if(!function_exists('numbers_reserve')) {
                         'expired' => $expired,
                         'participant_id' => $participant->id
                     ]);
-                }else $generate = false;
+                }else{
+                    Event::dispatch(new \App\Events\RaffleManual($rifa->link));
+                    $generate = false;
+                }
 
                 DB::commit();
             }catch (QueryException $e){

@@ -25,7 +25,6 @@ export default {
   },
   methods: {
     toggleTabs(tabNumber){
-        console.log(tabNumber);
       this.openTab = tabNumber
     },
     previousPage() {

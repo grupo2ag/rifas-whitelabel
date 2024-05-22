@@ -55,7 +55,6 @@ function getDates(dates) {
     return dates.map(date => translateDate(date.date));
 }
 function getValues(dates) {
-    console.log(getDates(dates));
     return dates.map(date => date.value);
 }
 function translateDate(data) {

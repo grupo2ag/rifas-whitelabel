@@ -8,6 +8,7 @@ use App\Http\Controllers\Site\HomeController;
 use App\Http\Controllers\Site\RaffleController;
 use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\DashboardController;
+use App\Http\Controllers\Seller\GatewayController;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
@@ -40,6 +41,8 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
         });
+
+        Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
     });
 });
 
@@ -52,6 +55,7 @@ Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('/pay/{order}', [RaffleController::class, 'pay'])->name('pay');
 Route::get('/reserved/{participant}', [RaffleController::class, 'reserved'])->name('reserved');
 Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
+Route::get('/reserved_verify/{link}', [RaffleController::class, 'reservedVerify'])->name('reservedVerify');
 Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 
 Route::get('/{url}', [RaffleController::class, 'index'])->name('raffle');

@@ -175,7 +175,7 @@ export default {
                 </div>
             </div>
         </div>
-        <div class="flex flex-row w-full mb-4">
+        <!-- <div class="flex flex-row w-full mb-4">
             <div class="w-full p-2 rounded-lg bg-base-100">
                 <div class="flex flex-row mb-2">
                     <DocumentTextIcon class="w-6 mr-2 text-primary" />
@@ -183,7 +183,7 @@ export default {
                 </div>
                 <p class="mx-2" v-html="data?.description"></p>
             </div>
-        </div>
+        </div> -->
         <div class="w-full">
             <slot name="body" />
         </div>

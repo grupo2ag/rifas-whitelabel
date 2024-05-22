@@ -20,6 +20,7 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     components: {
@@ -41,6 +42,7 @@ export default {
     },
     data() {
         return {
+            componentKey: {},
             format,
             thumbsSwiper: null,
             setThumbsSwiper: null,
@@ -82,10 +84,10 @@ export default {
         },
         goPrev() {
             this.$emit('next');
-        },
+        }
     },
     mounted() {
-        //console.log(this.raffle);
+        //console.log(this.raffle.link);
         /*console.log(this.destaques, this.ativas, this.finalizadas)*/
     },
     setup(){
@@ -100,6 +102,18 @@ export default {
             setThumbsSwiper,
             modules: [FreeMode, Navigation, Thumbs],
         };
+    },
+    created(){
+        Echo.channel(`Raffle.Reserve.${this.raffle.link}`).listen('RaffleManual', (e) => {
+            //console.log('websocket', e, this.raffle.link)
+            axios.get(route('reservedVerify', this.raffle.id))
+                .then((res) => {
+                    //let resposta = res.data;
+                    this.componentKey = res.data.raffle;
+                }).catch((errors) => {
+                    //console.log(errors)
+                })
+        });
     }
 }
 </script>
@@ -239,7 +253,7 @@ export default {
         <section id="purchase" class="md:py-2">
             <div class="md:container">
                 <div class="c-content flex-col lg:flex-row">
-                    <PaymentExposed :raffle="raffle" v-if="purchaseType === 1"/>
+                    <PaymentExposed :updateComponent="componentKey" :raffle="raffle" v-if="purchaseType === 1"/>
                     <PaymentRandom :raffle="raffle" v-else/>
                 </div>
             </div>
