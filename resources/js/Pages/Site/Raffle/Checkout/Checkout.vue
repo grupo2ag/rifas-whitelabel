@@ -352,7 +352,8 @@ export default {
 
         <template #body>
             <div class="pb-3 mb-3 border-b border-base-100">
-                <template v-if="false">
+
+                <template v-if="raffle.type === 'manual'">
                     <p class="mb-1 text-sm text-neutral/70">Deseja reservar o(s) número(s):</p>
                     <div
                         class="flex flex-wrap items-start w-full gap-1 pb-3 md:pb-0">
