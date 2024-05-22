@@ -97,7 +97,7 @@ export default {
                     <template v-for="(item, index) in ativas" :key="index">
                         <a :href="route('raffle', item.link)" class="c-card__item">
                             <figure class="aspect-square overflow-hidden">
-                                <img :src="item.raffle_images[0]?.path"
+                                <img :src="item.raffle_images[0].thumb"
                                      class="w-full h-full object-cover rounded-xl" :alt="item.title">
                             </figure>
                             <div class="flex flex-col justify-between flex-1">
