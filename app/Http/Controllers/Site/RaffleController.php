@@ -59,7 +59,7 @@ class RaffleController extends Controller
                         }])
                         ->Slug($url)
                         ->UserID($this->user_id)
-                        ->ActivateRaffles()
+//                        ->ActivateRaffles()
                         ->Visible($visible)
                         ->first([
                             DB::raw("CASE WHEN raffles.type = '".Raffle::TYPE_MANUAL."' THEN raffles.numbers ELSE '' END AS r_numbers"),
@@ -86,6 +86,7 @@ class RaffleController extends Controller
                             'expected_date',
                             'buyer_ranking'
                         ]);
+
 
         if(!empty($rifa)){
             $participant = Participant::where('raffle_id', $rifa->id)->sum('paid');
@@ -261,7 +262,8 @@ class RaffleController extends Controller
                     'raffles.subtitle',
                     'raffles.type',
                     'raffles.pix_expired',
-                    'charge_paids.id as pago'
+                    'charge_paids.id as pago',
+                    'participants.paid'
                 ]);
             //dd($rifa);
             if(!empty($rifa->id)){
@@ -522,28 +524,32 @@ class RaffleController extends Controller
 
         if(!empty($cpf)){
             $participant = Participant::with(['raffle' => function ($query) {
-                    $query->UserID($this->user_id);
-                    $query->Visible(true);
                     $query->select(['title', 'status', 'type']);
                 }])
                 ->with(['raffle.raffle_images' => function ($query) {
                         //$query->orderBy('raffle_images.highlight', 'DESC');
                         $query->whereRaw('raffle_images.id IN (SELECT MAX(a2.id) FROM raffle_images AS a2 WHERE a2.id = raffle_images.id AND highlight = 1)');
                 }])
-                //->join('participants', 'raffles.id', 'participants.raffle_id')
+                ->whereHas('raffle', function ($query) {
+                    return $query->UserID($this->user_id)
+                        ->Visible(true)
+                        ->ActivateRaffles('Ativo');
+                })
                 ->where('document', $cpf)
                 ->orderBy('participants.id', 'DESC')
-                ->paginate();
+                ->get();
 
-            if(!empty($participant->items())){
-                foreach ($participant->items() as $key => $item) {
-                    $galery = [];
+            if(!empty($participant)){
+            //if(!empty($participant->items())){
+                //foreach ($participant->items() as $key => $item) {
+                foreach ($participant as $key => $item) {
+                    //$galery = [];
                     //dd($item, $item->raffle, $item->raffle->raffle_images);
                     if(!empty($item->raffle->raffle_images)){
                         foreach($item->raffle->raffle_images as $image){
                             //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$this->user_id.'/gallery/'.$rifa->id.'/'.$image->path;
 
-                            $s3TmpLink = new \stdClass();
+                            //$s3TmpLink = new \stdClass();
                             $participant[$key]['galery'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
                             //array_push($galery, $s3TmpLink);
                         }
@@ -558,7 +564,6 @@ class RaffleController extends Controller
                         if($participant[$key]['reserved'] > 0) $status = 'CANCELED';
                         else if($participant[$key]['paid'] > 0) $status = 'PAID';
                     }else{
-                        //if($participant[$key]['reserved'] > 0) $status = ($participant[$key]['raffle']['type'] === 'automatico') ? 'PROCESSING' : 'RESERVED';
                         if($participant[$key]['reserved'] > 0) $status = ($participant[$key]['raffle']['type'] === 'automatico') ? 'PROCESSING' : 'RESERVED';
                         else if($participant[$key]['paid'] > 0) $status = 'PAID';
                     }

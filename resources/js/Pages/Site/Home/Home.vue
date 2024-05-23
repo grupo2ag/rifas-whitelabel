@@ -89,7 +89,7 @@ export default {
     <App>
         <HeroSection :highlight="destaques"/>
 
-        <section class="pt-10 pb-5">
+        <section v-if="ativas.length > 0" class="pt-10 pb-5">
             <div class="container">
                 <h2 class="o-title">Próximos Sorteios</h2>
 
@@ -111,38 +111,39 @@ export default {
             </div>
         </section>
 
-        <section v-if="finalizadas.length > 0" id="drawn" class="py-5" >
+        <section v-if="finalizadas" id="drawn" class="py-5" >
             <div class="container">
                 <h2 class="o-title">Últimos Sorteios</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                     <template v-for="(item, index) in finish" :key="index">
+<!--                        <pre>{{item}}</pre>-->
                         <a :href="route('raffle', item.link)" class="c-card__item">
                             <figure>
-                                <img :src="item.raffle_images[0]?.path"
+                                <img :src="item.raffle_images[0]?.thumb"
                                      class="w-full h-full object-cover" :alt="item.title">
                             </figure>
-                            <div class="flex-1 flex flex-col justify-between">
+                            <div class="flex-1 flex flex-col justify-between gap-1">
                                 <p class="text-lg font-semibold text-neutral line-clamp-2" :title="item.title">{{ item.title }}</p>
 
-                                <p class="text-neutral">
-                                    Sorteado: <span class="font-bold">N°</span>
+                                <p class="text-neutral" v-if="item.raffle_awards[0]?.number_award">
+                                    Sorteado: <span class="font-bold">N° {{item.raffle_awards[0]?.number_award}}</span>
                                 </p>
 
-                                <p class="text-neutral leading-tight">
+                                <p class="text-neutral leading-tight" v-if="item.raffle_awards[0]?.winner_name">
                                     Ganhador:
-                                    <span class="font-bold"></span>
+                                    <span class="font-bold">{{item.raffle_awards[0]?.winner_name}}</span>
                                 </p>
 
                                 <Button type="button" color="primary" class="mt-2">Ver Resultado</Button>
                             </div>
+
+                            <span class="c-closed">Encerrado</span>
                         </a>
                     </template>
                 </div>
             </div>
         </section>
-
-<!--        <pre>{{finish.data}}</pre>-->
 
         <InfiniteLoading @infinite="load">
             <template #complete><span></span></template>
@@ -153,10 +154,10 @@ export default {
 
 <style lang="scss" scoped>
 .c-card__item {
-    @apply flex flex-col gap-4 border border-base-100 bg-content p-4 rounded-2xl;
+    @apply flex flex-col gap-4 border border-base-100 bg-content p-4 rounded-2xl relative overflow-hidden;
 
     figure{
-        @apply aspect-square overflow-hidden rounded-xl;
+        @apply border border-base-100/50 aspect-square overflow-hidden rounded-xl;
 
         img{
             transition: .2s ease-in-out;
@@ -179,5 +180,9 @@ export default {
         content: '';
         @apply h-[1px] flex-1 mt-1;
     }
+}
+
+.c-closed{
+    @apply py-0.5 px-8 text-primary-bw bg-primary font-semibold absolute origin-center top-5 -left-8 -rotate-45;
 }
 </style>

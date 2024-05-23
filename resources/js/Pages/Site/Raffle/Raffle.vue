@@ -53,7 +53,8 @@ export default {
             direction: 'vertical',
             isLargeScreen: useMediaQuery('(min-width: 768px)'),
             purchaseType: this.raffle.type == 'automatico' ? 2 : 1,
-            showModal: true
+            showModal: true,
+            status: this.raffle.status
         }
     },
     methods: {
@@ -138,7 +139,9 @@ export default {
                                         :modules="modules"
                                         class="swiper-thumb">
                                         <swiper-slide v-for="(item, index) in galery" :key="index">
-                                            <img :src="item.img" class="w-full aspect-square" alt="item"/>
+                                            <figure class="w-full overflow-hidden">
+                                                <img :src="item.img" class="w-full aspect-square object-cover" :alt="raffle.title + ' Foto Ampliada ' + index"/>
+                                            </figure>
                                         </swiper-slide>
 
                                         <div class="swipper-navigation">
@@ -165,12 +168,11 @@ export default {
                                         :modules="modules"
                                         class="swiper-thumbs md:h-[500px]">
                                         <swiper-slide v-for="(item, index) in galery" :key="index">
-                                            <img :src="item.img" class="aspect-square"/>
+                                            <figure class="w-full border rounded-xl overflow-hidden">
+                                                <img :src="item.img" class="w-full aspect-square object-cover" :alt="raffle.title + ' Foto ' + index"/>
+                                            </figure>
                                         </swiper-slide>
-
                                     </swiper>
-
-
                                 </div>
                             </div>
                         </div>
@@ -181,37 +183,34 @@ export default {
                             <div class="flex flex-col items-start">
                                 <h1 class="text-2xl md:text-3xl font-bold text-neutral uppercase mb-1 hidden md:block">{{ raffle.title }}</h1>
 
-                                <Badge color="primary" size="sm" class="mb-2 hidden md:block">Corra</Badge>
+                                <Badge color="primary" size="sm" class="mb-2 hidden md:block">
+                                    {{ status === 'Ativo' ? 'Corra' : 'Encerrado' }}
+                                </Badge>
 
                                 <p class="text-neutral/70">
                                     {{ raffle?.subtitle }}
                                 </p>
                             </div>
 
-                            <div class="flex justify-between items-end">
+                            <div v-if="status === 'Ativo'" class="flex justify-between items-end">
                                 <p class="text-sm text-neutral">
                                     Por apenas<br> <span class="text-3xl font-bold">{{ parseFloat( (raffle.price/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</span>
                                 </p>
                             </div>
 
-                            <div v-if="raffle.partial === 1" class="w-full">
+                            <div v-if="raffle.partial === 1 && status === 'Ativo'" class="w-full">
                                 <Progress :value="raffle.percent" max="100"/>
                             </div>
 
-                            <Button type="button" color="primary" class="pulsate-fwd w-full"  @click="goto('purchase', 75)">
-                                {{ raffle.status === 'Ativo' ? 'Adquira Já' : 'Finalizada' }}
+                            <Button type="button" color="primary" class="pulsate-fwd w-full" @click="goto('purchase', 75)">
+                                {{ status === 'Ativo' ? 'Adquira Já' : 'Ver Resultado' }}
                             </Button>
 
-                            <ul class="w-full flex flex-col md:flex-row gap-3">
+                            <ul v-if="status === 'Ativo'" class="w-full flex flex-col md:flex-row gap-3">
                                 <li class="w-full md:w-auto text-sm text-neutral flex-1">
                                     Data prevista do sorteio:
                                     <p class="text-base font-bold">{{ !!raffle.expected_date ? format(new Date(raffle.expected_date), "dd/MM/yyy") : 'A Definir' }}</p>
                                 </li>
-
-                            <!--<li class="w-full md:w-auto text-sm text-neutral flex-1">
-                                    Sorteio será realizado:
-                                    <p class="text-base font-bold">Loteria Federal</p>
-                                </li>-->
                             </ul>
 
                             <div class="w-full">
@@ -244,6 +243,7 @@ export default {
                                     </a>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -252,14 +252,53 @@ export default {
 
         <section id="purchase" class="md:py-2">
             <div class="md:container">
-                <div class="c-content flex-col lg:flex-row">
+                <div v-if="status === 'Ativo'" class="c-content flex-col lg:flex-row">
                     <PaymentExposed :updateComponent="componentKey" :raffle="raffle" v-if="purchaseType === 1"/>
                     <PaymentRandom :raffle="raffle" v-else/>
+                </div>
+                <div v-else class="c-content">
+                    <p class="text-center text-lg font-bold text-neutral">
+                        Informações do Sorteio
+                    </p>
+
+                    <p class="text-center text-neutral/70 mb-4">
+                        Data do Sorteio: {{ format(new Date(raffle.expected_date), "dd/MM/yyy") }}
+                    </p>
+
+                    <ul class="grid gap-2">
+                        <template v-for="(item, index) in raffle.raffle_awards" :key="index">
+                            <li class="bg-neutral/5 rounded-xl border border-primary/10 hover:bg-neutral/10">
+                               <div class="flex bg-primary px-4 py-3 rounded-xl">
+                                   <p class="text-lg text-primary-bw font-semibold">{{item.order}}˚ Prêmio</p><span class="text-primary-bw px-2">|</span>
+
+                                   <p class="text-lg flex-1 text-primary-bw font-bold">
+                                       {{ item.description }}</p>
+                               </div>
+
+                                <div class="px-6 py-3">
+                                    <ul class="flex items-center gap-10">
+                                        <li class="w-3/12 grid-cols-1">
+                                            <p class="text-sm text-neutral/70">Número Sorteado</p>
+                                            <p class="font-bold text-neutral">{{item.number_award}}</p>
+                                        </li>
+                                        <li class="flex-1">
+                                            <p class="text-sm text-neutral/70">Ganhador</p>
+                                            <p class="font-bold text-neutral">{{item.winner_name}}</p>
+                                        </li>
+                                        <li class="w-3/12 ">
+                                            <p class="text-sm text-neutral/70">Estado</p>
+                                            <p class="font-bold text-neutral">São Paulo</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <section class="md:py-2">
+        <section v-if="status === 'Ativo'" class="md:py-2">
             <div class="md:container">
                 <div  class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Prêmios</p>
@@ -370,11 +409,12 @@ export default {
 }
 
 .swiper-thumb {
-    @apply py-1;
+    @apply border border-neutral/10 rounded-xl;
 
     .swiper-slide {
         height: auto;
         position: relative;
+
     }
 
     .swipper-navigation {
@@ -391,8 +431,16 @@ export default {
 }
 
 .swiper-thumbs{
+
+
+    .swiper-slide{
+        @apply border-neutral/20;
+    }
+
     .swiper-slide-thumb-active{
-        @apply border border-primary;
+        figure{
+            @apply border-primary;
+        }
     }
 }
 </style>
