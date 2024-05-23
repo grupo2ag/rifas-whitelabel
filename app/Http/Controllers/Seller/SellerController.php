@@ -43,7 +43,7 @@ class SellerController extends Controller
             $data['data'][$key]['paid'] = $raffle->participants()->sum('paid');
             $image = $raffle->raffle_images()->first();
 
-            if(!empty($image)) $data['data'][$key]['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
+            //if(!empty($image)) $data['data'][$key]['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
         }
 
         return Inertia::render('Seller/Raffle/RaffleIndex', ['data' => $data]);
@@ -64,7 +64,7 @@ class SellerController extends Controller
             'paid' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(paid) as value'))
                 ->groupBy(DB::raw('DATE(created_at)'))->get(),
 
-            'expired' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('(SUM(reserved) - SUM(paid)) as value'))
+            'reserved' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(reserved) as value'))
                 ->groupBy(DB::raw('DATE(created_at)'))->get()
         ];
 
@@ -287,6 +287,7 @@ class SellerController extends Controller
                 $query = strtolower($query);
                 $subquery->where(DB::raw('LOWER(name)'), 'LIKE', "%{$query}%")
                     ->orWhere(DB::raw('LOWER(email)'), 'LIKE', "%{$query}%")
+                    ->orWhere(DB::raw('LOWER(document)'), 'LIKE', "%{$query}%")
                     ->orWhere(DB::raw('LOWER(phone)'), 'LIKE', "%{$query}%");
             })->paginate(15, ['*'], 'page', $page)
             :
