@@ -1,16 +1,17 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+//use Illuminate\Foundation\Inspiring;
+//use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 use Spatie\WebhookClient\Models\WebhookCall;
 
-Artisan::command('inspire', function () {
+/*Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+})->purpose('Display an inspiring quote')->hourly();*/
 
 Schedule::command('model:prune', [
     '--model' => [WebhookCall::class],
 ])->daily();
 
-Schedule::command('raffle:release')->everyMinute();
+Schedule::command('automatic:relese')->everyMinute();
+Schedule::command('manual:relese')->everyMinute();

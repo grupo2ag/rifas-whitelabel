@@ -225,14 +225,14 @@ export default {
                             Inertia.visit(route('reserved', resposta.participant));
                         }else if(typeof resposta.pix.order_id === "string" && resposta.pix.order_id.length > 0 && resposta.pix.order_id !== null){
                             this.formVerify.processing = true;
-                            console.log(resposta, resposta.pix.order_id);
+                            //console.log(resposta, resposta.pix.order_id);
                             Inertia.visit(route('pay', resposta.pix.order_id));
                         }else{
                             this.formVerify.processing = false;
                         }
                         //FECHA LOADING
                     }).catch((errors) => {
-                        console.log('errors', errors);
+                        this.numbers = [];
                         this.formVerify.processing = false;
                         this.errors = errors;
 
@@ -352,7 +352,8 @@ export default {
 
         <template #body>
             <div class="pb-3 mb-3 border-b border-base-100">
-                <template v-if="false">
+
+                <template v-if="raffle.type === 'manual'">
                     <p class="mb-1 text-sm text-neutral/70">Deseja reservar o(s) número(s):</p>
                     <div
                         class="flex flex-wrap items-start w-full gap-1 pb-3 md:pb-0">

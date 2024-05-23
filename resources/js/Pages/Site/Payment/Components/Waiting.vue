@@ -27,7 +27,7 @@ export default {
         VueCountdown
     },
     props: {
-        raffle: Number
+        raffle: Object
     },
     data() {
         return {

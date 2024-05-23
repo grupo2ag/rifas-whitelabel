@@ -18,28 +18,33 @@ export default {
     },
     data(){
         return{
-            status: {
+            purchase: {
                 color: '',
                 text: ''
             }
         }
     },
     mounted(){
-        switch(this.data.status) {
+        switch(this.data.purchase) {
             case 'PAID':
-                this.status.color = 'success'
-                this.status.text = 'Pago'
+                this.purchase.color = 'success'
+                this.purchase.text = 'Pago'
+                break;
+            case 'RESERVED':
+                this.purchase.color = 'danger'
+                this.purchase.text = 'Reservado'
                 break;
             case 'CANCELED':
-                this.status.color = 'black'
-                this.status.text = 'Cancelado'
+                this.purchase.color = 'black'
+                this.purchase.text = 'Cancelado'
                 break;
             case 'PROCESSING':
-                this.status.color = 'warning'
-                this.status.text = 'Aguardando Pagamento'
+                this.purchase.color = 'warning'
+                this.purchase.text = 'Aguardando Pagamento'
                 break;
             default:
         }
+        //console.log(this.data)
     }
 }
 </script>
@@ -48,7 +53,7 @@ export default {
     <div class="w-full p-3 border border-neutral/10 rounded-xl">
         <div class="w-full flex items-center justify-center gap-4">
             <figure class="flex-1 aspect-square overflow-hidden">
-                <img :src="data.banner" class="w-full h-full object-cover rounded-xl" :alt="data.title">
+                <img :src="data.galery" class="w-full h-full object-cover rounded-xl" :alt="data.title">
 
                 <figcaption>Sorteado</figcaption>
             </figure>
@@ -57,23 +62,23 @@ export default {
                 <p class="text-neutral text-lg font-bold mb-1">{{data.title}}</p>
 
                 <p class="text-sm text-neutral/70 mb-1">Status da transação:
-                    <Badge :color="status.color" size="xs">
-                        {{status.text}}
+                    <Badge :color="purchase.color" size="xs">
+                        {{purchase.text}}
                     </Badge>
                 </p>
 
-                <p class="text-sm text-neutral/70 mb-1">Pagamento feito:
-                    <strong class="text-neutral font-bold">{{data.date}}</strong>
+                <p class="text-sm text-neutral/70 mb-1">Quantidade de bilhetes:
+                    <strong class="text-neutral font-bold">{{data.count}}</strong>
                 </p>
 
-                <p class="text-sm text-neutral/70 mb-1">Total: <strong class="text-neutral font-bold">{{ func.formatValue(data.total) }}</strong></p>
+                <p class="text-sm text-neutral/70 mb-1">Total: <strong class="text-neutral font-bold">{{ func.formatValue(data.amount) }}</strong></p>
 
                 <div class="flex gap-6">
-                    <a v-if="data.status === 'PAID'" :href="route('pay', data.pix_id)" target="_blank" class="inline-flex text-xs flex items-center text-primary hover:opacity-60">
+                    <a v-if="data.purchase === 'PAID'" :href="route('openpay', data.id)" target="_blank" class="inline-flex text-xs flex items-center text-primary hover:opacity-60">
                         <Icon name="icon-eye" class="w-4 h-4 stroke-primary mr-1"/>Ver Comprovante
                     </a>
 
-                    <a v-else :href="route('pay', data.pix_id)" target="_blank" class="inline-flex text-xs flex items-center text-primary hover:opacity-60">
+                    <a v-else :href="route('openpay', data.id)" target="_blank" class="inline-flex text-xs flex items-center text-primary hover:opacity-60">
                         <Icon name="icon-banknotes" class="w-4 h-4 stroke-primary mr-1"/>Realizar Pagamento
                     </a>
                 </div>
@@ -81,7 +86,7 @@ export default {
         </div>
         <div class="mt-2 border-t border-neutral/10 pt-2">
             <p class="text-sm text-neutral mb-2">Quantidade de bilhetes: <strong class="font-bold">{{ data.quantity }}</strong></p>
-            <ul v-if="data.status === 'PAID'" class="grid grid-cols-8 gap-1">
+            <ul v-if="data.raffle.type === 'manual' || data.purchase === 'PAID'" class="grid grid-cols-8 gap-1">
                 <template v-for="item in data.numbers.split(',')">
                     <li class="border border-primary/20 bg-primary/5 text-neutral font-semibold py-1 text-sm text-center ">{{item}}</li>
                 </template>

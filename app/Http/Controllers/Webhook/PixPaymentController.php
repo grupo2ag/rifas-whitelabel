@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Webhook;
 
+use App\Events\PixManual;
 use App\Events\PixPayment;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendMail;
@@ -68,8 +69,6 @@ class PixPaymentController extends Controller
                     ];
                     $cp = ChargePaid::create($chargePaid);
 
-                    Event::dispatch(new PixPayment($order_id));
-
                     if(!empty($participant->customer_email)){
                         //ENVIAR EMAIL
                         $emailSend = [
@@ -81,8 +80,10 @@ class PixPaymentController extends Controller
                             'documento' => !empty($participant->customer_cpf)  ? $participant->customer_cpf : '',
                             'numbers' => $participant->numbers,
                             'mail' => 'numbers'];
-                        SendMail::dispatch($emailSend)->onQueue('emails');
+                        //SendMail::dispatch($emailSend)->onQueue('emails');
                     }
+
+                    Event::dispatch(new PixPayment($order_id));
 
                     if($participant->raffle_type == Raffle::TYPE_AUTOMATIC){
                         $numberPremium = RafflePremiumNumber::where('raffle_id', $participant->raffle_id)->whereNull('customer_id')->first();

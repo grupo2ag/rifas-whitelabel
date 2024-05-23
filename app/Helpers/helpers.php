@@ -2,7 +2,6 @@
 
 use App\Libraries\Pixcred;
 use App\Models\Charge;
-use App\Models\Customer;
 use App\Models\LogError;
 use App\Models\Participant;
 use App\Models\Raffle;
@@ -11,8 +10,8 @@ use App\Models\RafflePremiumNumber;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Ramsey\Uuid\Uuid;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 if(!function_exists('pixcred_generate')) {
 
@@ -23,7 +22,7 @@ if(!function_exists('pixcred_generate')) {
             ->leftJoin('gateway_configurations', 'gateway_configurations.user_id', 'raffles.user_id')
             ->whereRaw('gateway_configurations.gateway_id = gateways.id')
             ->where('raffles.id', $raffleId)
-            ->first(['gateway_configurations.*','gateways.*']);
+            ->first(['gateway_configurations.*','gateways.*', 'raffles.type', 'raffles.pix_expired']);
 
         if(empty($rifa->token) || empty($rifa->login)) {
             setLogErros('Libraries->Pixcred', 'Rifa faltando gateway', $rifa, 'algum dado do gateway vazio', $raffleId );
@@ -168,7 +167,7 @@ if(!function_exists('numbers_reserve')) {
                     DB::rollBack();
                 }
 
-                if(empty($numbers)){
+                //if(empty($numbers)){
                     $expired_time = (int)$minutes*60;
                     $pix_data = [
                         "value" => $amount,
@@ -196,7 +195,14 @@ if(!function_exists('numbers_reserve')) {
                         'expired' => $expired,
                         'participant_id' => $participant->id
                     ]);
-                }else $generate = false;
+                //}else{ //CASO VOLTE A NÃO GERAR O PIX NA HORA
+                    //Event::dispatch(new \App\Events\RaffleManual($rifa->link));
+                    //$generate = false;
+                //}
+
+                if(!empty($numbers)){
+                    Event::dispatch(new \App\Events\RaffleManual($rifa->link));
+                }
 
                 DB::commit();
             }catch (QueryException $e){

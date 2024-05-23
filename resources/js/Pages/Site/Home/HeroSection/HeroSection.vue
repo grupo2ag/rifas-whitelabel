@@ -91,9 +91,9 @@ export default {
                     <swiper-slide v-for="(item, key) in highlight" :key="key">
                         <div class="w-full h-full md:rounded-2xl border-base-200 overflow-hidden ">
                             <div class="aspect-[2/3] md:aspect-[4/1.8]" :aria-label="item.name">
-                                <img :src="item.banner"
+                                <img :src="item.new_banner"
                                      class="w-full h-full object-cover pointer-events-none hidden md:block" :alt="item.title">
-                                <img :src="item.banner"
+                                <img :src="item.new_banner"
                                      class="w-full h-full object-cover pointer-events-none md:hidden" :alt="item.title">
                             </div>
 

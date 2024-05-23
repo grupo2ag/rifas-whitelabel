@@ -56,15 +56,15 @@ export default {
             this.status = 'CANCELED'
         }
 
-        console.log(expire_date, this.expire_time)
+        //console.log(this.status)
     },
     created(){
-        if(typeof this.raffle.pix_id === "string" && this.raffle.pix_id.length > 0 && this.raffle.pix_id !== null){
+        //if(typeof this.raffle.pix_id === "string" && this.raffle.pix_id.length > 0 && this.raffle.pix_id !== null){
             Echo.channel(`Processed.Pix.${this.raffle.pix_id}`).listen('PixPayment', (e) => {
-                console.log('websocket', e, this.raffle.pix_id)
+                //console.log('websocket', e, this.raffle.pix_id)
                 this.status = 'PAID'
             });
-        }
+        //}
     },
    /* watch:{
         'expire_time': function() {
@@ -130,7 +130,7 @@ export default {
                             </li>
                             <li class="c-details__item">
                                 Titulos
-                                <template v-if="status != 'PAID' && status != 'RESERVED'">
+                                <template v-if="status != 'PAID' && status != 'RESERVED' && raffle.type === 'automatico'">
                                     <p>Os titulos são liberados após o pagamento</p>
                                 </template>
                                 <template v-else>

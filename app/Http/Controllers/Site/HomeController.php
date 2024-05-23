@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Site;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Jetstream\Jetstream;
 
 use App\Http\Controllers\Controller;
@@ -32,6 +33,20 @@ class HomeController extends Controller
             ->Status('Ativo')
             ->get();
 
+        foreach($raffles as $banners){
+            if ($banners->highlight == 1 && !empty($banners->banner)){
+                $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($banners->banner, now()->addMinutes(30));
+                $banners->new_banner = $s3TmpLink;
+            }
+        }
+
+        foreach($raffles as $image){
+            foreach($image->raffle_images as $images){
+                $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($images->path, now()->addMinutes(30));
+                $images->thumb = $s3TmpLink;
+            }
+        }
+
         $rafflesFinish = Raffle::UserID($this->user_id)
             ->orderBy('finish_at', 'DESC')
             ->with(['raffle_images' => function ($query) {
@@ -44,7 +59,19 @@ class HomeController extends Controller
             ->Status('Finalizado')
             ->paginate();
 
+        foreach($rafflesFinish as $image){
+            foreach($image->raffle_images as $images){
+                $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($images->path, now()->addMinutes(30));
+                $images->thumb = $s3TmpLink;
+            }
+        }
+
         //dd($raffles);
         return Inertia::render('Site/Home/Home', ['raffles' => $raffles, 'rafflesFinish' => $rafflesFinish]);
+    }
+
+    public function termsUse(){
+        return Inertia::render('Site/TermsUse/TermsUse');
+
     }
 }

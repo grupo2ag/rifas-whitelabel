@@ -125,25 +125,17 @@ export default defineComponent({
         onSubmit(){
             this.schema
                 .validate(this.form, {abortEarly: false}).then(() => {
-                this.form.processing = true;
+                    this.form.processing = true;
 
-                fetch(route('', this.form.cpf)).then(
-                    resp => {
-                        resp.json().then((data) => {
-                            this.form.processing = false;
-                        }).catch(error => {
-                            console.error(error);
-                            this.form.processing = false;
-                        });
-                        this.form.processing = false;
+                    this.$inertia.visit(route('account', this.form.cpf))
+
+                }).catch((err) => {
+                    this.form.processing = false;
+
+                    err.inner.forEach((error) => {
+                        this.validate = {...this.validate, [error.path]: error.message};
                     });
-            }).catch((err) => {
-                this.form.processing = false;
-
-                err.inner.forEach((error) => {
-                    this.validate = {...this.validate, [error.path]: error.message};
                 });
-            });
         }
     },
     mounted() {
@@ -189,7 +181,7 @@ export default defineComponent({
 
                     <DropdownBalance align="right">
                         <template #trigger>
-                            <button type="button" class="c-nav__item c-nav__item--draft">
+                            <button type="button" @click="" class="c-nav__item c-nav__item--draft">
                                 <Icon name="icon-bag"/> Meus Bilhetes
                             </button>
                         </template>
