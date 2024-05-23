@@ -107,13 +107,13 @@ export default {
                 <div v-else class="flex flex-row flex-wrap px-2 mb-4">
                     <div class="hidden w-full h-10 mb-4 rounded-lg bg-base-100 xl:grid">
                         <div class="flex flex-row p-2">
-                            <div class="flex justify-center w-1/12"></div>
-                            <div class="flex justify-start w-4/12 ml-4">Nome</div>
-                            <div class="flex justify-center w-1/12">Status</div>
-                            <div class="flex justify-center w-2/12">Valor/Cota</div>
-                            <div class="flex justify-center w-1/12">%</div>
-                            <div class="flex justify-center w-2/12">Criada Em</div>
-                            <div class="flex justify-center w-1/12"></div>
+                            <div class="flex justify-center w-1/12 "></div>
+                            <div class="flex justify-start w-4/12 ml-4 text-primary-bw">Nome</div>
+                            <div class="flex justify-center w-1/12 text-primary-bw">Status</div>
+                            <div class="flex justify-center w-2/12 text-primary-bw">Valor/Cota</div>
+                            <div class="flex justify-center w-1/12 text-primary-bw">%</div>
+                            <div class="flex justify-center w-2/12 text-primary-bw">Criada Em</div>
+                            <div class="flex justify-center w-1/12 text-primary-bw"></div>
                         </div>
                     </div>
                     <div v-for="raffle in data?.data" :key="raffle?.id" class="w-full mb-4 animate-fade-down">

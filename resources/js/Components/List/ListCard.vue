@@ -47,7 +47,7 @@ export default {
         </div>
         <div class="flex items-center w-full mb-2 sm:w-full md:w-full xl:px-4 xl:w-4/12 animate-fade-left">
             <div class="flex justify-start w-full h-auto mb-1 md:h-auto xl:h-auto">
-                <p class="text-base font-bold">{{ infos?.title }}</p>
+                <p class="text-base font-bold text-primary-bw">{{ infos?.title }}</p>
             </div>
         </div>
         <!-- MOBILE -->
@@ -58,18 +58,18 @@ export default {
                             style="--size: 4rem;" :style="{'--value':func.calcPercent(infos?.paid, infos?.quantity)}" role="progressbar">{{ func.calcPercent(infos?.paid, infos?.quantity) }}%</div> -->
                     <div class=" xl:hidden flex-row flex-wrap items-center !w-full">
                         <div class="w-full">
-                            <small>Total Vendidos</small>
+                            <small class="text-primary-bw">Total Vendidos</small>
                         </div>
                         <div class="w-full">
                             <div class="flex flex-row">
                                 <progress class="w-full h-4 progress progress-success"
                                     :value="func.calcPercent(infos?.paid, infos?.quantity)" max="100"></progress>
-                                <small class="ml-2">{{ func.calcPercent(infos?.paid, infos?.quantity)
+                                <small class="ml-2 text-primary-bw">{{ func.calcPercent(infos?.paid, infos?.quantity)
                                     }}%</small>
                             </div>
                         </div>
                         <div class="flex justify-center w-full">
-                            <small>
+                            <small class="text-primary-bw">
                                 {{ infos?.paid + '/' + infos?.quantity }}
                             </small>
                         </div>
@@ -78,16 +78,16 @@ export default {
                 <div class="w-4/12">
                     <div class="flex flex-col flex-wrap">
                         <div class="flex justify-end w-full mb-1">
-                            <div class="py-3 badge"
+                            <div class="py-3 badge text-primary-bw"
                                 :class="{ 'badge-success': infos?.status?.toLowerCase() == 'ativo', 'badge-error': infos?.status?.toLowerCase() != 'ativo' }">
                                 {{ infos?.status }}
                             </div>
                         </div>
                         <div class="flex justify-end w-full mb-1">
-                            <p class="text-base font-bold">{{ func.translateMoney(infos?.price) }}</p>
+                            <p class="text-base font-bold text-primary-bw">{{ func.translateMoney(infos?.price) }}</p>
                         </div>
                         <div class="flex justify-end w-full mb-1">
-                            <p class="text-base font-bold">{{ func.translateDate(infos?.created_at) }}</p>
+                            <p class="text-base font-bold text-primary-bw">{{ func.translateDate(infos?.created_at) }}</p>
                         </div>
                     </div>
                 </div>
@@ -95,22 +95,22 @@ export default {
         </div>
         <!--  -->
         <div class="flex items-center justify-end hidden w-full px-2 mb-4 animate-fade-right sm:hidden sm:justify-center sm:w-1/12 md:hidden md:justify-center md:w-1/12 xl:grid xl:justify-center xl:w-1/12">
-            <div class="py-3 badge "
+            <div class="py-3 badge text-primary-bw"
                 :class="{ 'badge-success': infos?.status?.toLowerCase() == 'ativo', 'badge-error': infos?.status?.toLowerCase() != 'ativo' }">
                 {{ infos?.status }}
             </div>
         </div>
         <div class="flex items-center justify-end hidden w-full px-2 animate-fade-left sm:w-full md:justify-end md:w-full xl:justify-center xl:w-2/12 xl:grid">
-            <p class="text-base font-bold">{{ func.translateMoney(infos?.price) }}</p>
+            <p class="text-base font-bold text-primary-bw">{{ func.translateMoney(infos?.price) }}</p>
         </div>
         <div class="flex items-center justify-start hidden w-6/12 px-2 animate-fade-right md:justify-start md:w-full xl:justify-center xl:w-1/12 xl:grid">
-            <div class="absolute border-4 radial-progress bg-primary text-content border-primary before:z-20" :class="func.calcPercent(infos?.paid, infos?.quantity) == 0 && 'before:hidden after:hidden'" style="--size: 5rem;"
+            <div class="absolute border-4 text-primary-bw radial-progress bg-primary border-primary before:z-20" :class="func.calcPercent(infos?.paid, infos?.quantity) == 0 && 'before:hidden after:hidden'" style="--size: 5rem;"
                 :style="{ '--value': func.calcPercent(infos?.paid, infos?.quantity)}" role="progressbar">{{
                 func.calcPercent(infos?.paid, infos?.quantity) }}%</div>
             <div class="absolute z-10 ml-1 radial-progress text-gray/40 " style="--value:100; --size: 5rem;" role="progressbar"></div>
         </div>
         <div class="flex items-center justify-end hidden w-6/12 px-2 animate-fade-left sm:items-center md:items-center md:justify-end md:w-full xl:items-center xl:justify-center xl:w-2/12 xl:grid">
-            <p class="text-base font-bold">{{ func.translateDate(infos?.created_at) }}</p>
+            <p class="text-base font-bold text-primary-bw">{{ func.translateDate(infos?.created_at) }}</p>
         </div>
         <div class="flex animate-shake animate-ease-linear animate-infinite animate-duration-[3000ms] items-center justify-end hidden w-6/12 px-2 xl:grid sm:items-center md:items-center md:justify-end md:w-full xl:items-center xl:justify-center xl:w-1/12">
             <IconsSvg name="icon-chevron-right" />
