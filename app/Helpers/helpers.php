@@ -167,7 +167,7 @@ if(!function_exists('numbers_reserve')) {
                     DB::rollBack();
                 }
 
-                if(empty($numbers)){
+                //if(empty($numbers)){
                     $expired_time = (int)$minutes*60;
                     $pix_data = [
                         "value" => $amount,
@@ -195,9 +195,13 @@ if(!function_exists('numbers_reserve')) {
                         'expired' => $expired,
                         'participant_id' => $participant->id
                     ]);
-                }else{
+                //}else{ //CASO VOLTE A NÃO GERAR O PIX NA HORA
+                    //Event::dispatch(new \App\Events\RaffleManual($rifa->link));
+                    //$generate = false;
+                //}
+
+                if(!empty($numbers)){
                     Event::dispatch(new \App\Events\RaffleManual($rifa->link));
-                    $generate = false;
                 }
 
                 DB::commit();

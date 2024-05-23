@@ -36,6 +36,8 @@ const colorsClasses = computed(() => {
             return 'bg-primary text-primary-bw';
         case 'success':
             return 'bg-success text-success-bw';
+        case 'danger':
+            return 'bg-red text-success-bw';
         case 'warning':
             return 'bg-warning text-warning-bw';
         case 'black':
