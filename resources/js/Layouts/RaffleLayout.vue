@@ -10,7 +10,10 @@ import {
     BanknotesIcon,
     ReceiptPercentIcon,
     DocumentTextIcon,
-TableCellsIcon
+    FlagIcon,
+    TableCellsIcon,
+    EyeSlashIcon,
+    EyeIcon
 } from '@heroicons/vue/24/outline';
 import moment from 'moment';
 import * as func from '@/Helpers/functions';
@@ -84,11 +87,10 @@ export default {
     <div class="flex flex-row flex-wrap p-4 rounded-lg bg-base-300 animate-fade ">
         <div class="w-full p-2 mb-4 rounded-lg bg-base-200">
             <div class="flex flex-row flex-wrap">
-                <div class="w-4/12 lg:w-2/12 lg:h-[10rem]">
-                    <img :src="data?.image"
-                        alt="Preview" class="object-cover w-full h-full rounded-lg">
+                <div class="w-4/12 lg:w-2/12 lg:h-[10rem] animate-fade-right">
+                    <img :src="data?.image" alt="Preview" class="object-cover w-full h-full rounded-lg">
                 </div>
-                <div class="flex w-8/12 lg:w-4/12">
+                <div class="flex w-8/12 lg:w-4/12 animate-fade-left">
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
@@ -126,13 +128,14 @@ export default {
                         <div class="w-full mb-2">
                             <div class="flex flex-row ">
                                 <LinkIcon class="hidden w-6 mr-2 lg:grid text-primary" />
-                                <a target="_blank" :href="!data?.visible ? route('raffle', 'visualizar|raffle-'+data?.link) : route('raffle', data?.link)">clique</a>
-                                <p class="break-all link link-primary">{{ data?.link }}</p>
+                                <a target="_blank" class="break-all link link-primary"
+                                    :href="!data?.visible ? route('raffle', 'visualizar|raffle-' + data?.link) : route('raffle', data?.link)">{{
+                        data?.link }}</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex hidden w-4/12 mb-2 lg:grid">
+                <div class="flex hidden w-4/12 mb-2 lg:grid animate-fade-right">
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="w-full ">
                             <div class="flex flex-row">
@@ -153,13 +156,18 @@ export default {
                             </div>
                         </div>
                         <div class="w-full ">
-                            <div class="flex flex-row">
-
+                            <div class="flex flex-row" v-if="data?.visible == 0">
+                                <EyeSlashIcon class="w-6 mr-2 text-primary" />
+                                <p>Não visível</p>
+                            </div>
+                            <div class="flex flex-row" v-else>
+                                <EyeIcon class="w-6 mr-2 text-primary" />
+                                <p>Visível</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-wrap items-center w-full mt-2 lg:w-2/12">
+                <div class="flex flex-wrap items-center w-full mt-2 lg:w-2/12 animate-fade-left">
                     <div class="flex flex-row flex-wrap w-full">
                         <div v-if="data?.status.toLowerCase() == 'ativo'" class="flex w-full mb-2">
                             <button class="text-white btn btn-info btn-block btn-sm lg:btn-md">

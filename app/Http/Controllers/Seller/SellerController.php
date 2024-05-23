@@ -40,7 +40,7 @@ class SellerController extends Controller
             if(!empty($image)) $data['data'][$key]['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
         }
 
-        return Inertia::render('Seller/Raffle/RaffleIndex', ['data'=> $data]);
+        return Inertia::render('Seller/Raffle/RaffleIndex', ['data' => $data]);
     }
 
     public function view($id)
@@ -53,13 +53,13 @@ class SellerController extends Controller
 
         $data['grafics'] = [
             'participants' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(DISTINCT document) as value'))
-            ->groupBy(DB::raw('DATE(created_at)'))->get(),
+                ->groupBy(DB::raw('DATE(created_at)'))->get(),
 
             'paid' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(paid) as value'))
-            ->groupBy(DB::raw('DATE(created_at)'))->get(),
+                ->groupBy(DB::raw('DATE(created_at)'))->get(),
 
             'expired' => $raffle->participants()->select(DB::raw('DATE(created_at) as date'), DB::raw('(SUM(reserved) - SUM(paid)) as value'))
-            ->groupBy(DB::raw('DATE(created_at)'))->get()
+                ->groupBy(DB::raw('DATE(created_at)'))->get()
         ];
 
         $data['participants']['data'] = $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate();
@@ -67,14 +67,14 @@ class SellerController extends Controller
         $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('document')->count();
         $data['participants']['ranking'] = $raffle->participants()->select('document', 'name', 'email', DB::raw('COUNT(*) as quantity'), DB::raw('SUM(amount) as total_value'))->groupBy('document', 'name', 'email')->orderByDesc('total_value')->take(3)->get();
 
-        $image = $raffle->raffle_images()->first();
         $data['raffle']['paid'] = $raffle->participants()->sum('paid');
+        $image = $raffle->raffle_images()->first();
 
-        if(!empty($image)){
-            $data['raffle']['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
+        if (!empty($image)) {
+           // $data['raffle']['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
         }
 
-        return Inertia::render('Seller/Raffle/RaffleView', ['data'=> $data]);
+        return Inertia::render('Seller/Raffle/RaffleView', ['data' => $data]);
     }
 
     public function created(Request $request)
@@ -90,7 +90,8 @@ class SellerController extends Controller
         ];
 
         $gateway = GatewayConfiguration::join('gateways', 'gateways.id', 'gateway_configurations.gateway_id')->where('user_id', auth()->user()->id)->get();
-        if($gateway->isEmpty()) return Inertia::render('Seller/Raffle/RaffleCreate')->with(['message' => 'Configure o gateway para inserir uma rifa']);
+        if ($gateway->isEmpty())
+            return Inertia::render('Seller/Raffle/RaffleCreate')->with(['message' => 'Configure o gateway para inserir uma rifa']);
 
         //$data['gateway'] = $gateway;
 
@@ -125,26 +126,26 @@ class SellerController extends Controller
             return response()->json(['message' => $validator->messages()], 403);
         }
 
-        $user_id =  auth()->user()->id;
+        $user_id = auth()->user()->id;
         $link = $request->link;
 
         $exitsSlug = Raffle::Slug($link)->UserID($user_id)->first();
-        if($exitsSlug){
-            $num = rand(100,999);
+        if ($exitsSlug) {
+            $num = rand(100, 999);
             $string = Str::random(4);
-            $link = $link.'-'.$num.$string;
+            $link = $link . '-' . $num . $string;
         }
 
         $numbers = numbers_generate($request->total);
-        $price = (int)($request->price*100);
-        $total = $price*$request->total;
+        $price = (int) ($request->price * 100);
+        $total = $price * $request->total;
 
-        if($request->file('banner')){
+        if ($request->file('banner')) {
             $name = (string) Str::uuid();
             $webp = (string) Image::make($request->file('banner'))->fit(768, 560, function ($constraint) {
                 $constraint->upsize();
             })->encode('webp', 95);
-            $path = config('filesystems.disks.s3.path').'/images/'.$user_id.'/banner/'.$name.'.webp';
+            $path = config('filesystems.disks.s3.path') . '/images/' . $user_id . '/banner/' . $name . '.webp';
 
             $image = Storage::disk(config('filesystems.default'))->put($path, $webp);
         }
@@ -177,38 +178,39 @@ class SellerController extends Controller
                 'expected_date' => $request->expected_date
             ]);
 
-            if(!empty($rifa->id)){
-                if(!empty($request->awards)){
+            if (!empty($rifa->id)) {
+                if (!empty($request->awards)) {
                     $raffleAwards = [];
-                    foreach ($request->awards as $key => $item){
-                        $order = $key+1;
+                    foreach ($request->awards as $key => $item) {
+                        $order = $key + 1;
                         $raffleAwards[] = [
                             'order' => $order,
                             'description' => $item['description'],
                             'raffle_id' => $rifa->id
                         ];
                     }
-                    if(!empty($raffleAwards)) RaffleAward::insert($raffleAwards);
-                }else{
+                    if (!empty($raffleAwards))
+                        RaffleAward::insert($raffleAwards);
+                } else {
                     setLogErros('SellerController', 'Erro Rifa Insert Awards', [$request->all(), $rifa]);
                     DB::rollBack();
                     return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
                 }
 
-                if(!empty($request->gallery)){
+                if (!empty($request->gallery)) {
                     $raffleImages = [];
-                    foreach ($request->gallery as $key => $item){
+                    foreach ($request->gallery as $key => $item) {
                         $glr = explode(';base64,', $item['image']);
 
                         $name = (string) Str::uuid();
                         $webp = (string) Image::make(base64_decode($glr[1]))->fit(500, 500, function ($constraint) {
                             $constraint->upsize();
                         })->encode('webp', 95);
-                        $path = config('filesystems.disks.s3.path').'/images/'.$user_id.'/gallery/'.$rifa->id.'/'.$name.'.webp';
+                        $path = config('filesystems.disks.s3.path') . '/images/' . $user_id . '/gallery/' . $rifa->id . '/' . $name . '.webp';
 
                         $image = Storage::disk(config('filesystems.default'))->put($path, $webp);
 
-                        if($image){
+                        if ($image) {
                             $highlight = $key == 0 ? 1 : 0;
                             $raffleImages[] = [
                                 'highlight' => $highlight,
@@ -217,9 +219,10 @@ class SellerController extends Controller
                             ];
                         }
                     }
-                    if(!empty($raffleImages)) RaffleImage::insert($raffleImages);
+                    if (!empty($raffleImages))
+                        RaffleImage::insert($raffleImages);
                 }
-            }else{
+            } else {
                 setLogErros('SellerController', 'Erro Rifa Insert', $request->all());
                 DB::rollBack();
                 return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
@@ -228,7 +231,7 @@ class SellerController extends Controller
             DB::commit();
 
             return $this->index();
-        }catch (QueryException $e){
+        } catch (QueryException $e) {
             setLogErros('SellerController', $e->getMessage(), $request->all());
             DB::rollBack();
             return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
@@ -250,5 +253,39 @@ class SellerController extends Controller
             'visible' => 0
         ]);
         return redirect()->back()->with('success', 'Rifa encerrada com sucesso.');
+    }
+
+
+
+    public function getParticipants(Request $request)
+    {
+        $request->validate([
+            'query' => 'max:255',
+            'page' => 'integer|string',
+            'idRaffle' => 'required|integer|string'
+        ]);
+
+        $query = $request->input('query');
+        $query = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');
+
+        $page = $request->input('page', 1);
+        $idRaffle = $request->input('idRaffle');
+        // $perPage = 15;
+
+        $user = auth()->user();
+        $raffle = $user->raffles()->ofId($idRaffle)->first();
+
+        // Busca no banco de dados com paginação
+        $response = $query ? $raffle->participants()
+            ->where(function ($subquery) use ($query) {
+                $query = strtolower($query);
+                $subquery->where(DB::raw('LOWER(name)'), 'LIKE', "%{$query}%")
+                    ->orWhere(DB::raw('LOWER(email)'), 'LIKE', "%{$query}%")
+                    ->orWhere(DB::raw('LOWER(phone)'), 'LIKE', "%{$query}%");
+            })->paginate(15, ['*'], 'page', $page)
+            :
+            $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate(15, ['*'], 'page', $page);
+
+        return response()->json($response);
     }
 }
