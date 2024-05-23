@@ -378,7 +378,7 @@ export default {
 
                         <div class="w-full pt-3 relative">
                             <label
-                                class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Descrição:</label>
+                                class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Regulamento:</label>
 
                             <ckeditor :editor="editorType" v-model="form.description"
                                       :config="editorConfig"></ckeditor>

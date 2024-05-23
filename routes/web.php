@@ -49,6 +49,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
 /* ROTAS NAO AUTENTICADAS AQUI*/
 
 Route::get('/', [HomeController::class, 'index'])->name('index');
+Route::get('/termos-de-uso', [HomeController::class, 'termsUse'])->name('termsUse');
 Route::get('/pay/{order}', [RaffleController::class, 'pay'])->name('pay');
 Route::get('/reserved/{participant}', [RaffleController::class, 'reserved'])->name('reserved');
 Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');

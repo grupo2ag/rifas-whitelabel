@@ -69,4 +69,9 @@ class HomeController extends Controller
         //dd($raffles);
         return Inertia::render('Site/Home/Home', ['raffles' => $raffles, 'rafflesFinish' => $rafflesFinish]);
     }
+
+    public function termsUse(){
+        return Inertia::render('Site/TermsUse/TermsUse');
+
+    }
 }
