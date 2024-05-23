@@ -35,7 +35,7 @@ class GatewayConfiguration extends Model
 	];
 
 	protected $hidden = [
-		'token'
+		//'token'
 	];
 
 	protected $fillable = [

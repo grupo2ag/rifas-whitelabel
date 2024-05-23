@@ -44,7 +44,10 @@ class HandleInertiaRequests extends Middleware
                                ->firstOrFail(['user_configurations.*', 'users.domain', 'users.email', 'users.phone']);
         //session(['site_config' => $configDataByURL]);
         return array_merge(parent::share($request), [
-            'siteconfig' => $configDataByURL
+            'siteconfig' => $configDataByURL,
+            'flash' => [
+                'message' => fn () => $request->session()->get('message')
+            ],
         ]);
     }
 }
