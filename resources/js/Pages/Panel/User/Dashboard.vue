@@ -65,11 +65,11 @@ export default {
                                 :valueCount="data?.raffles?.total_raffles_finished ?? 0" />
                         </div>
                         <div class="w-full px-2 mb-2 lg:pl-2 lg:px-0 lg:w-4/12 md:w-6/12 animate-fade-down ">
-                            <CardDashboard :title="'Rifas Criadas'" :valueCount="data?.raffles?.total_raffles" />
+                            <CardDashboard :title="'Total De Rifas'" :valueCount="data?.raffles?.total_raffles" />
                         </div>
                     </div>
                     <div class="flex flex-row flex-wrap w-full lg:h-5/6">
-                        <div class="flex w-full px-2 mb-4 lg:px-0 lg:pr-2 lg:w-6/12 md:w-6/12 lg:mb-0 md:mb-0">
+                        <div class="flex w-full px-2 mb-4 lg:px-0 lg:pr-2 lg:w-full md:w-full lg:mb-0 md:mb-0">
                             <div class="flex justify-center w-full px-2 py-4 rounded-lg bg-content animate-fade-up">
                                 <div class="flex flex-row flex-wrap w-full">
                                     <div class="flex justify-center w-full mb-2">
@@ -103,7 +103,7 @@ export default {
                                 <!-- <TimeLineUser /> -->
                             </div>
                         </div>
-                        <div class="flex w-full px-2 lg:w-6/12 lg:px-0 lg:pl-2 md:w-6/12">
+                        <!-- <div class="flex w-full px-2 lg:w-6/12 lg:px-0 lg:pl-2 md:w-6/12">
                             <div class="flex flex-wrap justify-center w-full p-4 rounded-lg bg-content animate-fade-up">
                                 <div class="flex flex-row flex-wrap w-full mb-4 ">
                                     <div class="flex justify-center w-full">
@@ -130,7 +130,7 @@ export default {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

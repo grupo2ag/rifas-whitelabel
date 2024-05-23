@@ -37,9 +37,12 @@ export default {
             <div class="flex w-full ">
                 <div class="flex flex-row w-full">
                     <div class="flex items-center w-8/12">
-                        <div class="border-4 sm:hidden radial-progress bg-primary text-content border-primary"
+                        <div class="absolute border-4 sm:hidden radial-progress bg-primary text-primary-bw border-primary before:z-20"
+                            :class="func.calcPercent(data?.paid, data?.quantity) == 0 && 'before:hidden after:hidden'"
                             style="--size: 4rem;" :style="{ '--value': func.calcPercent(data?.paid, data?.quantity) }"
-                            role="progressbar">{{ func.calcPercent(data?.paid, data?.quantity) }}%</div>
+                            role="progressbar">{{func.calcPercent(data?.paid, data?.quantity) }}%</div>
+                        <div class="absolute z-10 ml-1 sm:hidden radial-progress text-gray/40 " style="--value:100; --size: 4rem;"
+                            role="progressbar"></div>
                         <div class="hidden sm:flex flex-row flex-wrap items-center !w-full">
                             <div class="w-full">
                                 <small class="text-base">Total Vendidos</small>
