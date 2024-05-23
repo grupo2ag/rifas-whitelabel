@@ -59,7 +59,7 @@ class RaffleController extends Controller
                         }])
                         ->Slug($url)
                         ->UserID($this->user_id)
-                        ->ActivateRaffles()
+//                        ->ActivateRaffles()
                         ->Visible($visible)
                         ->first([
                             DB::raw("CASE WHEN raffles.type = '".Raffle::TYPE_MANUAL."' THEN raffles.numbers ELSE '' END AS r_numbers"),
@@ -86,6 +86,7 @@ class RaffleController extends Controller
                             'expected_date',
                             'buyer_ranking'
                         ]);
+
 
         if(!empty($rifa)){
             $participant = Participant::where('raffle_id', $rifa->id)->sum('paid');
@@ -260,7 +261,8 @@ class RaffleController extends Controller
                     'raffles.title',
                     'raffles.subtitle',
                     'raffles.pix_expired',
-                    'charge_paids.id as pago'
+                    'charge_paids.id as pago',
+                    'participants.paid'
                 ]);
             //dd($rifa);
             if(!empty($rifa->id)){

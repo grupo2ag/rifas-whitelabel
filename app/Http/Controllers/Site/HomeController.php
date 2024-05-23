@@ -31,10 +31,12 @@ class HomeController extends Controller
             }])
             ->Exclude(['numbers', 'video'])
             ->Status('Ativo')
+            ->Visible('1')
             ->get();
 
         foreach($raffles as $banners){
             if ($banners->highlight == 1){
+              //  dd($banners);
                 $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($banners->banner, now()->addMinutes(30));
                 $banners->new_banner = $s3TmpLink;
             }
@@ -43,7 +45,10 @@ class HomeController extends Controller
         foreach($raffles as $image){
             foreach($image->raffle_images as $images){
                 $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($images->path, now()->addMinutes(30));
+
                 $images->thumb = $s3TmpLink;
+
+               // dd($images);
             }
         }
 
@@ -61,8 +66,9 @@ class HomeController extends Controller
 
         foreach($rafflesFinish as $image){
             foreach($image->raffle_images as $images){
-                $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($images->path, now()->addMinutes(30));
-                $images->thumb = $s3TmpLink;
+                $s3TmpLinkFinish = Storage::disk(config('filesystems.default'))->temporaryUrl($images->path, now()->addMinutes(30));
+                $images->thumb = $s3TmpLinkFinish;
+               // dd($images);
             }
         }
 
