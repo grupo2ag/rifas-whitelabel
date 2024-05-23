@@ -25,7 +25,7 @@ import { Link } from '@inertiajs/inertia-vue3';
 import Button from '@/Components/Button/Button.vue';
 import Icon from '@/Components/Icon/Icon.vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Pagination, Navigation, Autoplay, Keyboard } from 'swiper/modules';
+import { Pagination, Navigation, Autoplay, Keyboard, EffectCube, EffectFlip, EffectCards, EffectCoverflow, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
@@ -48,7 +48,7 @@ export default {
     },
     data() {
         return {
-            modules: [Autoplay, Navigation, Keyboard],
+            modules: [Autoplay, Navigation, Keyboard, EffectCube, EffectFlip, EffectCards, EffectCoverflow, EffectFade],
         }
     },
     methods: {
@@ -69,29 +69,41 @@ export default {
         </div>
         <div class="container flex">
             <div class="w-full">
-                <swiper ref="swiper" :keyboard="true" :slidesPerView="1" :spaceBetween="5" :loop="true" :autoplay="data && data?.length > 5 && {
+                <swiper :effect="'coverflow'" ref="swiper" :keyboard="true" :slidesPerView="2" :spaceBetween="5"
+                    :loop="true" :autoplay="data && data?.length > 1 && {
                     delay: 4500,
                     disableOnInteraction: false,
                 }" :breakpoints="{
-
+                    '300': {
+                        slidesPerView: 1,
+                        coverflowEffect: {
+                            rotate: 10,
+                            stretch: 50,
+                            depth: 50,
+                            modifier: 3,
+                            slideShadows: true,
+                        }
+                    },
                     '768': {
                         slidesPerView: 1,
                     },
                     '1024': {
                         slidesPerView: 1,
-
                     },
                 }" :pagination="{
                     clickable: true,
+                }" :coverflowEffect="{
+                    rotate: 50,
+                    stretch: 100,
+                    depth: 200,
+                    modifier: 3,
+                    slideShadows: true,
                 }" :navigation="{ nextEl: '.custom-next-button', prevEl: '.custom-prev-button' }"
                     :allowTouchMove="false" :grabCursor="false" :centeredSlides="true" :modules="modules"
                     class="swiper-hero">
-
                     <swiper-slide class="flex justify-center" v-for="(item, key) in data" :key="key">
                         <div class="w-8/12 h-full overflow-hidden md:rounded-2xl border-base-200 ">
-                            <div>
-                                <CardRaffle :data="item" />
-                            </div>
+                            <CardRaffle :data="item" />
                         </div>
                     </swiper-slide>
 

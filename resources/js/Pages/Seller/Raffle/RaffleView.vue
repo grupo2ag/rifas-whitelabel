@@ -11,6 +11,7 @@ import {
 } from '@heroicons/vue/24/outline';
 </script>
 <script>
+import axios from 'axios';
 
 export default {
     name: "RaffleView",
@@ -20,7 +21,8 @@ export default {
     },
     data() {
     return {
-      openTab: 1
+      openTab: 1,
+      results: this.data
     }
   },
   methods: {
@@ -29,7 +31,8 @@ export default {
     },
     previousPage() {
       window.location.href = route('raffles.raffleIndex')
-    }
+    },
+
   },
   mounted() {
       const url = new URLSearchParams(window.location.search);
@@ -52,13 +55,13 @@ export default {
             <div class="flex flex-row mb-4">
                 <button @click="previousPage" class="flex justify-center border-none btn bg-content hover:bg-base-200 btn-sm lg:btn-md"><ArrowLeftIcon class="w-5 h-5" /> Voltar</button>
             </div>
-            <RaffleLayout @toggleTabs="toggleTabs" :openTab="openTab" :data="data?.raffle">
+            <RaffleLayout @toggleTabs="toggleTabs" :openTab="openTab" :data="results?.raffle">
                 <template #body>
                     <div class="animate-fade-right" v-bind:class="{'hidden': openTab !== 1, '': openTab === 1}">
-                        <RaffleDashboard :data="data"/>
+                        <RaffleDashboard :data="results"/>
                     </div>
                     <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 2, '': openTab === 2}">
-                        <RaffleSale :data="data"/>
+                        <RaffleSale :data="results"/>
                     </div>
                 </template>
             </RaffleLayout>

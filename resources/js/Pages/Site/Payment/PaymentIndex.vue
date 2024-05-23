@@ -95,9 +95,9 @@ export default {
                                 <img :src="raffle.image"
                                      class="w-full h-full object-cover rounded-xl" alt="">
                             </figure>
-                            <div class="flex flex-col justify-between">
+                            <div class="flex-1 flex flex-col justify-between">
                                 <p class="text-neutral font-bold text-lg">{{ raffle.title }}</p>
-                                <p class="text-neutral/60" v-if="raffle.subtitle">{{ raffle.subtitle }}</p>
+                                <p class="text-sm text-neutral/60" v-if="raffle.subtitle">{{ raffle.subtitle }}</p>
                             </div>
                         </div>
 
@@ -130,13 +130,13 @@ export default {
                             </li>
                             <li class="c-details__item">
                                 Titulos
-                                <template v-if="status != 'PAID' && status != 'RESERVED' && raffle.type === 'automatico'">
+                                <template v-if="status != 'PAID' || status != 'RESERVED' && raffle.type === 'automatico'">
                                     <p>Os titulos são liberados após o pagamento</p>
                                 </template>
                                 <template v-else>
                                     <div class="flex flex-wrap gap-0.5 mt-1 mb-2">
                                         <template v-for="item in raffle.numbers.split(',')">
-                                            <span class="w-16 border border-neutral/20 text-neutral font-semibold py-1 text-sm text-center ">{{item}}</span>
+                                            <span class="w-16 border border-primary/20 bg-primary/5 text-neutral font-semibold py-1 text-sm text-center">{{item}}</span>
                                         </template>
                                     </div>
                                 </template>
