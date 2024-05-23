@@ -305,7 +305,7 @@ export default {
             </div>
         </section>
 
-        <section v-if="raffle.buyer_ranking.length > 0" class="md:py-2">
+        <section v-if="raffle.buyer_ranking > 0" class="md:py-2">
             <div class="md:container">
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Ranking Compradores</p>

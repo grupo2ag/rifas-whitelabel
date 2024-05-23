@@ -24,22 +24,27 @@ export default {
         VueCountdown,
     },
     props: {
-        raffle: Object
+        raffle: Object,
     },
     data() {
         return {
             expire_time: (this.raffle.expired*60)*1000,
             pixGenerate: false,
-            componentKey: {}
+            componentKey: {},
+            loading: false
         }
     },
     methods: {
         async gerarPix(){
             //console.log(this.raffle)
+            this.loading = true
+
             let resp = await axios.get(route('generate', this.raffle.id))
                 .then((res) => {
+                    this.loading = false
                     return res.data.raffle
                 }).catch((errors) => {
+                    this.loading = false
                     //console.log(errors)
                 })
             //console.log(resp);
@@ -60,13 +65,15 @@ export default {
 </script>
 
 <template>
-    <div class="c-content flex flex-col justify-center flex-1 gap-3">
+    <div class="c-content flex flex-col items-center justify-center flex-1 gap-3">
+
+        <img src="/images/time.svg" class="h-48" alt="">
 
         <h2 class="text-2xl font-semibold text-center text-neutral mt-2">
             Sua Reserva!
         </h2>
 
-        <h4 class="mb-5 text-sm leading-tight text-center text-neutral">
+        <p class="mb-5 text-sm leading-tight text-center text-neutral">
             Você tem
 
             <vue-countdown class="font-black text-neutral inline-block" :time="expire_time"
@@ -77,9 +84,10 @@ export default {
             <br>
             <br>
             Pagamento com baixa automatica no sistema
-        </h4>
+        </p>
 
-        <Button v-if="!pixGenerate" type="button" @click="this.gerarPix()">
+        <Button v-if="!pixGenerate" type="button" color="success" class="w-full md:w-6/12"
+                :loading="loading" :disabled="loading" @click="this.gerarPix()">
             PAGAR
         </Button>
     </div>
