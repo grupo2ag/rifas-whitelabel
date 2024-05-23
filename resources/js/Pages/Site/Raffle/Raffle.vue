@@ -139,7 +139,9 @@ export default {
                                         :modules="modules"
                                         class="swiper-thumb">
                                         <swiper-slide v-for="(item, index) in galery" :key="index">
-                                            <img :src="item.img" class="w-full aspect-square object-cover" :alt="raffle.title + ' Foto Ampliada ' + index"/>
+                                            <figure class="w-full overflow-hidden">
+                                                <img :src="item.img" class="w-full aspect-square object-cover" :alt="raffle.title + ' Foto Ampliada ' + index"/>
+                                            </figure>
                                         </swiper-slide>
 
                                         <div class="swipper-navigation">
@@ -407,8 +409,7 @@ export default {
 }
 
 .swiper-thumb {
-    @apply py-1 border border-neutral/10 rounded-xl;
-
+    @apply border border-neutral/10 rounded-xl;
 
     .swiper-slide {
         height: auto;
