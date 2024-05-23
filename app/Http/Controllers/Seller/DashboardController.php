@@ -51,9 +51,9 @@ class DashboardController extends Controller
             ->get()
             ->toArray(),
             //Filtra rifas expiradas por dia das rifas do usuario logado
-            'expiredPerDay' => Participant::join('raffles', 'participants.raffle_id', '=', 'raffles.id')
+            'reservedPerDay' => Participant::join('raffles', 'participants.raffle_id', '=', 'raffles.id')
             ->where('raffles.user_id', $user->id)
-            ->select(DB::raw('DATE(participants.created_at) as date'), DB::raw('(SUM(participants.reserved) - SUM(participants.paid)) as value'))
+            ->select(DB::raw('DATE(participants.created_at) as date'), DB::raw('(SUM(participants.reserved)) as value'))
             ->groupBy(DB::raw('DATE(participants.created_at)'))
             ->orderBy('date', 'asc')
             ->get()

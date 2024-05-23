@@ -97,10 +97,10 @@ export default {
             <div class="flex justify-start w-full px-4 mb-2 xl:w-8/12 text-neutral card-title">
                 Minhas Vendas
             </div>
-            <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 text-neutral card-title">
+            <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 card-title">
                 <div class="w-full join">
                     <input v-model="searchQuery" @input="debouncedSearch"
-                        class="w-full input input-sm input-bordered join-item xl:btn-md" placeholder="Buscar..." />
+                        class="w-full input input-sm input-bordered join-item xl:btn-md bg-content" placeholder="Buscar..." />
                     <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw">
                         <MagnifyingGlassIcon class="w-6" />
                     </button>
@@ -109,8 +109,9 @@ export default {
         </div>
         <div class="flex-row items-center hidden w-full py-2 m-2 rounded-lg lg:flex bg-base-200">
             <div class="flex justify-center w-1/12">Id</div>
-            <div class="flex justify-center w-3/12">Nome</div>
-            <div class="flex justify-center w-3/12">Email</div>
+            <div class="flex justify-center w-2/12">Nome</div>
+            <div class="flex justify-center w-2/12">Documento</div>
+            <div class="flex justify-center w-2/12">Email</div>
             <div class="flex justify-center w-2/12">Telefone</div>
             <div class="flex justify-center w-1/12">Cotas</div>
             <div class="flex justify-center w-1/12">Valor</div>
@@ -120,26 +121,28 @@ export default {
             <!-- loop -->
             <div v-for="sale in results?.data" :key="sale.id"
                 class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content animate-fade-down animate-duration-1000 ">
-                <div
-                    class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-primary text-primary-bw">
+                <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 break-all rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-primary text-primary-bw">
                     {{ sale?.id }}</div>
-                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12">
-                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.name }}
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-2/12">
+                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ func.truncateString(sale?.name, 20) }}
                 </div>
-                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12">
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-2/12">
+                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.document }}
+                </div>
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-2/12">
                     <EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.email }}
                 </div>
                 <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12">
                     <PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.phone }}
                 </div>
-                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12">
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-1/12">
                     <TicketIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.paid }}
                 </div>
                 <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12">
                     <CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />
                     {{ func.translateMoney(sale?.amount) }}
                 </div>
-                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12">
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-1/12">
                     <CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />
                     {{ func.translateDate(sale?.created_at) }}
                 </div>

@@ -117,8 +117,8 @@ function translateDate(data) {
                     </div>
                     <div class="w-full">
                         <VueApexCharts type="bar" height="350"
-                            :options="options(data?.grafics?.paid, ['#3EA077', '#dc3545'])"
-                            :series="series(['Pago', 'Expirado'], [data?.grafics?.paid, data?.grafics?.expired])">
+                            :options="options(data?.grafics?.paid, ['#3EA077', '#117dcc'])"
+                            :series="series(['Pago', 'Expirado'], [data?.grafics?.paid, data?.grafics?.reserved])">
                         </VueApexCharts>
                     </div>
                 </div>

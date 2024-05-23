@@ -157,8 +157,8 @@ export default {
                         </div>
                         <div class="w-full">
                             <VueApexCharts type="bar" height="350"
-                                :options="func.optionsOfGrafics(data?.grafics?.paidPerDay, ['#3EA077', '#dc3545'])"
-                                :series="func.seriesOfGrafics(['Pago', 'Expirado'], [data?.grafics?.paidPerDay, data?.grafics?.expiredPerDay])">
+                                :options="func.optionsOfGrafics(data?.grafics?.paidPerDay, ['#3EA077', '#117dcc'])"
+                                :series="func.seriesOfGrafics(['Pago', 'Reservado'], [data?.grafics?.paidPerDay, data?.grafics?.reservedPerDay])">
                             </VueApexCharts>
                         </div>
                     </div>
