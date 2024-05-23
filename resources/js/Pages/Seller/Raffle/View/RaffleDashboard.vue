@@ -66,7 +66,7 @@ function translateDate(data) {
 <template>
     <div class="flex flex-row flex-wrap justify-center">
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Participantes'" :value="data?.participants?.distinct"
+            <StatsRaffle :title="'Participantes'" :value="data?.participants?.distinct ?? 0"
                 :textBottom="'Total de participantes'">
                 <template #iconTextBottom>
                     <UserIcon class="w-4 mr-1" />
@@ -74,7 +74,7 @@ function translateDate(data) {
             </StatsRaffle>
         </div>
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Cotas Geradas'" :value="data?.raffle?.paid + data?.raffle?.pix_expired"
+            <StatsRaffle :title="'Cotas Geradas'" :value="(data?.raffle?.paid || data?.raffle?.pix_expired) ? data?.raffle?.paid + data?.raffle?.pix_expired : 0"
                 :textBottom="'Total de cotas geradas'">
                 <template #iconTextBottom>
                     <TicketIcon class="w-4 mr-1" />
@@ -82,14 +82,14 @@ function translateDate(data) {
             </StatsRaffle>
         </div>
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Cotas Pagas'" :value="data?.raffle?.paid" :textBottom="'Total de cotas pagas'">
+            <StatsRaffle :title="'Cotas Pagas'" :value="data?.raffle?.paid ?? 0" :textBottom="'Total de cotas pagas'">
                 <template #iconTextBottom>
                     <CheckCircleIcon class="w-4 mr-1"/>
                 </template>
             </StatsRaffle>
         </div>
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Cotas Expiradas'" :value="data?.raffle?.pix_expired"
+            <StatsRaffle :title="'Cotas Expiradas'" :value="data?.raffle?.pix_expired ?? 0"
                 :textBottom="'Total de cotas expiradas'">
                 <template #iconTextBottom>
                     <XCircleIcon class="w-4 mr-1"/>
@@ -98,7 +98,7 @@ function translateDate(data) {
         </div>
     </div>
     <div v-if="data?.grafics?.paid?.length > 0 || data?.grafics?.expired?.length > 0" class="mt-4 flex gap-3 flex-row min-h-[23rem] lg:max-h-[25rem] flex-wrap lg:flex-nowrap">
-        <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 bg-base-100">
+        <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 bg-base-100 animate-fade-right">
             <div class="flex flex-row flex-wrap">
                 <div class="w-full px-4">
                     <h2 class="text-base text-xl font-medium title-font">Participantes/Dia</h2>
@@ -109,7 +109,7 @@ function translateDate(data) {
                 </div>
             </div>
         </div>
-        <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 bg-base-100">
+        <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 bg-base-100 animate-fade-left">
             <div class="w-full h-full rounded-lg bg-base-100 min-h-max">
                 <div class="flex flex-row flex-wrap">
                     <div class="w-full px-4">

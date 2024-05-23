@@ -40,6 +40,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/created', [SellerController::class, 'created'])->name('raffleCreated');
             Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
+            Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
         });
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');

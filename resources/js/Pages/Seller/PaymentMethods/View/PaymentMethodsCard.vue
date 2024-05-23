@@ -23,14 +23,14 @@ export default {
 <template>
     <div class="w-full p-2 py-4 shadow-xl card bg-base-100">
         <div class="flex flex-row flex-wrap">
-            <div class="justify-center hidden w-full lg:w-4/12 lg:flex md:flex sm:flex xl:flex">
+            <div class="justify-center hidden w-full lg:w-4/12 lg:flex md:flex sm:flex xl:flex animate-fade-right">
                 <figure class="h-full">
                     <img class="object-cover w-full h-full rounded-lg"
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHEa_CL5PpEOY2FsC7VoTy74EecLP0FEIQ19xZlR3e-Q&s"
                         alt="payment" />
                 </figure>
             </div>
-            <div class="w-full lg:pl-4 lg:w-8/12">
+            <div class="w-full lg:pl-4 lg:w-8/12 animate-fade-left">
 
                 <div class="h-full drawer">
                     <input :id="'my-drawer' + (index ?? randomId)" type="checkbox" class="drawer-toggle" />

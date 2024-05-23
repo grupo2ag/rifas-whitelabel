@@ -8,7 +8,8 @@ import Pagination from '@/Components/Pagination.vue';
 import {
     TicketIcon,
     CheckIcon,
-    ClockIcon
+    ClockIcon,
+PlusCircleIcon
 } from '@heroicons/vue/24/outline';
 </script>
 
@@ -50,7 +51,7 @@ export default {
             </h2>
         </template>
         <div class="container sm:max-w-full !w-full">
-            <div class="flex flex-row flex-wrap justify-center mb-2">
+            <div class="flex flex-row flex-wrap justify-center mb-2 animate-fade-down">
                 <div class="w-full mb-2 lg:w-4/12 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Rifas Criadas'" :valueCount="data?.total_raffles ?? 0">
                         <template #icon>
@@ -82,21 +83,28 @@ export default {
                     <CardDashboard :title="'Total Arrecadado'" :valueCount="'R$4,000.000'" />
                 </div> -->
             </div>
-            <div class="card bg-content">
+            <div class="card bg-content animate-fade-up">
                 <div class="flex flex-row">
                     <div class="flex justify-start w-full">
                         <div class="px-4 text-neutral card-title">
                             Minhas Rifas
                         </div>
                     </div>
-                    <div class="flex justify-end w-full px-4 py-4">
+                    <div class="flex justify-end w-full px-4 py-4 animate-fade-left">
                         <!--                        <button :href="route('rafflecreated')" class="text-black btn border-none bg-[#dedede]">Criar Rifa</button>-->
-                        <Link :href="route('raffles.raffleCreated')" class="text-black btn border-none bg-[#dedede]">
-                        Criar Rifa
+
+                        <Link :href="route('raffles.raffleCreated')" class="text-black border-none btn bg-primary">
+                            <div class="flex flex-row items-center text-primary-bw">
+                                <PlusCircleIcon class="w-6 mr-2 text-primary-bw"/>
+                                Criar Rifa
+                            </div>
                         </Link>
                     </div>
                 </div>
-                <div class="flex flex-row flex-wrap px-2 mb-4">
+                <div v-if="!data?.data || data?.data?.length == 0" class="flex items-center justify-center w-full h-full py-40">
+                    <span class="text-base text-xl font-medium title-font">Ainda não há rifas</span>
+                </div>
+                <div v-else class="flex flex-row flex-wrap px-2 mb-4">
                     <div class="hidden w-full h-10 mb-4 rounded-lg bg-base-100 xl:grid">
                         <div class="flex flex-row p-2">
                             <div class="flex justify-center w-1/12"></div>
@@ -108,7 +116,7 @@ export default {
                             <div class="flex justify-center w-1/12"></div>
                         </div>
                     </div>
-                    <div v-for="raffle in data?.data" :key="raffle?.id" class="w-full mb-4">
+                    <div v-for="raffle in data?.data" :key="raffle?.id" class="w-full mb-4 animate-fade-down">
                         <ListCard :infos="raffle" />
                     </div>
                     <div class="flex flex-row w-full px-2" :class='{ "hidden": data?.last_page == 1 }'>

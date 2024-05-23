@@ -1,15 +1,17 @@
 <script setup>
 import StatsRaffleSale from '@/Components/Stats/StatsRaffleSale.vue';
 import moment from 'moment';
-import Pagination from '@/Components/Pagination.vue';
+import PaginationApi from '@/Components/Pagination/PaginationApi.vue';
 import * as func from '@/Helpers/functions';
+import debounce from 'lodash/debounce';
 import {
     UserIcon,
     CurrencyDollarIcon,
     PhoneIcon,
     EnvelopeIcon,
     CalendarDaysIcon,
-    TicketIcon
+    TicketIcon,
+    MagnifyingGlassIcon
 } from '@heroicons/vue/24/outline';
 </script>
 
@@ -18,18 +20,68 @@ export default {
     props: {
         data: Object
     },
+    data() {
+        return {
+            searchQuery: '',
+            results: {
+                data: [],
+                current_page: 1,
+                last_page: 1
+            },
+            currentPage: 1,
+            loading: false
+        };
+    },
+    methods: {
+        async search() {
+            this.loading = true;
+           await axios.get(route('raffles.raffleParticipants', {
+                query: this.searchQuery,
+                page: this.currentPage,
+                idRaffle: this?.data?.raffle?.id
+            }))
+                .then(response => {
+                    this.results = response?.data;
+                    this.loading = false;
+                })
+                .catch(error => {
+                    console.error('Erro na busca:', error);
+                    this.loading = false;
+                });
+        },
+        handleSearch() {
+            this.currentPage = 1;
+            this.search();
+        },
+        changePage(page) {
+            if (page >= 1 && page <= this.results.last_page) {
+                this.currentPage = page;
+                this.search();
+            }
+        }
+    },
+    created() {
+        this.search()
+        this.debouncedSearch = debounce(this.handleSearch, 500); // 300ms debounce
+    },
     // mounted() {
     //     console.log(this.data);
     // }
 }
 </script>
 <template>
-    <div class="flex flex-row flex-wrap justify-center">
-        <div v-for="(participant, index) in data?.participants?.ranking" :key="index" class="w-full px-2 mb-2 lg:w-4/12">
-            <StatsRaffleSale :userName="participant?.name" :value="func.translateMoney(participant?.total_value)" :textBottom="participant?.email"
-                :shortName="func.getInitials(participant?.name)">
+    <!-- <div v-if="!results?.data || results?.data?.length == 0"
+        class="flex flex-row flex-wrap items-center justify-center w-full py-8 mb-4 rounded-lg bg-base-100">
+        <span class="text-base text-xl font-medium title-font">Ainda não há vendas</span>
+    </div> -->
+    <div v-if="results?.data && results?.data?.length > 0" class="flex flex-row flex-wrap justify-center">
+        <div v-for="(participant, index) in results?.data?.participants?.ranking" :key="index"
+            class="w-full px-2 mb-2 lg:w-4/12">
+            <StatsRaffleSale :userName="participant?.name" :value="func.translateMoney(participant?.total_value)"
+                :textBottom="participant?.email" :shortName="func.getInitials(participant?.name)">
                 <template #cup>
-                    <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle" :class="func.getColorCup(index)">
+                    <div class="p-2 mb-2 bg-white border rounded-full border-white-light timeline-middle"
+                        :class="func.getColorCup(index)">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4 lg:w-6 lg:h-6">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -40,10 +92,19 @@ export default {
             </StatsRaffleSale>
         </div>
     </div>
-    <div v-if="data?.participants?.data?.data && data?.participants?.data?.data?.length > 0" class="flex flex-row flex-wrap w-full py-2 mt-4 rounded-lg bg-base-100">
-        <div class="flex justify-start w-full">
-            <div class="px-4 text-neutral card-title">
+    <div class="flex flex-row flex-wrap w-full py-2 mt-4 rounded-lg bg-base-100">
+        <div class="flex flex-wrap w-full my-2">
+            <div class="flex justify-start w-full px-4 mb-2 xl:w-8/12 text-neutral card-title">
                 Minhas Vendas
+            </div>
+            <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 text-neutral card-title">
+                <div class="w-full join">
+                    <input v-model="searchQuery" @input="debouncedSearch"
+                        class="w-full input input-sm input-bordered join-item xl:btn-md" placeholder="Buscar..." />
+                    <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw">
+                        <MagnifyingGlassIcon class="w-6" />
+                    </button>
+                </div>
             </div>
         </div>
         <div class="flex-row items-center hidden w-full py-2 m-2 rounded-lg lg:flex bg-base-200">
@@ -55,22 +116,47 @@ export default {
             <div class="flex justify-center w-1/12">Valor</div>
             <div class="flex justify-center w-1/12">Data</div>
         </div>
-
-        <!-- loop -->
-        <div v-for="sale in data?.participants?.data?.data" :key="sale.id" class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content">
-            <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-primary text-primary-bw">{{ sale?.id }}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.name}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12"><EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.email}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12"><PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.phone}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><TicketIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{sale?.paid}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{func.translateMoney(sale?.amount)}}</div>
-            <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12"><CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary"/>{{func.translateDate(sale?.created_at)}}</div>
-        </div>
-        <!--  -->
-        <div class="flex flex-row w-full px-2" :class='{"hidden": data?.participants?.data?.last_page == 1}'>
-            <div class="flex justify-end w-full">
-                <Pagination :data="data?.participants?.data"/>
+        <div v-if="results?.data && results?.data?.length > 0" class="w-full pr-3">
+            <!-- loop -->
+            <div v-for="sale in results?.data" :key="sale.id"
+                class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content animate-fade-down animate-duration-1000 ">
+                <div
+                    class="flex justify-center w-full p-2 px-2 mx-2 mb-2 rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-primary text-primary-bw">
+                    {{ sale?.id }}</div>
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12">
+                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.name }}
+                </div>
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-3/12">
+                    <EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.email }}
+                </div>
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12">
+                    <PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.phone }}
+                </div>
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12">
+                    <TicketIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.paid }}
+                </div>
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12">
+                    <CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />
+                    {{ func.translateMoney(sale?.amount) }}
+                </div>
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12">
+                    <CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />
+                    {{ func.translateDate(sale?.created_at) }}
+                </div>
             </div>
+            <!--  -->
+            <div class="flex flex-row w-full px-2"
+                :class='{ "hidden": results?.data?.participants?.data?.last_page == 1 }'>
+                <div class="flex justify-end w-full">
+                    <PaginationApi :data="results" @pagination="changePage" />
+                </div>
+            </div>
+        </div>
+        <div v-else-if="loading" class="flex flex-row flex-wrap items-center justify-center w-full px-4 py-8 mb-4 rounded-lg bg-base-100">
+            <div v-for="skn in [...Array(5).keys()].map(i => i + 1)" :key="skn" class="w-full mb-2 rounded-lg skeleton h-14 shrink-0"></div>
+        </div>
+        <div v-else class="flex flex-row flex-wrap items-center justify-center w-full py-8 mb-4 rounded-lg bg-base-100">
+            <span class="text-base text-xl font-medium title-font">Nenhuma venda encontrada</span>
         </div>
     </div>
 </template>

@@ -17,9 +17,6 @@ export default {
     props: {
         data: Array
     },
-    // mounted() {
-    //     console.log(this.data);
-    // }
 }
 </script>
 
@@ -29,7 +26,7 @@ export default {
     <AuthenticatedLayout :user="$page.props.auth.user">
         <template #header>
             <h2 class="flex items-center font-semibold text-content lg:text-xl">
-                <Squares2X2Icon class="w-5 h-5 mr-2 text-content lg:w-6 lg:h-6" />
+                <CurrencyDollarIcon class="w-5 h-5 mr-2 text-content lg:w-6 lg:h-6" />
                 Métodos de Pagamento
             </h2>
         </template>
@@ -40,7 +37,7 @@ export default {
                 </div>
                 <div class="flex flex-row flex-wrap w-full">
                     <div class="w-full px-2">
-                        <div v-for="(paymentMethod, index) in data" :key="index" class="flex flex-row mb-4 rounded-lg">
+                        <div v-for="(paymentMethod, index) in data" :key="index" class="flex flex-row mb-4 rounded-lg animate-fade-down">
                             <PaymentMethodsCard :data="paymentMethod" :index="index"/>
                         </div>
                     </div>
