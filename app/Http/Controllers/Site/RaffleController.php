@@ -524,6 +524,7 @@ class RaffleController extends Controller
             $participant = Participant::with(['raffle' => function ($query) {
                     $query->UserID($this->user_id);
                     $query->Visible(true);
+                    $query->ActivateRaffles();
                     $query->select(['title', 'status', 'type']);
                 }])
                 ->with(['raffle.raffle_images' => function ($query) {
@@ -533,10 +534,12 @@ class RaffleController extends Controller
                 //->join('participants', 'raffles.id', 'participants.raffle_id')
                 ->where('document', $cpf)
                 ->orderBy('participants.id', 'DESC')
-                ->paginate();
+                ->get();
 
-            if(!empty($participant->items())){
-                foreach ($participant->items() as $key => $item) {
+            if(!empty($participant)){
+            //if(!empty($participant->items())){
+                //foreach ($participant->items() as $key => $item) {
+                foreach ($participant as $key => $item) {
                     $galery = [];
                     //dd($item, $item->raffle, $item->raffle->raffle_images);
                     if(!empty($item->raffle->raffle_images)){

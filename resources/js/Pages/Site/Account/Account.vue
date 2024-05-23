@@ -16,9 +16,12 @@ export default {
     },
     data() {
         return {
-            numbers: this.participant.data,
-            paid: this.participant.data.filter(numb => numb.purchase === 'PAID'),
-            reserved: this.participant.data.filter(numb => (numb.purchase === 'RESERVED' || numb.purchase === 'PROCESSING' )),
+            numbers: this.participant,
+            //numbers: this.participant.data,
+            paid: this.participant.filter(numb => numb.purchase === 'PAID'),
+            //paid: this.participant.data.filter(numb => numb.purchase === 'PAID'),
+            reserved: this.participant.filter(numb => (numb.purchase === 'RESERVED' || numb.purchase === 'PROCESSING' )),
+            //reserved: this.participant.data.filter(numb => (numb.purchase === 'RESERVED' || numb.purchase === 'PROCESSING' )),
             music: [],
             currentBox: 1
         }
