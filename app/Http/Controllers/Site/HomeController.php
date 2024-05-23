@@ -34,7 +34,7 @@ class HomeController extends Controller
             ->get();
 
         foreach($raffles as $banners){
-            if ($banners->highlight == 1){
+            if ($banners->highlight == 1 && !empty($banners->banner)){
                 $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($banners->banner, now()->addMinutes(30));
                 $banners->new_banner = $s3TmpLink;
             }

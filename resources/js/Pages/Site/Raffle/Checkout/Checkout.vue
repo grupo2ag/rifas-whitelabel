@@ -225,7 +225,7 @@ export default {
                             Inertia.visit(route('reserved', resposta.participant));
                         }else if(typeof resposta.pix.order_id === "string" && resposta.pix.order_id.length > 0 && resposta.pix.order_id !== null){
                             this.formVerify.processing = true;
-                            console.log(resposta, resposta.pix.order_id);
+                            //console.log(resposta, resposta.pix.order_id);
                             Inertia.visit(route('pay', resposta.pix.order_id));
                         }else{
                             this.formVerify.processing = false;
