@@ -55,7 +55,7 @@ Route::get('/pay/{order}', [RaffleController::class, 'pay'])->name('pay');
 Route::get('/reserved/{participant}', [RaffleController::class, 'reserved'])->name('reserved');
 Route::get('/verify/{phone}', [RaffleController::class, 'verify'])->name('verify');
 Route::get('/generate/{particpant}', [RaffleController::class, 'generate'])->name('generate');
-Route::get('/openpay/{particpant}', [RaffleController::class, 'openpay'])->name('openpay');
+Route::get('/openpay/{particpant}', [RaffleController::class, 'openPay'])->name('openpay');
 Route::get('/reserved_verify/{link}', [RaffleController::class, 'reservedVerify'])->name('reservedVerify');
 Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 Route::get('/account/{cpf}', [RaffleController::class, 'mybillets'])->name('account');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class GatewayController extends Controller
@@ -11,7 +12,6 @@ class GatewayController extends Controller
 
     public function index()
     {
-
         $user = Auth::user();
         $data = [];
 

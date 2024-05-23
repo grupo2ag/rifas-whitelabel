@@ -17,6 +17,9 @@ export default {
     props: {
         data: Array
     },
+    mounted() {
+        //console.log(this.$page.props.flash.message)
+    }
 }
 </script>
 
@@ -33,7 +36,7 @@ export default {
         <div class="container">
             <div class="flex flex-row flex-wrap w-full px-2 py-2 rounded-lg bg-content">
                 <div class="flex w-full px-4 py-2">
-                    <h1 class="w-full text-base text-xl font-medium title-font">Escolha um método de pagamento</h1>
+                    <h1 class="w-full text-base text-xl font-medium title-font">{{ (!!this.$page.props.flash.message) ? this.$page.props.flash.message : 'Escolha um método de pagamento'  }}</h1>
                 </div>
                 <div class="flex flex-row flex-wrap w-full">
                     <div class="w-full px-2">

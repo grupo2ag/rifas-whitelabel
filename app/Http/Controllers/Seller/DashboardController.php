@@ -14,9 +14,31 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
+    private $user;
+
+    public function __construct()
+    {
+        $this->user = auth()->user();
+
+        $gateway = $this->user->gatewayConfigurations()->first();
+        //dd($gateway->login);
+
+        if(empty($gateway->token) || empty($gateway->login) ){
+            //dd('aqui');
+            return \redirect('paymentMethods')->with(['message' => 'Primeiro configure o '])->send();//;
+        }
+
+    }
+
     public function index()
     {
-        $user = Auth::user();
+        $user = auth()->user();
+
+        $gateway = $user->gatewayConfigurations()->first();
+
+        if(empty($gateway->token) || empty($gateway->login)){
+            return redirect()->route('paymentMethods')->with('message', 'Primeiro passo configure o Gateway');
+        }
 
         $data['raffles']['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
         $data['raffles']['total_raffles_finished'] = $user->raffles()->where('status', 'Encerrado')->count();
@@ -59,8 +81,6 @@ class DashboardController extends Controller
             ->get()
             ->toArray()
         ];
-
-        $data['gateway'] = $user->gatewayConfigurations()->first()->gateway()->first();
 
         foreach ($data['raffles']['data'] as $key => $value) {
             $raffle = $user->raffles()->ofId($value['id'])->first();

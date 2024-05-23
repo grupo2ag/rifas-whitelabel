@@ -25,6 +25,12 @@ class SellerController extends Controller
     {
         $user = auth()->user();
 
+        $gateway = $user->gatewayConfigurations()->first();
+
+        if(empty($gateway->token) || empty($gateway->login)){
+            return redirect()->route('paymentMethods')->with('message', 'Primeiro passo configure o Gateway')->send();
+        }
+
         $data = $user->raffles()->orderBy('id')->paginate()->toArray();
 
         $data['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
