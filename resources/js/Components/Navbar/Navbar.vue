@@ -13,17 +13,17 @@ import {
     <ul class=" menu menu-horizontal bg-primary rounded-box flex-nowrap">
         <li class="px-1">
             <NavLink >
-                <Squares2X2Icon class="w-5 h-5 text-content" />
+                <Squares2X2Icon class="w-5 h-5 text-primary-bw" />
             </NavLink>
         </li>
         <li class="px-1">
             <NavLink :active="false">
-                <TicketIcon class="w-5 h-5 text-content" />
+                <TicketIcon class="w-5 h-5 text-primary-bw" />
             </NavLink>
         </li>
         <li class="px-1">
             <NavLink :active="false">
-                <CurrencyDollarIcon class="w-5 h-5 text-content" />
+                <CurrencyDollarIcon class="w-5 h-5 text-primary-bw" />
             </NavLink>
         </li>
     </ul>

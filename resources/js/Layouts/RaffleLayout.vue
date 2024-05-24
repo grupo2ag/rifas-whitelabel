@@ -77,10 +77,12 @@ export default {
     <div class="flex flex-row">
         <div class="w-3/12">
             <div role="tablist" class="tabs tabs-lifted">
-                <a role="tab" @click="setToggleTabs(1)" class="border-none tab"
-                    v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 1, 'tab': openTab !== 1 }">Detalhes</a>
-                <a role="tab" @click="setToggleTabs(2)" class="border-none tab"
-                    v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 2, 'tab': openTab !== 2 }">Vendas</a>
+                <a role="tab" @click="setToggleTabs(1)" class="ml-2 border-none tab before:hidden border-gray-light"
+                    v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 1, 'tab text-neutral/70 bg-base-100': openTab !== 1 }">Detalhes</a>
+                <a role="tab" @click="setToggleTabs(2)" class="ml-2 border-none border-gray-light tab before:hidden"
+                    v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 2, 'tab text-neutral/70 bg-base-100': openTab !== 2 }">Vendas</a>
+                <a role="tab" @click="setToggleTabs(3)" class="ml-2 border-none border-gray-light tab before:hidden"
+                    v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 3, 'tab text-neutral/70 bg-base-100': openTab !== 3 }">Afiliado</a>
             </div>
         </div>
     </div>
@@ -94,14 +96,14 @@ export default {
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
-                                <TicketIcon class="hidden w-6 mr-2 lg:grid text-primary " />
-                                <p class="text-base text-xl font-bold">{{ data?.title }}</p>
+                                <TicketIcon class="hidden w-6 mr-2 lg:grid text-neutral/70 " />
+                                <p class="text-xl font-bold text-neutral/70">{{ data?.title }}</p>
                             </div>
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
-                                <ChartBarIcon class="w-6 mr-2 min-w-6 text-primary" />
-                                <div class="py-3 badge"
+                                <ChartBarIcon class="w-6 mr-2 min-w-6 text-neutral/70" />
+                                <div class="py-3 badge text-neutral/70"
                                     :class="{ 'badge-success': data?.status.toLowerCase() == 'ativo', 'badge-error': data?.status.toLowerCase() != 'ativo' }">
                                     {{ data?.status }}
                                 </div>
@@ -109,26 +111,26 @@ export default {
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row">
-                                <CalendarDaysIcon class="w-6 mr-2 min-w-6 text-primary" />
-                                <p>{{ func.translateDate(data?.created_at) }}</p>
+                                <CalendarDaysIcon class="w-6 mr-2 min-w-6 text-neutral/70" />
+                                <p class="text-neutral/70">{{ func.translateDate(data?.created_at) }}</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden">
                             <div class="flex flex-row">
-                                <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>{{ func.translateMoney(data?.price) }}/Cota</p>
+                                <BanknotesIcon class="w-6 mr-2 text-neutral/70" />
+                                <p class="text-neutral/70">{{ func.translateMoney(data?.price) }}/Cota</p>
                             </div>
                         </div>
                         <div class="grid w-full mb-2 lg:hidden ">
                             <div class="flex flex-row">
-                                <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
-                                <p>{{ data?.paid }}/{{ data?.quantity }}</p>
+                                <ReceiptPercentIcon class="w-6 mr-2 text-neutral/70" />
+                                <p class="text-neutral/70">{{ data?.paid }}/{{ data?.quantity }}</p>
                             </div>
                         </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row ">
-                                <LinkIcon class="hidden w-6 mr-2 lg:grid text-primary" />
-                                <a target="_blank" class="break-all link link-primary"
+                                <LinkIcon class="hidden w-6 mr-2 lg:grid text-neutral/70" />
+                                <a target="_blank" class="break-all link link-info"
                                     :href="!data?.visible ? route('raffle', 'visualizar|raffle-' + data?.link) : route('raffle', data?.link)">{{
                         data?.link }}</a>
                             </div>
@@ -139,30 +141,30 @@ export default {
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="w-full ">
                             <div class="flex flex-row">
-                                <BanknotesIcon class="w-6 mr-2 text-primary" />
-                                <p>{{ func.translateMoney(data?.price) }}/Cota</p>
+                                <BanknotesIcon class="w-6 mr-2 text-neutral/70" />
+                                <p class="text-neutral/70">{{ func.translateMoney(data?.price) }}/Cota</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row">
-                                <ReceiptPercentIcon class="w-6 mr-2 text-primary" />
-                                <p>{{ data?.paid }}/{{ data?.quantity }}</p>
+                                <ReceiptPercentIcon class="w-6 mr-2 text-neutral/70" />
+                                <p class="text-neutral/70">{{ data?.paid }}/{{ data?.quantity }}</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row">
-                                <TableCellsIcon class="w-6 mr-2 text-primary" />
-                                <p>{{ data?.type == 'automatico' ? 'Automático' : 'Manual' }}</p>
+                                <TableCellsIcon class="w-6 mr-2 text-neutral/70" />
+                                <p class="text-neutral/70">{{ data?.type == 'automatico' ? 'Automático' : 'Manual' }}</p>
                             </div>
                         </div>
                         <div class="w-full ">
                             <div class="flex flex-row" v-if="data?.visible == 0">
-                                <EyeSlashIcon class="w-6 mr-2 text-primary" />
-                                <p>Não visível</p>
+                                <EyeSlashIcon class="w-6 mr-2 text-neutral/70" />
+                                <p class="text-neutral/70">Não visível</p>
                             </div>
                             <div class="flex flex-row" v-else>
-                                <EyeIcon class="w-6 mr-2 text-primary" />
-                                <p>Visível</p>
+                                <EyeIcon class="w-6 mr-2 text-neutral/70" />
+                                <p class="text-neutral/70">Visível</p>
                             </div>
                         </div>
                     </div>

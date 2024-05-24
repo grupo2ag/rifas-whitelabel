@@ -87,6 +87,11 @@ class User extends Authenticatable
         return $this->hasMany(GatewayConfiguration::class);
     }
 
+    public function userConfigurations()
+    {
+        return $this->hasMany(UserConfiguration::class);
+    }
+
     public function affiliate()
     {
         return $this->hasMany(Affiliate::class);

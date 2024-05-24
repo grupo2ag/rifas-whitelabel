@@ -94,7 +94,7 @@ export default {
     </div>
     <div class="flex flex-row flex-wrap w-full py-2 mt-4 rounded-lg bg-base-100">
         <div class="flex flex-wrap w-full my-2">
-            <div class="flex justify-start w-full px-4 mb-2 xl:w-8/12 text-neutral card-title">
+            <div class="flex justify-start w-full px-4 mb-2 xl:w-8/12 text-neutral/70 card-title">
                 Minhas Vendas
             </div>
             <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 card-title">
@@ -108,42 +108,42 @@ export default {
             </div>
         </div>
         <div class="flex-row items-center hidden w-full py-2 m-2 rounded-lg lg:flex bg-base-200">
-            <div class="flex justify-center w-1/12">Id</div>
-            <div class="flex justify-center w-2/12">Nome</div>
-            <div class="flex justify-center w-2/12">Documento</div>
-            <div class="flex justify-center w-2/12">Email</div>
-            <div class="flex justify-center w-2/12">Telefone</div>
-            <div class="flex justify-center w-1/12">Cotas</div>
-            <div class="flex justify-center w-1/12">Valor</div>
-            <div class="flex justify-center w-1/12">Data</div>
+            <div class="flex justify-center w-1/12 text-neutral/70">Id</div>
+            <div class="flex justify-center w-2/12 text-neutral/70">Nome</div>
+            <div class="flex justify-center w-2/12 text-neutral/70">Documento</div>
+            <div class="flex justify-center w-2/12 text-neutral/70">Email</div>
+            <div class="flex justify-center w-2/12 text-neutral/70">Telefone</div>
+            <div class="flex justify-center w-1/12 text-neutral/70">Cotas</div>
+            <div class="flex justify-center w-1/12 text-neutral/70">Valor</div>
+            <div class="flex justify-center w-1/12 text-neutral/70">Data</div>
         </div>
         <div v-if="results?.data && results?.data?.length > 0" class="w-full pr-3">
             <!-- loop -->
             <div v-for="sale in results?.data" :key="sale.id"
                 class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content animate-fade-down animate-duration-1000 ">
-                <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 break-all rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-primary text-primary-bw">
+                <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 break-all rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-neutral/70 text-primary-bw">
                     {{ sale?.id }}</div>
-                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-2/12">
-                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ func.truncateString(sale?.name, 20) }}
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
+                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ func.truncateString(sale?.name, 20) }}
                 </div>
-                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-2/12">
-                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.document }}
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
+                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ sale?.document }}
                 </div>
-                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-2/12">
-                    <EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.email }}
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
+                    <EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ sale?.email }}
                 </div>
-                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-2/12">
-                    <PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.phone }}
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
+                    <PhoneIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ sale?.phone }}
                 </div>
-                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-1/12">
-                    <TicketIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />{{ sale?.paid }}
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-1/12">
+                    <TicketIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ sale?.paid }}
                 </div>
-                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center lg:w-1/12">
-                    <CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center text-neutral/70 lg:w-1/12">
+                    <CurrencyDollarIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />
                     {{ func.translateMoney(sale?.amount) }}
                 </div>
-                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center lg:w-1/12">
-                    <CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-primary" />
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-1/12">
+                    <CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />
                     {{ func.translateDate(sale?.created_at) }}
                 </div>
             </div>
@@ -159,7 +159,7 @@ export default {
             <div v-for="skn in [...Array(5).keys()].map(i => i + 1)" :key="skn" class="w-full mb-2 rounded-lg skeleton h-14 shrink-0"></div>
         </div>
         <div v-else class="flex flex-row flex-wrap items-center justify-center w-full py-8 mb-4 rounded-lg bg-base-100">
-            <span class="text-base text-xl font-medium title-font">Nenhuma venda encontrada</span>
+            <span class="text-base text-xl font-medium title-font text-neutral/70">Nenhuma venda encontrada</span>
         </div>
     </div>
 </template>

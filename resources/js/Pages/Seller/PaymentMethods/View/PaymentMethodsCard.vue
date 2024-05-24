@@ -47,7 +47,7 @@ export default {
                         </div>
                         <div class="flex flex-row items-center">
                             <div class="w-6/12">
-                                <div class="py-3 badge" :class="data?.config ? 'badge-success' : 'badge-error'">
+                                <div class="py-3 badge text-neutral/70" :class="data?.config ? 'badge-success' : 'badge-error'">
                                     {{ data?.config ? 'Ativo' : 'Inativo' }}
                                 </div>
                             </div>
@@ -58,7 +58,7 @@ export default {
                         </div>
                         <div class="flex flex-row flex-wrap mb-2">
                             <div class="w-full">
-                                <h2 class="card-title">{{ data?.name }}</h2>
+                                <h2 class="card-title text-neutral/70">{{ data?.name }}</h2>
                             </div>
                             <!-- <div class="w-full">
                                 <p>Atributos do metodo de pagamento 1</p>
@@ -66,15 +66,15 @@ export default {
                         </div>
                         <div class="flex flex-row flex-wrap mb-2">
                             <div class="w-full mb-2">
-                                <InputLabel for="password" value="Login" />
+                                <InputLabel for="login" class="text-neutral/70" value="Login" />
                                 <TextInput class="w-full" :value="data?.config?.login" type="text"></TextInput>
                             </div>
-                            <div class="w-full mb-2">
+                            <!-- <div class="w-full mb-2">
                                 <InputLabel for="password" value="Senha" />
                                 <TextInput class="w-full" value="" type="password"></TextInput>
-                            </div>
+                            </div> -->
                             <div class="w-full mb-2">
-                                <InputLabel for="password" value="Access Token" />
+                                <InputLabel for="password" class="text-neutral/70" value="Access Token" />
                                 <TextInput class="w-full" :value="data?.config?.token" type="text"></TextInput>
                             </div>
                         </div>
@@ -92,25 +92,25 @@ export default {
                             </div>
                             <div class="flex flex-row flex-wrap items-center w-full">
                                 <div class="flex flex-row w-full px-2 py-2 mb-1 rounded-lg bg-base-200">
-                                    <div class="w-4/12 text-center">
+                                    <div class="w-4/12 text-center text-neutral/70">
                                         Tipo
                                     </div>
-                                    <div class="w-4/12 text-center">
+                                    <div class="w-4/12 text-center text-neutral/70">
                                         Taxa
                                     </div>
-                                    <div class="w-4/12 text-center">
+                                    <div class="w-4/12 text-center text-neutral/70">
                                         Estimativa
                                     </div>
                                 </div>
                                 <div v-for="(team, key) in [1, 2, 3]" :key="key"
                                     class="flex flex-row w-full px-2 py-2 mb-1 rounded-lg bg-content">
-                                    <div class="w-4/12 text-center">
+                                    <div class="w-4/12 text-center text-neutral/70">
                                         Cartão
                                     </div>
-                                    <div class="w-4/12 text-center">
+                                    <div class="w-4/12 text-center text-neutral/70">
                                         R$ 0,42
                                     </div>
-                                    <div class="w-4/12 text-center">
+                                    <div class="w-4/12 text-center text-neutral/70">
                                         1 dia útil
                                     </div>
                                 </div>

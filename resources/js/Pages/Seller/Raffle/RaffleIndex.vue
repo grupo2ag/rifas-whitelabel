@@ -45,8 +45,8 @@ export default {
     <Head title="Rifas"></Head>
     <AuthenticatedLayout :user="$page.props.auth.user">
         <template #header>
-            <h2 class="flex items-center font-semibold text-content lg:text-xl">
-                <TicketIcon class="w-5 h-5 mr-2 text-content lg:w-6 lg:h-6" />
+            <h2 class="flex items-center font-semibold text-primary-bw lg:text-xl">
+                <TicketIcon class="w-5 h-5 mr-2 text-primary-bw lg:w-6 lg:h-6" />
                 Rifas
             </h2>
         </template>
@@ -108,12 +108,12 @@ export default {
                     <div class="hidden w-full h-10 mb-4 rounded-lg bg-base-100 xl:grid">
                         <div class="flex flex-row p-2">
                             <div class="flex justify-center w-1/12 "></div>
-                            <div class="flex justify-start w-4/12 ml-4 text-primary-bw">Nome</div>
-                            <div class="flex justify-center w-1/12 text-primary-bw">Status</div>
-                            <div class="flex justify-center w-2/12 text-primary-bw">Valor/Cota</div>
-                            <div class="flex justify-center w-1/12 text-primary-bw">%</div>
-                            <div class="flex justify-center w-2/12 text-primary-bw">Criada Em</div>
-                            <div class="flex justify-center w-1/12 text-primary-bw"></div>
+                            <div class="flex justify-start w-4/12 ml-4 text-neutral/70">Nome</div>
+                            <div class="flex justify-center w-1/12 text-neutral/70">Status</div>
+                            <div class="flex justify-center w-2/12 text-neutral/70">Valor/Cota</div>
+                            <div class="flex justify-center w-1/12 text-neutral/70">%</div>
+                            <div class="flex justify-center w-2/12 text-neutral/70">Criada Em</div>
+                            <div class="flex justify-center w-1/12 text-neutral/70"></div>
                         </div>
                     </div>
                     <div v-for="raffle in data?.data" :key="raffle?.id" class="w-full mb-4 animate-fade-down">

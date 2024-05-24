@@ -15,7 +15,8 @@ import {
     Squares2X2Icon,
     CurrencyDollarIcon,
     TruckIcon,
-    TicketIcon
+    TicketIcon,
+UsersIcon
 } from '@heroicons/vue/24/outline'
 </script>
 
@@ -41,14 +42,14 @@ export default {
 <template>
     <div class="flex flex-col">
         <Link class="flex items-center justify-center mx-auto mb-4 rounded-lg">
-            <IconsSvg name="logo-rifa8" class="w-4 h-4 md:w-7 md:h-7 fill-content" />
+            <IconsSvg name="logo-rifa8" class="w-4 h-4 md:w-7 md:h-7 fill-primary-bw" />
         </Link>
 
         <div class="mb-4 rounded">
             <Popper content="Dashboard" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
                 <NavLink :href="route('dashboard')">
-                    <Squares2X2Icon class="w-6 h-6 text-content" />
+                    <Squares2X2Icon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>
         </div>
@@ -56,7 +57,7 @@ export default {
             <Popper content="Rifas" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
                 <NavLink :href="route('raffles.raffleIndex')" :active="false" >
-                    <TicketIcon class="w-6 h-6 text-content" />
+                    <TicketIcon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>
         </div>
@@ -64,7 +65,15 @@ export default {
             <Popper content="Meios de Pagamento" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
                 <NavLink :href="route('paymentMethods')" :active="false">
-                    <CurrencyDollarIcon class="w-6 h-6 text-content" />
+                    <CurrencyDollarIcon class="w-6 h-6 text-primary-bw" />
+                </NavLink>
+            </Popper>
+        </div>
+        <div class="mb-4 rounded">
+            <Popper content="Afiliados" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
+                offset-skid="0">
+                <NavLink :active="false">
+                    <UsersIcon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>
         </div>

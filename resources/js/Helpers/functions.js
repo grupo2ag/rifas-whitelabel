@@ -151,7 +151,7 @@ export const getInitials = function (string) {
     return initials;
 };
 
-export const calcPercent = function (parcialValue, totalValue){
+export const calcPercent = function (parcialValue, totalValue) {
     if (totalValue !== 0) {
         const porcentagem = (parcialValue / totalValue) * 100;
         return porcentagem.toFixed(2); // Retorna a porcentagem com uma casa decimal
@@ -163,9 +163,9 @@ export const calcPercent = function (parcialValue, totalValue){
 export const getColorCup = function (index) {
     index = index.toString();
     const colors = {
-        '0' : 'text-yellow',
-        '1' : 'text-gray',
-        '2' : 'text-[#b54a07]'
+        '0': 'text-yellow',
+        '1': 'text-gray',
+        '2': 'text-[#b54a07]'
     }
     return colors[index]
 }
@@ -180,24 +180,25 @@ export const translateMoney = function (value) {
     return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-export const truncateString = function(str, limit) {
+export const truncateString = function (str, limit) {
     if (str && limit && str.length > limit) {
-      return str.substring(0, limit) + '...';
+        return str.substring(0, limit) + '...';
     }
     return str;
 }
 
-export const getDatesOfGrafics = function(dates) {
+export const getDatesOfGrafics = function (dates) {
     return dates.map(date => translateDate(date.date));
 }
-export const getValuesOfGrafics = function(dates) {
+export const getValuesOfGrafics = function (dates) {
     return dates.map(date => date.value);
 }
 
-export const optionsOfGrafics = function(data, colors) {
+export const optionsOfGrafics = function (data, palette, theme) {
     return {
         chart: {
-            height: 350
+            height: 350,
+            background: 'none'
         },
         dataLabels: {
             enabled: false
@@ -213,10 +214,20 @@ export const optionsOfGrafics = function(data, colors) {
                 format: 'dd/MM/yyyy'
             },
         },
-        colors: colors ?? []
+        theme: {
+            mode: theme ?? 'dark',
+            palette: palette ?? 'palette8',
+            monochrome: {
+                enabled: false,
+                color: '#255aee',
+                shadeTo: 'dark',
+                shadeIntensity: 0.65
+            },
+        },
+        // colors: colors ?? []
     }
 }
-export const seriesOfGrafics = function(names, datas) {
+export const seriesOfGrafics = function (names, datas) {
     if ((!datas || !names) || (!Array.isArray(datas) || !Array.isArray(names))) return [];
 
     const series = [];
