@@ -42,6 +42,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         });
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
+        Route::post('/paymentMethodsStore', [GatewayController::class, 'store'])->name('paymentMethods.store');
     });
 });
 
