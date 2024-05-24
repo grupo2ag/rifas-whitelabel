@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
+use App\Models\Affiliate;
+use App\Models\AffiliateRaffle;
 use App\Models\Charge;
 use App\Models\Customer;
 use App\Models\Participant;
@@ -30,19 +32,29 @@ class RaffleController extends Controller
         if(!$this->user_id) return Inertia::render('Welcome');//return redirect('/');
     }
 
-    public function index($url)
+    public function index(string $url, string $affiliate = null)
     {
 
-        $visualizar = explode('-', $url);
-        $contains = Str::containsAll('visualizar|raffle', [$visualizar[0]]);
+        $toview = explode('-', $url);
+        $contains = Str::containsAll('visualizar|raffle', [$toview[0]]);
         $visible = 1;
         if($contains){
-            unset($visualizar[0]);
-            $url = implode('-', $visualizar);
+            unset($toview[0]);
+            $url = implode('-', $toview);
             $visible = 0;
         }
 
-        $rifa = Raffle::with(['raffle_premium_numbers' => function ($query) {
+        $affiliateId = null;
+        if(!empty($affiliate)){
+            $hasAffiliate = AffiliateRaffle::with('affiliate')->whereHas('affiliate', function ($query) {
+                return $query->where('user_id', $this->user_id);
+            })
+                ->where('link', $affiliate)
+                ->first();
+            if(!empty($hasAffiliate->affiliate->id)) $affiliateId = $hasAffiliate->affiliate->id;
+        }
+
+        $raffle = Raffle::with(['raffle_premium_numbers' => function ($query) {
                             $query->orderBy('raffle_premium_numbers.number_premium', 'ASC');
                         }])
                         ->with(['raffle_images' => function ($query) {
@@ -59,7 +71,7 @@ class RaffleController extends Controller
                         }])
                         ->Slug($url)
                         ->UserID($this->user_id)
-//                        ->ActivateRaffles()
+                        //->ActivateRaffles()
                         ->Visible($visible)
                         ->first([
                             DB::raw("CASE WHEN raffles.type = '".Raffle::TYPE_MANUAL."' THEN raffles.numbers ELSE '' END AS r_numbers"),
@@ -87,18 +99,17 @@ class RaffleController extends Controller
                             'buyer_ranking'
                         ]);
 
+        if(!empty($raffle)){
+            $participant = Participant::where('raffle_id', $raffle->id)->sum('paid');
 
-        if(!empty($rifa)){
-            $participant = Participant::where('raffle_id', $rifa->id)->sum('paid');
-
-            $totalSales = $participant*100/$rifa->quantity;
+            $totalSales = $participant*100/$raffle->quantity;
             $totalSales = ($participant > 0) ? ceil($totalSales) : 0.00;
 
-            $rifa['percent'] = $totalSales;
+            $raffle['percent'] = $totalSales;
             $galery = [];
-            if(!empty($rifa->raffle_images)){
-                foreach($rifa->raffle_images as $image){
-                    //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$this->user_id.'/gallery/'.$rifa->id.'/'.$image->path;
+            if(!empty($raffle->raffle_images)){
+                foreach($raffle->raffle_images as $image){
+                    //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$this->user_id.'/gallery/'.$raffle->id.'/'.$image->path;
 
                     $s3TmpLink = new \stdClass();
                     $s3TmpLink->img = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
@@ -106,24 +117,24 @@ class RaffleController extends Controller
                 }
             }
 
-            $rifa['galery'] = $galery;
+            $raffle['galery'] = $galery;
 
-            if($rifa->buyer_ranking > 0 ) {
-                $rifa['buyers'] = Participant::orderBy('total', 'DESC')
+            if($raffle->buyer_ranking > 0 ) {
+                $raffle['buyers'] = Participant::orderBy('total', 'DESC')
                     ->join('customers', 'customers.id', '=', 'participants.customer_id')
                     ->select(DB::raw("SUM(paid) AS total"), 'customers.name')
-                    ->where('participants.raffle_id', $rifa->id)
-                    ->limit($rifa->buyer_ranking)
+                    ->where('participants.raffle_id', $raffle->id)
+                    ->limit($raffle->buyer_ranking)
                     ->groupBy('participants.customer_id', 'customers.id')
                     ->get();
                 }
-            else $rifa['buyers'] = [];
+            else $raffle['buyers'] = [];
 
-            $rifa['participants'] = [];
-            if($rifa->type === 'manual'){
-                $rifa['participants'] = Participant::join('customers', 'customers.id', '=', 'participants.customer_id')
+            $raffle['participants'] = [];
+            if($raffle->type === 'manual'){
+                $raffle['participants'] = Participant::join('customers', 'customers.id', '=', 'participants.customer_id')
                     ->select('participants.*')
-                    ->where('participants.raffle_id', $rifa->id)
+                    ->where('participants.raffle_id', $raffle->id)
                     /*->where(function ($query){
                         $query->where('participants.reserved', '>', '0')
                               ->whereOr('participants.paid', '>', '0');
@@ -132,9 +143,9 @@ class RaffleController extends Controller
                     ->get();
             }
 
-            //dd($rifa);
+            $raffle['affiliate_id'] = $affiliateId;
 
-            return Inertia::render('Site/Raffle/Raffle', ['raffle' => $rifa]);
+            return Inertia::render('Site/Raffle/Raffle', ['raffle' => $raffle]);
         }
 
         return redirect('/');
@@ -195,7 +206,8 @@ class RaffleController extends Controller
                 'name' => $name,
                 'phone' => $phone,
                 'email' => $email,
-                'cpf' => Str::trim($request->cpf)
+                'cpf' => Str::trim($request->cpf),
+                'affiliate_id' => !empty($request->affiliate_id) ? $request->affiliate_id : null
             ];
         }else{
             $return = Customer::find($request->buyer);
@@ -204,6 +216,7 @@ class RaffleController extends Controller
                 'phone' => $return->phone,
                 'email' => $return->email,
                 'cpf' => $return->cpf,
+                'affiliate_id' => !empty($request->affiliate_id) ? $request->affiliate_id : null
             ];
         }
 

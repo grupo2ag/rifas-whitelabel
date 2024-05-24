@@ -53,7 +53,9 @@ class Participant extends Model
 		'reserved' => 'int',
 		'raffle_id' => 'int',
 		'expired_at' => 'datetime',
-		'customer_id' => 'int'
+		'customer_id' => 'int',
+        'raffle_promotion_id' => 'int',
+        'affiliate_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -70,7 +72,8 @@ class Participant extends Model
 		'raffle_id',
 		'expired_at',
 		'customer_id',
-        'raffle_promotion_id'
+        'raffle_promotion_id',
+        'affiliate_id',
 	];
 
 	public function raffle()
