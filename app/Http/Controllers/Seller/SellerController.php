@@ -246,7 +246,7 @@ class SellerController extends Controller
 
     public function updated(Request $request, $id)
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $raffle = $user->raffles()->findOrFail($id);
 
         if (!$raffle) {

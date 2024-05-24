@@ -12,7 +12,7 @@ class GatewayController extends Controller
 
     public function index()
     {
-        $user = Auth::user();
+        $user = auth()->user();
         $data = [];
 
         foreach ($user->gatewayConfigurations()->get() as $key => $config) {

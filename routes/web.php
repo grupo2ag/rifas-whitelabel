@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Seller\AffiliateController;
 use App\Http\Controllers\TesteController;
 use App\Http\Middleware\LevelMiddleware;
 use Illuminate\Foundation\Application;
@@ -41,6 +42,11 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
             Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
+        });
+
+        Route::prefix('/affiliate')->name('affiliate.')->group(function () {
+            Route::get('/', [AffiliateController::class, 'index'])->name('affiliateIndex');
+            Route::get('/created', [AffiliateController::class, 'created'])->name('affiliateCreated');
         });
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
