@@ -87,6 +87,7 @@ class DashboardController extends Controller
             $data['raffles']['data'][$key]['paid'] = $raffle->participants()->sum('paid');
         }
 
+        $data['configurations'] = $user->userConfigurations()->first();
         return Inertia::render('Panel/User/Dashboard', ['data' => $data]);
     }
 }

@@ -65,7 +65,7 @@ export default {
 <template>
     <section class="c-hero" id="hero">
         <div class="flex justify-center w-full px-4">
-            <h1 class="text-base text-xl font-medium title-font">Rifas Recentes</h1>
+            <h1 class="text-xl font-medium text-neutral/70 title-font">Rifas Recentes</h1>
         </div>
         <div class="container flex">
             <div class="w-full">

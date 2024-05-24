@@ -27,9 +27,6 @@ export default {
             window.location.href = 'raffles/created'
         }
     }
-    // mounted() {
-    //     console.log('dados DASHBOARD: ', this.data)
-    // }
 }
 </script>
 
@@ -38,8 +35,8 @@ export default {
     <Head title="Dashboard"></Head>
     <AuthenticatedLayout :user="$page.props.auth.user">
         <template #header>
-            <h2 class="flex items-center font-semibold text-content lg:text-xl">
-                <Squares2X2Icon class="w-5 h-5 mr-2 text-content lg:w-6 lg:h-6" />
+            <h2 class="flex items-center font-semibold text-primary-bw lg:text-xl">
+                <Squares2X2Icon class="w-5 h-5 mr-2 text-primary-bw lg:w-6 lg:h-6" />
                 Dashboard
             </h2>
         </template>
@@ -73,7 +70,7 @@ export default {
                             <div class="flex justify-center w-full px-2 py-4 rounded-lg bg-content animate-fade-up">
                                 <div class="flex flex-row flex-wrap w-full">
                                     <div class="flex justify-center w-full mb-2">
-                                        <h1 class="text-base text-xl font-medium title-font">Ranking de Participantes</h1>
+                                        <h1 class="text-xl font-medium text-neutral/70 title-font">Ranking de Participantes</h1>
                                     </div>
                                     <div v-if="!data?.raffles?.ranking || data?.raffles?.ranking.length == 0" class="flex items-center justify-center w-full h-full">
                                             <span>Ainda não há nenhum participante.</span>
@@ -138,11 +135,11 @@ export default {
                 <div class="items-center justify-center w-full py-2 rounded-lg lg:w-6/12 md:w-full bg-content animate-fade-right">
                     <div class="flex flex-row flex-wrap">
                         <div class="w-full px-4">
-                            <h2 class="text-base text-xl font-medium title-font">Participantes/Dia</h2>
+                            <h2 class="text-xl font-medium text-neutral/70 title-font">Participantes/Dia</h2>
                         </div>
                         <div class="w-full">
                             <VueApexCharts type="area" height="350"
-                                :options="func.optionsOfGrafics(data?.grafics?.participantsPerDay)"
+                                :options="func.optionsOfGrafics(data?.grafics?.participantsPerDay, 'palette1', data?.configurations?.theme)"
                                 :series="func.seriesOfGrafics(['Participantes'], [data?.grafics?.participantsPerDay])">
                             </VueApexCharts>
                         </div>
@@ -152,12 +149,12 @@ export default {
                     <div class="w-full h-full py-2 rounded-lg bg-content min-h-max animate-fade-left">
                         <div class="flex flex-row flex-wrap">
                             <div class="w-full px-4">
-                                <h2 class="text-base text-xl font-medium title-font">Cotas/Dia</h2>
+                                <h2 class="text-xl font-medium text-neutral/70 title-font">Cotas/Dia</h2>
                             </div>
                         </div>
                         <div class="w-full">
                             <VueApexCharts type="bar" height="350"
-                                :options="func.optionsOfGrafics(data?.grafics?.paidPerDay, ['#3EA077', '#117dcc'])"
+                                :options="func.optionsOfGrafics(data?.grafics?.paidPerDay, 'palette1', data?.configurations?.theme)"
                                 :series="func.seriesOfGrafics(['Pago', 'Reservado'], [data?.grafics?.paidPerDay, data?.grafics?.reservedPerDay])">
                             </VueApexCharts>
                         </div>

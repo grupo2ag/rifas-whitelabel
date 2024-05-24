@@ -31,8 +31,8 @@ export default {
         </div>
         <div class="flex flex-row flex-wrap px-3 mb-4 h-30">
             <div class="w-full mb-2">
-                <div class="sm:hidden text-primary card-title">{{ func.truncateString(data?.title, 18) }}</div>
-                <div class="hidden sm:grid text-primary card-title">{{ func.truncateString(data?.title, 50) }}</div>
+                <div class="sm:hidden text-neutral/70 card-title">{{ func.truncateString(data?.title, 18) }}</div>
+                <div class="hidden sm:grid text-neutral/70 card-title">{{ func.truncateString(data?.title, 50) }}</div>
             </div>
             <div class="flex w-full ">
                 <div class="flex flex-row w-full">
@@ -45,18 +45,18 @@ export default {
                             role="progressbar"></div>
                         <div class="hidden sm:flex flex-row flex-wrap items-center !w-full">
                             <div class="w-full">
-                                <small class="text-base">Total Vendidos</small>
+                                <small class="text-base text-neutral/70">Total Vendidos</small>
                             </div>
                             <div class="w-full">
                                 <div class="flex flex-row">
                                     <progress class="w-full h-6 progress progress-success"
                                         :value="func.calcPercent(data?.paid, data?.quantity)" max="100"></progress>
-                                    <small class="ml-2 text-base">{{ func.calcPercent(data?.paid, data?.quantity)
+                                    <small class="ml-2 text-base text-neutral/70">{{ func.calcPercent(data?.paid, data?.quantity)
                                         }}%</small>
                                 </div>
                             </div>
                             <div class="flex justify-center w-full">
-                                <small class="text-base">
+                                <small class="text-base text-neutral/70">
                                     {{ data?.paid + '/' + data?.quantity }}
                                 </small>
                             </div>
@@ -65,16 +65,16 @@ export default {
                     <div class="w-4/12">
                         <div class="flex flex-col flex-wrap">
                             <div class="flex justify-end w-full mb-1">
-                                <div class="py-3 badge"
+                                <div class="py-3 badge text-primary-bw"
                                     :class="{ 'badge-success': data?.status?.toLowerCase() == 'ativo', 'badge-error': data?.status?.toLowerCase() != 'ativo' }">
                                     {{ data?.status }}
                                 </div>
                             </div>
                             <div class="flex justify-end w-full mb-1">
-                                <p class="text-base font-bold">{{ func.translateMoney(data?.price) }}</p>
+                                <p class="text-base font-bold text-neutral/70">{{ func.translateMoney(data?.price) }}</p>
                             </div>
                             <div class="flex justify-end w-full mb-1">
-                                <p class="text-base font-bold">{{ func.translateDate(data?.created_at) }}</p>
+                                <p class="text-base font-bold text-neutral/70">{{ func.translateDate(data?.created_at) }}</p>
                             </div>
                         </div>
                     </div>

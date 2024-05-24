@@ -43,7 +43,7 @@ class SellerController extends Controller
             $data['data'][$key]['paid'] = $raffle->participants()->sum('paid');
             $image = $raffle->raffle_images()->first();
 
-            //if(!empty($image)) $data['data'][$key]['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
+            if(!empty($image)) $data['data'][$key]['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
         }
 
         return Inertia::render('Seller/Raffle/RaffleIndex', ['data' => $data]);
@@ -77,8 +77,9 @@ class SellerController extends Controller
         $image = $raffle->raffle_images()->first();
 
         if (!empty($image)) {
-           // $data['raffle']['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
+            $data['raffle']['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
         }
+        $data['user_configurations'] = $user->userConfigurations()->first();
 
         return Inertia::render('Seller/Raffle/RaffleView', ['data' => $data]);
     }

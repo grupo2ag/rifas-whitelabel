@@ -86,4 +86,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(GatewayConfiguration::class);
     }
+
+    public function userConfigurations()
+    {
+        return $this->hasMany(UserConfiguration::class);
+    }
 }

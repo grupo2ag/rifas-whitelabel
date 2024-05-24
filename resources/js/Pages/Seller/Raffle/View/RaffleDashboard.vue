@@ -2,6 +2,7 @@
 import StatsRaffle from '@/Components/Stats/StatsRaffle.vue';
 import VueApexCharts from "vue3-apexcharts";
 import moment from 'moment';
+import * as func from '@/Helpers/functions';
 import {
     TicketIcon,
     DocumentTextIcon,
@@ -12,44 +13,44 @@ import {
 defineProps({
     data: Object,
 });
-function options(data, colors) {
-    //MOCK, TRAZER DADOS REAIS DO BANCO DE DADOS
-    return {
-        chart: {
-            height: 350
-        },
-        dataLabels: {
-            enabled: false
-        },
-        stroke: {
-            curve: 'smooth'
-        },
-        xaxis: {
-            categories: getDates(data)
-        },
-        tooltip: {
-            x: {
-                format: 'dd/MM/yyyy'
-            },
-        },
-        colors: colors ?? []
-    }
-}
-function series(names, datas) {
-    if ((!datas || !names) || (!Array.isArray(datas) || !Array.isArray(names))) return [];
+// function options(data, colors) {
+//     //MOCK, TRAZER DADOS REAIS DO BANCO DE DADOS
+//     return {
+//         chart: {
+//             height: 350
+//         },
+//         dataLabels: {
+//             enabled: false
+//         },
+//         stroke: {
+//             curve: 'smooth'
+//         },
+//         xaxis: {
+//             categories: getDates(data)
+//         },
+//         tooltip: {
+//             x: {
+//                 format: 'dd/MM/yyyy'
+//             },
+//         },
+//         colors: colors ?? []
+//     }
+// }
+// function series(names, datas) {
+//     if ((!datas || !names) || (!Array.isArray(datas) || !Array.isArray(names))) return [];
 
-    const series = [];
-    for (let i = 0; i < datas.length; i++) {
-        series.push(
-            {
-                name: names[i],
-                data: getValues(datas[i])
-            }
-        )
-    }
+//     const series = [];
+//     for (let i = 0; i < datas.length; i++) {
+//         series.push(
+//             {
+//                 name: names[i],
+//                 data: getValues(datas[i])
+//             }
+//         )
+//     }
 
-    return series;
-}
+//     return series;
+// }
 
 function getDates(dates) {
     return dates.map(date => translateDate(date.date));
@@ -60,8 +61,16 @@ function getValues(dates) {
 function translateDate(data) {
     return moment(data).format('DD/MM/YYYY');
 }
-
 </script>
+
+<!-- <script>
+    export default {
+
+        mounted() {
+            console.log(this.data);
+        }
+    }
+</script> -->
 
 <template>
     <div class="flex flex-row flex-wrap justify-center">
@@ -104,8 +113,8 @@ function translateDate(data) {
                     <h2 class="text-base text-xl font-medium title-font">Participantes/Dia</h2>
                 </div>
                 <div class="w-full">
-                    <VueApexCharts type="area" height="350" :options="options(data?.grafics?.participants)"
-                        :series="series(['Participantes'], [data?.grafics?.participants])"></VueApexCharts>
+                    <VueApexCharts type="area" height="350" :options="func.optionsOfGrafics(data?.grafics?.participants, 'palette1', data?.user_configurations?.theme)"
+                        :series="func.seriesOfGrafics(['Participantes'], [data?.grafics?.participants])"></VueApexCharts>
                 </div>
             </div>
         </div>
@@ -117,8 +126,8 @@ function translateDate(data) {
                     </div>
                     <div class="w-full">
                         <VueApexCharts type="bar" height="350"
-                            :options="options(data?.grafics?.paid, ['#3EA077', '#117dcc'])"
-                            :series="series(['Pago', 'Expirado'], [data?.grafics?.paid, data?.grafics?.reserved])">
+                            :options="func.optionsOfGrafics(data?.grafics?.paid, 'palette1', data?.user_configurations?.theme)"
+                            :series="func.seriesOfGrafics(['Pago', 'Expirado'], [data?.grafics?.paid, data?.grafics?.reserved])">
                         </VueApexCharts>
                     </div>
                 </div>

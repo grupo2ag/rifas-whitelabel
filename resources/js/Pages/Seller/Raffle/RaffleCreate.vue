@@ -243,23 +243,23 @@ export default {
 <template>
     <AuthenticatedLayout title="Dashboard">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
                 Rifa
             </h2>
         </template>
 
-        <div class="py-5 md:container w-full lg:w-6/12">
+        <div class="w-full py-5 md:container lg:w-6/12">
             <form @submit.prevent="onSubmit">
-                <div class="c-content mb-4" ref="geral">
-                    <div class="w-full pb-2 flex items-center justify-between border-b border-base-100">
+                <div class="mb-4 c-content" ref="geral">
+                    <div class="flex items-center justify-between w-full pb-2 border-b border-base-100">
                         <div class="flex items-center">
-                            <TicketIcon class="h-5 stroke-neutral mr-1"/>
+                            <TicketIcon class="h-5 mr-1 stroke-neutral"/>
 
-                            <h3 class="text-neutral font-semibold text-base">Informações da Rifa</h3>
+                            <h3 class="text-base font-semibold text-neutral">Informações da Rifa</h3>
                         </div>
 
                         <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
-                            <ArrowLeftIcon class="w-4 fill-white mr-2"/> Voltar
+                            <ArrowLeftIcon class="w-4 mr-2 fill-white"/> Voltar
                         </Button>
                     </div>
 
@@ -272,7 +272,7 @@ export default {
                                    :error="validator.title || $page.props.errors.title"
                                    placeholder="Insira o nome"/>
 
-                            <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
+                            <p class="px-2 mb-2 -mt-2 text-xs text-neutral/70">
                                 {{ characterLenght }} de 80
                                 caracteres</p>
                         </div>
@@ -300,7 +300,7 @@ export default {
                                    :error="validator.subtitle || $page.props.errors.subtitle"
                                    placeholder="Digite o subtítulo"/>
 
-                            <p class="px-2 text-xs text-neutral/70 -mt-2 mb-2">
+                            <p class="px-2 mb-2 -mt-2 text-xs text-neutral/70">
                                 {{ characterLenght2 }} de 160
                                 caracteres</p>
                         </div>
@@ -376,7 +376,7 @@ export default {
                             </div>
                         </div>
 
-                        <div class="w-full pt-3 relative">
+                        <div class="relative w-full pt-3">
                             <label
                                 class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Regulamento:</label>
 
@@ -385,7 +385,7 @@ export default {
 
                             <div v-if="validator.description || $page.props.errors.description"
                                  class="inline-block">
-                                <p class="text-xs bg-red text-white py-1 px-2 rounded">
+                                <p class="px-2 py-1 text-xs text-white rounded bg-red">
                                     {{ validator.description }}
                                 </p>
                             </div>
@@ -393,15 +393,15 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content mb-4">
-                    <div class="pb-2 flex items-center border-b border-base-100">
-                        <AdjustmentsHorizontalIcon class="h-5 stroke-neutral dark:stroke-white mr-1"/>
+                <div class="mb-4 c-content">
+                    <div class="flex items-center pb-2 border-b border-base-100">
+                        <AdjustmentsHorizontalIcon class="h-5 mr-1 stroke-neutral dark:stroke-white"/>
 
-                        <h3 class="text-neutral font-semibold text-base">Ajustes do Sorteio</h3>
+                        <h3 class="text-base font-semibold text-neutral">Ajustes do Sorteio</h3>
                     </div>
 
                     <div class="pt-3">
-                        <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex flex-col gap-4 md:flex-row">
                             <div class="w-full md:w-6/12">
                                 <Input label="Data prevista do Sorteio" type="date"
                                        :name="form.expected_date" class="appearance-none"
@@ -444,8 +444,8 @@ export default {
                                 </div>
                             </div>
 
-                            <div class="flex flex-col md:flex-row gap-6">
-                                <div class="w-full md:w-6/12 relative">
+                            <div class="flex flex-col gap-6 md:flex-row">
+                                <div class="relative w-full md:w-6/12">
                                     <UploadImage :imgCurrent="form.banner"
                                                  name="image-notice"
                                                  v-model="form.banner"
@@ -457,14 +457,14 @@ export default {
                                                  :accept="'image/png,image/jpg,image/jpeg,image/webp'"/>
                                 </div>
 
-                                <div class="w-full md:w-6/12 pt-3 relative">
+                                <div class="relative w-full pt-3 md:w-6/12">
                                     <SwitchCheckbox label="Destaque na página inicial" v-model="form.highlight"
                                                     side="left" id="activeExclusive"/>
 
                                     <div class="w-full p-1.5 bg-warning flex items-center mt-6 rounded-lg">
-                                        <InformationCircleIcon class="h-7 stroke-black dark:stroke-white mr-1"/>
+                                        <InformationCircleIcon class="mr-1 h-7 stroke-black dark:stroke-white"/>
 
-                                        <p class="flex-1 text-xs text-warning-bw pr-3">
+                                        <p class="flex-1 pr-3 text-xs text-warning-bw">
                                             Ao deixar habilitado a Rifa aparecerá
                                             na area de destaque na pagina principal do site
                                         </p>
@@ -475,21 +475,21 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4" ref="ajustes">
-                    <div class="pb-2 flex items-center border-b border-base-100">
+                <div class="mb-4 c-content" ref="ajustes">
+                    <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
-                            <TrophyIcon class="h-5 stroke-neutral mr-1"/>
+                            <TrophyIcon class="h-5 mr-1 stroke-neutral"/>
 
-                            <h3 class="text-neutral font-semibold text-base">
+                            <h3 class="text-base font-semibold text-neutral">
                                 {{ form.status === 'Ativo' ? 'Prêmios' : 'Ganhadores' }} </h3>
                         </div>
                     </div>
 
                     <div class="w-full pt-3">
-                        <div v-if="form.status === 'Ativo'" class="flex flex-col items-end md:flex-row gap-4">
-                            <div class="w-full grid grid-cols-1 ">
+                        <div v-if="form.status === 'Ativo'" class="flex flex-col items-end gap-4 md:flex-row">
+                            <div class="grid w-full grid-cols-1 ">
                                 <div v-for="(item, index) in form.awards" :key="index" class="flex items-center gap-3">
-                                    <span class="w-6 text-neutral text-right text-lg">{{ index + 1 }}˚</span>
+                                    <span class="w-6 text-lg text-right text-neutral">{{ index + 1 }}˚</span>
                                     <Input label="Prêmio:" v-model="item.description"
                                            type="text" :name="item.description" class="flex-1"
                                            :placeholder="'Preencha o ' + (index + 1) + '˚ prêmio'"/>
@@ -502,7 +502,7 @@ export default {
                                     </div>
                                 </div>
 
-                                <div class="w-full flex items-center gap-3">
+                                <div class="flex items-center w-full gap-3">
                                     <div class="w-6"></div>
 
                                     <Button type="button" color="primary" class="flex-1" @click="addAwards">
@@ -516,8 +516,8 @@ export default {
 
                         <template v-if="form.status === 'Finalizado'">
                             <template v-for="(item, index) in form.awards" :key="index">
-                                <div class="flex flex-col items-center md:flex-row gap-4">
-                                    <p class="text-neutral text-right">{{ index + 1 }}˚ Prêmio</p>
+                                <div class="flex flex-col items-center gap-4 md:flex-row">
+                                    <p class="text-right text-neutral">{{ index + 1 }}˚ Prêmio</p>
 
                                     <div class="flex-1">
                                         <Input label="Ganhador:" v-model="item.description"
@@ -538,12 +538,12 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4 hidden">
-                    <div class="pb-2 flex items-center border-b border-base-100">
+                <div class="hidden mb-4 c-content">
+                    <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
-                            <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
+                            <ReceiptPercentIcon class="h-5 mr-1 stroke-neutral"/>
 
-                            <h3 class="text-neutral font-semibold text-base">Promoção</h3>
+                            <h3 class="text-base font-semibold text-neutral">Promoção</h3>
                         </div>
                     </div>
 
@@ -565,28 +565,28 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4 hidden">
-                    <div class="pb-2 flex items-center border-b border-base-100">
+                <div class="hidden mb-4 c-content">
+                    <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
-                            <ReceiptPercentIcon class="h-5 stroke-neutral mr-1"/>
+                            <ReceiptPercentIcon class="h-5 mr-1 stroke-neutral"/>
 
-                            <h3 class="text-neutral font-semibold text-base">Quota Premiada</h3>
+                            <h3 class="text-base font-semibold text-neutral">Quota Premiada</h3>
                         </div>
                     </div>
 
                     <div class="w-full pt-3">
-                        <div class="flex flex-col md:flex-row items-start md:gap-4">
-                            <div class="w-full md:w-6/12 flex items-center gap-2">
+                        <div class="flex flex-col items-start md:flex-row md:gap-4">
+                            <div class="flex items-center w-full gap-2 md:w-6/12">
                                 <Input label="Número da Cota Prêmiada:" v-model="number_quota"
                                        type="number" :name="number_quota"
                                        placeholder="0" class="w-8/12"/>
 
-                                <Button type="button" @click="addQuota()" class=" flex-1" color="primary">
+                                <Button type="button" @click="addQuota()" class="flex-1 " color="primary">
                                     Adicionar Cotas
                                 </Button>
                             </div>
 
-                            <div class="w-full md:w-6/12 relative">
+                            <div class="relative w-full md:w-6/12">
                                 <div class="w-full">
                                     <div class="box-url">
                                         <label
@@ -616,20 +616,20 @@ export default {
                     </div>
                 </div>
 
-                <div class="c-content  mb-4">
-                    <div class="pb-2 flex items-center border-b border-base-100">
+                <div class="mb-4 c-content">
+                    <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
-                            <PhotoIcon class="h-5 stroke-neutral mr-1"/>
+                            <PhotoIcon class="h-5 mr-1 stroke-neutral"/>
 
-                            <h3 class="text-neutral font-semibold text-base">Galeria de Fotos</h3>
+                            <h3 class="text-base font-semibold text-neutral">Galeria de Fotos</h3>
                         </div>
                     </div>
 
                     <div class="w-full pt-3">
-                        <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex flex-col gap-4 md:flex-row">
                             <div class="w-full">
                                 <div class="flex flex-col md:flex-row md:gap-4">
-                                    <div class="w-3/12 flex flex-col items-center relative">
+                                    <div class="relative flex flex-col items-center w-3/12">
                                         <UploadImage imgCurrent=""
                                                      label="Imagem"
                                                      size="aspect-1"
@@ -645,17 +645,17 @@ export default {
                                         </Button>
                                     </div>
                                     <div class="flex-1">
-                                        <p class="font-medium text-sm w-full text-neutral rounded-md">
+                                        <p class="w-full text-sm font-medium rounded-md text-neutral">
                                             Galeria:</p>
                                         <div
-                                            class="pt-3 grid grid-cols-5 gap-2 flex-wrap border-t border-gray-light dark:border-bgadm-light">
+                                            class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
                                             <div v-for="(item, index) in form.gallery" :key="index"
                                                  class="relative">
-                                                <div class="cover-remove absolute w-full h-full opacity-0 hover:opacity-100 transition-all cursor-pointer">
+                                                <div class="absolute w-full h-full transition-all opacity-0 cursor-pointer cover-remove hover:opacity-100">
                                                     <button type="button"
                                                             @click="removeImage(item.image)"
-                                                            class="p-1 m-2 bg-red rounded-full block ml-auto hover:bg-red-dark">
-                                                        <TrashIcon class="stroke-white w-4 h-4"/>
+                                                            class="block p-1 m-2 ml-auto rounded-full bg-red hover:bg-red-dark">
+                                                        <TrashIcon class="w-4 h-4 stroke-white"/>
                                                     </button>
                                                 </div>
                                                 <img class="object-cover w-full h-full" :src="item.image" alt="">
