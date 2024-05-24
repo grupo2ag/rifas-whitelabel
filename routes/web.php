@@ -60,7 +60,7 @@ Route::get('/reserved_verify/{link}', [RaffleController::class, 'reservedVerify'
 Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase');
 Route::get('/account/{cpf}', [RaffleController::class, 'mybillets'])->name('account');
 
-Route::get('/{url}', [RaffleController::class, 'index'])->name('raffle');
+Route::get('/{url}/{affiliate?}', [RaffleController::class, 'index'])->name('raffle');
 
 require 'admin/admin_web.php';
 

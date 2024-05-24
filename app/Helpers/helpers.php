@@ -150,6 +150,7 @@ if(!function_exists('numbers_reserve')) {
                     'phone'=> $registration_data['phone'],
                     'email' => !empty($registration_data['email']) ? $registration_data['email'] : null,
                     'document' => !empty($registration_data['cpf']) ? $registration_data['cpf'] : null,
+                    'affiliate_id' => !empty($registration_data['affiliate_id']) ? $registration_data['affiliate_id'] : null,
                     'amount' => $amount,
                     'numbers' => $updateReservedNumbers,
                     'paid' => $paid ? count($resutlNumbers) : 0,

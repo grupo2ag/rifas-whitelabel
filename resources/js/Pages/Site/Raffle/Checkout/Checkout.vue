@@ -105,6 +105,7 @@ export default {
                 email: '',
                 cpf: '',
                 buyer: '',
+                affiliate_id: this.raffle.affiliate_id,
                 raffle_id: this.raffle.id,
                 raffle_type: this.raffle.type,
                 user_id: this.raffle.user_id,
