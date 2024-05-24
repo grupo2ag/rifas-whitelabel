@@ -13,17 +13,8 @@ use App\Http\Controllers\Seller\GatewayController;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
-    Route::get('/teste', [TesteController::class, 'index']);
+    Route::get('/testee', [TesteController::class, 'index']);
 }
-
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
 
 Route::middleware(LevelMiddleware::class)->group(function (){
 
@@ -47,6 +38,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         Route::prefix('/affiliate')->name('affiliate.')->group(function () {
             Route::get('/', [AffiliateController::class, 'index'])->name('affiliateIndex');
             Route::get('/created', [AffiliateController::class, 'created'])->name('affiliateCreated');
+            Route::post('/store', [AffiliateController::class, 'store'])->name('affiliateStore');
         });
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
@@ -54,7 +46,6 @@ Route::middleware(LevelMiddleware::class)->group(function (){
 });
 
 /* ROTAS NAO AUTENTICADAS AQUI*/
-
 Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('/termos-de-uso', [HomeController::class, 'termsUse'])->name('termsUse');
 Route::get('/pay/{order}', [RaffleController::class, 'pay'])->name('pay');
