@@ -259,11 +259,11 @@ export default {
             Escolha seus números
         </p>
 
-        <p class="text-center text-neutral/70 mb-4">
+        <p class="text-center text-neutral/70 mb-2 md:mb-4">
             Escolha os números desejados e, em seguida, finalize a reserva/compra.
         </p>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-4 mb-6">
             <Button type="button" color="info" class="flex-1"
                     @click="filterItems('all')">
                 Todos
@@ -286,7 +286,7 @@ export default {
         </div>
 
         <div class="border-t border-black/20">
-            <div class="grid grid-cols-4 md:grid-cols-10 gap-2 md:gap-1 mt-5">
+            <div class="grid grid-cols-5 md:grid-cols-10 gap-1 md:gap-1 mt-5">
                 <template v-for="item in data" :key="item.id">
                     <button type="button" :ref="'numb_' + item.number"
                             :id="item.number"

@@ -125,9 +125,11 @@ export default {
             <div class="md:container">
                 <div class="c-content flex flex-col md:flex-row gap-8">
                     <div class="w-full md:w-7/12 flex flex-col items-start">
-                        <h1 class="text-3xl text-neutral font-bold uppercase mb-1 md:hidden">{{ raffle.title }}</h1>
+                        <h1 class="text-2xl text-neutral font-bold uppercase mb-1 leading-tight md:hidden">{{ raffle.title }}</h1>
 
-                        <Badge color="primary" size="sm" class="mb-4 md:hidden">Corra</Badge>
+                        <Badge color="primary" size="sm" class="mb-2 md:hidden">
+                            {{ status === 'Ativo' ? 'Corra' : 'Encerrado' }}
+                        </Badge>
 
                         <div class="w-full flex flex-col gap-6">
                             <div class="w-full flex flex-col md:flex-row gap-3 md:gap-4">
@@ -168,7 +170,7 @@ export default {
                                         :modules="modules"
                                         class="swiper-thumbs md:h-[500px]">
                                         <swiper-slide v-for="(item, index) in galery" :key="index">
-                                            <figure class="w-full border rounded-xl overflow-hidden">
+                                            <figure class="w-full rounded-xl overflow-hidden">
                                                 <img :src="item.img" class="w-full aspect-square object-cover" :alt="raffle.title + ' Foto ' + index"/>
                                             </figure>
                                         </swiper-slide>
@@ -243,7 +245,6 @@ export default {
                                     </a>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -267,17 +268,20 @@ export default {
 
                     <ul class="grid gap-2">
                         <template v-for="(item, index) in raffle.raffle_awards" :key="index">
-                            <li class="bg-neutral/5 rounded-xl border border-primary/10 hover:bg-neutral/10">
-                               <div class="flex bg-primary px-4 py-3 rounded-xl">
-                                   <p class="text-lg text-primary-bw font-semibold">{{item.order}}˚ Prêmio</p><span class="text-primary-bw px-2">|</span>
+                            <li class="bg-neutral/5 rounded-xl border border-primary/10 md:hover:bg-neutral/10">
+                               <div class="flex flex-col bg-primary px-4 py-3 rounded-xl">
+                                   <p class="text-lg text-primary-bw font-semibold">
+                                       {{item.order}}˚ Prêmio:
+                                   </p>
 
                                    <p class="text-lg flex-1 text-primary-bw font-bold">
-                                       {{ item.description }}</p>
+                                       {{ item.description }}
+                                   </p>
                                </div>
 
-                                <div class="px-6 py-3">
-                                    <ul class="flex items-center gap-10">
-                                        <li class="w-3/12 grid-cols-1">
+                                <div class="px-4 md:px-6 py-3">
+                                    <ul class="flex flex-col md:flex-row md:items-center gap-1 md:gap-10">
+                                        <li class="w-full md:w-3/12 grid-cols-1">
                                             <p class="text-sm text-neutral/70">Número Sorteado</p>
                                             <p class="font-bold text-neutral">{{item.number_award}}</p>
                                         </li>
@@ -285,7 +289,7 @@ export default {
                                             <p class="text-sm text-neutral/70">Ganhador</p>
                                             <p class="font-bold text-neutral">{{item.winner_name}}</p>
                                         </li>
-                                        <li class="w-3/12 ">
+                                        <li class="w-full md:w-3/12 ">
                                             <p class="text-sm text-neutral/70">Estado</p>
                                             <p class="font-bold text-neutral">São Paulo</p>
                                         </li>
@@ -304,12 +308,28 @@ export default {
                     <p class="text-lg font-bold text-neutral mb-2">Prêmios</p>
 
                     <ul class="grid gap-2">
-                        <!--                        <li class="text-neutral/70 font-bold"> {{item.description}}</li>-->
-                        <template v-for="(item, index) in raffle.raffle_awards" :key="index" >
-                            <li class="flex items-center justify-between gap-1 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-3 text-neutral font-bold hover:bg-neutral/10">
-                                <p class="text-center">{{item.order}}˚</p><span class="text-primary px-2">|</span>
-                                <p class="flex-1">{{item.description}}</p>
-                            </li>
+                       <template v-for="(item, index) in raffle.raffle_awards" :key="index" >
+
+                           <template v-if="index === 0">
+                               <li class="bg-neutral/5 rounded-xl border border-primary/10 md:hover:bg-neutral/10">
+                                   <div class="flex flex-col bg-primary px-4 py-3 rounded-xl">
+                                       <p class="text-lg text-primary-bw font-semibold">
+                                           {{item.order}}˚ Prêmio:
+                                       </p>
+
+                                       <p class="text-lg flex-1 text-primary-bw font-bold">
+                                           {{ item.description }}
+                                       </p>
+                                   </div>
+                               </li>
+                           </template>
+
+                           <template v-else>
+                               <li class="flex flex-col md:flex-row items-start md:items-center justify-between bg-neutral/5 rounded-xl border border-primary/10 px-4 py-3 text-neutral font-bold hover:bg-neutral/10">
+                                   <p>{{item.order}}˚ Prêmio:</p>
+                                   <p class="flex-1">{{item.description}}</p>
+                               </li>
+                           </template>
                         </template>
                     </ul>
                 </div>
@@ -322,9 +342,7 @@ export default {
                     <p class="text-lg font-bold text-neutral mb-2">Promoções</p>
 
                     <ul v-for="(item, index) in raffle.raffle_promotions" :key="index">
-<!--                        <li class="text-neutral/70 font-bold">Comprando acima de {{item.quantity_numbers}}, o valor por cota é {{ parseFloat( (item.amount/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</li>-->
-
-                        <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
+                        <li class="flex flex-col md:flex-row items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
                             <p class="flex-1">Comprando acima de {{item.quantity_numbers}}, o valor por cota é {{ parseFloat( (item.amount/100) ).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}) }}</p>
                         </li>
                     </ul>
@@ -351,11 +369,16 @@ export default {
 
                     <ul class="grid gap-2">
                         <template v-for="(item, index) in raffle.buyers" :key="index">
-                            <li class="flex items-center justify-between gap-2 bg-neutral/5 rounded-xl border border-primary/10 px-4 py-2 text-neutral font-bold hover:bg-neutral/10">
-                                <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{index+1}}</p><span class="text-primary px-2">|</span>
-                                <p class="flex-1">{{item.name}}</p>
-                                <p class="px-4 py-1.5 bg-neutral/10 text-sm rounded-full">{{item.total}} Números</p>
-                            </li>
+                            <li class="flex items-center gap-3 bg-neutral/5 rounded-xl border border-primary/10 px-3 md:px-4 py-3 text-neutral font-bold md:hover:bg-neutral/10">
+                               <div class="border-r-2 border-primary pr-3">
+                                   <p class="w-7 h-7 text-primary-bw flex items-center justify-center rounded-full bg-primary">{{index+1}}</p>
+                               </div>
+
+                                <div class="flex-1 flex flex-col md:flex-row items-start md:items-center">
+                                    <p class="flex-1">{{item.name}}</p>
+                                    <span class="px-3 md:px-4 py-1 md:py-1.5 bg-neutral/10 text-xs font-normal rounded-full">{{item.total}} Números</span>
+                                </div>
+                             </li>
                         </template>
                     </ul>
                 </div>
@@ -432,9 +455,10 @@ export default {
 
 .swiper-thumbs{
 
-
     .swiper-slide{
-        @apply border-neutral/20;
+        figure{
+            @apply border border-neutral/10;
+        }
     }
 
     .swiper-slide-thumb-active{

@@ -162,9 +162,9 @@ export default defineComponent({
                     <a :href="route('index')" :aria-label="$page.props.siteconfig.site_title">
                         <img v-if="!$page.props.siteconfig.logo"
                              :src="$page.props.siteconfig.logo"
-                             class="h-7"
+                             class="h-6 md:h-7"
                              :alt="$page.props.siteconfig.site_title">
-                        <img v-else src="/images/logo.svg" class="h-7"/>
+                        <img v-else src="/images/logo.svg" class="h-5 md:h-6"/>
                     </a>
                 </div>
 
