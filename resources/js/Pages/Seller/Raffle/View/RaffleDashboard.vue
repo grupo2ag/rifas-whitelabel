@@ -83,14 +83,6 @@ function translateDate(data) {
             </StatsRaffle>
         </div>
         <div class="w-full px-2 mb-2 lg:w-3/12">
-            <StatsRaffle :title="'Cotas Geradas'" :value="(data?.raffle?.paid || data?.raffle?.pix_expired) ? data?.raffle?.paid + data?.raffle?.pix_expired : 0"
-                :textBottom="'Total de cotas geradas'">
-                <template #iconTextBottom>
-                    <TicketIcon class="w-4 mr-1" />
-                </template>
-            </StatsRaffle>
-        </div>
-        <div class="w-full px-2 mb-2 lg:w-3/12">
             <StatsRaffle :title="'Cotas Pagas'" :value="data?.raffle?.paid ?? 0" :textBottom="'Total de cotas pagas'">
                 <template #iconTextBottom>
                     <CheckCircleIcon class="w-4 mr-1"/>
@@ -102,6 +94,14 @@ function translateDate(data) {
                 :textBottom="'Total de cotas reservadas'">
                 <template #iconTextBottom>
                     <XCircleIcon class="w-4 mr-1"/>
+                </template>
+            </StatsRaffle>
+        </div>
+        <div class="w-full px-2 mb-2 lg:w-3/12">
+            <StatsRaffle :title="'Cotas Geradas'" :value="(data?.raffle?.paid || data?.raffle?.reserved) ? data?.raffle?.paid + data?.raffle?.reserved : 0"
+                         :textBottom="'Total de cotas geradas'">
+                <template #iconTextBottom>
+                    <TicketIcon class="w-4 mr-1" />
                 </template>
             </StatsRaffle>
         </div>
