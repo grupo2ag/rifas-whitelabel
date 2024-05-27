@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Charge;
 use App\Models\GatewayConfiguration;
 use App\Models\Participant;
 use App\Models\Raffle;
@@ -74,10 +75,11 @@ class SellerController extends Controller
             $data['participants']['reserved'] = $raffle->participants()->orderBy('id')->where('reserved', '>', 0)->paginate();
         }
 
-        $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('document')->count();
+        $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('customer_id')->count();
         $data['participants']['ranking'] = $raffle->participants()->select('document', 'name', 'email', DB::raw('COUNT(*) as quantity'), DB::raw('SUM(amount) as total_value'))->groupBy('document', 'name', 'email')->orderByDesc('total_value')->take(3)->get();
 
         $data['raffle']['paid'] = $raffle->participants()->sum('paid');
+        $data['raffle']['reserved'] = $raffle->participants()->sum('reserved');
         $image = $raffle->raffle_images()->first();
 
         if (!empty($image)) {
@@ -361,7 +363,26 @@ class SellerController extends Controller
     {
         $user = auth()->user();
 
-        $raffle = $user->raffles()->find($raffleId);
+        $charge = Charge::leftJoin('charge_paids', 'charge_paids.charge_id', 'charges.id')
+            ->join('participants', 'participants.id', 'charges.participant_id')
+            ->join('raffles', 'raffles.id', 'participants.raffle_id')
+            ->where('raffles.user_id', $user->id)
+            ->where('participants.id', $participantId)
+            ->where('participants.raffle_id', $raffleId)
+            ->where('participants.paid', 0)
+            ->where('charges.expired', '>', now())
+            ->first([
+                'charges.*',
+                'charge_paids.id as pago'
+            ]);
+
+        if(empty($charge)){ //se tiver PIX gerado e dentro da expiracao nao deleta reserva
+            $delete = numbers_devolution($raffleId, $participantId);
+            if($delete) return response()->json(true);
+        }
+        return response()->json(false);
+
+        /*$raffle = $user->raffles()->find($raffleId);
         if($raffle) $participant = $raffle->participants()->find($participantId);
         else return response()->json(false);
 
@@ -370,6 +391,6 @@ class SellerController extends Controller
             if($delete) return response()->json(true);
 
             return response()->json(false);
-        }else return response()->json(false);
+        }else return response()->json(false);*/
     }
 }
