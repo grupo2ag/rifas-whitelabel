@@ -80,18 +80,77 @@
 .c-raffle{
 
     &__number{
-        @apply py-2 px-3 border border-primary text-primary rounded-lg;
+        @apply py-2 px-3 border border-primary text-primary rounded-lg relative;
 
         &--reserved{
           @apply bg-warning border-warning text-warning-bw;
+
+            &:before{
+                @apply bg-primary text-primary-bw;
+            }
+
+            &:after{
+                border-color: transparent transparent transparent;
+                @apply border-t-primary;
+            }
+
+            &:hover{
+                &:before, &:after{
+                    visibility: visible;
+                }
+
+            }
         }
 
         &--paid{
             @apply bg-success border-success text-success-bw;
+
+            &:before{
+                @apply bg-primary text-primary-bw;
+            }
+
+            &:after{
+                border-color: transparent transparent transparent;
+                @apply border-t-primary;
+            }
+
+            &:hover{
+                &:before, &:after{
+                    visibility: visible;
+                }
+
+            }
         }
 
         &[active='true']{
             @apply border-primary bg-primary text-white;
+        }
+
+        &:before{
+            content: attr(title);
+            position: absolute;
+            visibility: hidden;
+            bottom: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            @apply px-3 py-1 text-xs rounded-lg pointer-events-none whitespace-nowrap;
+        }
+
+        &:after{
+            content: '';
+            width: 0px;
+            height: 0px;
+            border-style: solid;
+            border-width: 5px 5px 0px 5px;
+            @apply pointer-events-none;
+            display: inline-block;
+            vertical-align: middle;
+            position: absolute;
+            bottom: calc(100% + 1px);
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            visibility: hidden;
         }
     }
 }
