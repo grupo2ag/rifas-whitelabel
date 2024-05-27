@@ -24,7 +24,10 @@ export default {
                 },
                 'secondary': 'rgb(var(--primary) / <alpha-value>)',
                 'root': 'rgb(var(--root) / <alpha-value>)',
-                'content': 'rgb(var(--content) / <alpha-value>)',
+                'content': {
+                    DEFAULT: 'rgb(var(--content) / <alpha-value>)',
+                    'bw': 'rgb(var(--content-bw) / <alpha-value>)',
+                },
                 'base': {
                     100: 'rgb(var(--base-100) / <alpha-value>)',
                     200: 'rgb(var(--base-200) / <alpha-value>)',

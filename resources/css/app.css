@@ -41,6 +41,9 @@ body.active {
     scroll-behavior: smooth;
 }
 
+body{
+    margin-bottom: 0 !important;
+}
 
 .swal2-icon {
     transform: scale(.85);
