@@ -35,11 +35,11 @@ export default {
     methods: {
         async search() {
             this.loading = true;
-           await axios.get(route('raffles.raffleParticipants', {
-                query: this.searchQuery,
-                page: this.currentPage,
-                idRaffle: this?.data?.raffle?.id
-            }))
+               await axios.get(route('raffles.raffleParticipants', {
+                    query: this.searchQuery,
+                    page: this.currentPage,
+                    idRaffle: this?.data?.raffle?.id
+                }))
                 .then(response => {
                     this.results = response?.data;
                     this.loading = false;
