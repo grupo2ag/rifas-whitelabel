@@ -34,6 +34,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
             Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
+            Route::get('/reserved_canceled/{participant}/{raffle}',[SellerController::class, 'reservedCanceled'])->name('raffleRemoveReserve');
         });
 
         Route::prefix('/affiliate')->name('affiliate.')->group(function () {

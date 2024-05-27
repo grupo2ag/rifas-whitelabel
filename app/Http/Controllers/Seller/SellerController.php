@@ -70,6 +70,10 @@ class SellerController extends Controller
 
         $data['participants']['data'] = $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate();
 
+        if($data['raffle']['type'] === 'manual'){
+            $data['participants']['reserved'] = $raffle->participants()->orderBy('id')->where('reserved', '>', 0)->paginate();
+        }
+
         $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('document')->count();
         $data['participants']['ranking'] = $raffle->participants()->select('document', 'name', 'email', DB::raw('COUNT(*) as quantity'), DB::raw('SUM(amount) as total_value'))->groupBy('document', 'name', 'email')->orderByDesc('total_value')->take(3)->get();
 
@@ -270,6 +274,8 @@ class SellerController extends Controller
             'idRaffle' => 'required|integer|string'
         ]);
 
+        $type = !empty($request->reserved) ? 'reserved' : 'paid';
+
         $query = $request->input('query');
         $query = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');
 
@@ -282,6 +288,7 @@ class SellerController extends Controller
 
         // Busca no banco de dados com paginação
         $response = $query ? $raffle->participants()
+            ->where($type, '>', 0)
             ->where(function ($subquery) use ($query) {
                 $query = strtolower($query);
                 $subquery->where(DB::raw('LOWER(name)'), 'LIKE', "%{$query}%")
@@ -290,7 +297,7 @@ class SellerController extends Controller
                     ->orWhere(DB::raw('LOWER(phone)'), 'LIKE', "%{$query}%");
             })->paginate(15, ['*'], 'page', $page)
             :
-            $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate(15, ['*'], 'page', $page);
+            $raffle->participants()->orderBy('id')->where($type, '>', 0)->paginate(15, ['*'], 'page', $page);
 
         return response()->json($response);
     }
@@ -348,5 +355,21 @@ class SellerController extends Controller
 
 
         return Inertia::render('Seller/Raffle/RaffleCreate', $data);
+    }
+
+    public function reservedCanceled($participantId, $raffleId)
+    {
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->find($raffleId);
+        if($raffle) $participant = $raffle->participants()->find($participantId);
+        else return response()->json(false);
+
+        if($participant){
+            $delete = numbers_devolution($raffleId, $participantId);
+            if($delete) return response()->json(true);
+
+            return response()->json(false);
+        }else return response()->json(false);
     }
 }

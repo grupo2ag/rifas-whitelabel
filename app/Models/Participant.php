@@ -45,12 +45,6 @@ class Participant extends Model
 	use SoftDeletes;
 	protected $table = 'participants';
 
-    protected $appends = ["isExpanded"];
-
-    public function getisExpandedAttribute() {
-        return false;
-    }
-
 	protected $casts = [
 		'checked' => 'int',
 		'msg_paid_sent' => 'int',
