@@ -4,6 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import RaffleLayout from '@/Layouts/RaffleLayout.vue';
 import RaffleDashboard from '@/Pages/Seller/Raffle/View/RaffleDashboard.vue';
 import RaffleSale from '@/Pages/Seller/Raffle/View/RaffleSale.vue';
+import RaffleReserve from '@/Pages/Seller/Raffle/View/RaffleReserve.vue';
 import {
     TicketIcon,
     DocumentTextIcon,
@@ -62,6 +63,9 @@ export default {
                     </div>
                     <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 2, '': openTab === 2}">
                         <RaffleSale :data="results"/>
+                    </div>
+                    <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 3, '': openTab === 3}">
+                        <RaffleReserve :data="results"/>
                     </div>
                 </template>
             </RaffleLayout>

@@ -84,8 +84,10 @@ export default {
                     v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 1, 'tab text-neutral/70 bg-base-100': openTab !== 1 }">Detalhes</a>
                 <a role="tab" @click="setToggleTabs(2)" class="ml-2 border-none border-gray-light tab before:hidden"
                     v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 2, 'tab text-neutral/70 bg-base-100': openTab !== 2 }">Vendas</a>
-                <a role="tab" @click="setToggleTabs(3)" class="ml-2 border-none border-gray-light tab before:hidden"
-                    v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 3, 'tab text-neutral/70 bg-base-100': openTab !== 3 }">Afiliado</a>
+                <a v-if="this.data.type == 'manual'" role="tab" @click="setToggleTabs(3)" class="ml-2 border-none border-gray-light tab before:hidden"
+                   v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 3, 'tab text-neutral/70 bg-base-100': openTab !== 3 }">Reservas</a>
+                <a role="tab" @click="setToggleTabs(4)" class="ml-2 border-none border-gray-light tab before:hidden"
+                    v-bind:class="{ 'tab-active bg-primary text-primary-bw': openTab === 4, 'tab text-neutral/70 bg-base-100': openTab !== 4 }">Afiliado</a>
             </div>
         </div>
     </div>
