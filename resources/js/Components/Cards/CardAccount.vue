@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-    <div class="w-full p-3 border border-neutral/10 rounded-xl">
+    <div class="w-full p-3 border border-primary/20 bg-neutral/5 rounded-xl">
         <div class="w-full flex items-center justify-center gap-4">
             <figure class="flex-1 aspect-square overflow-hidden">
                 <img :src="data.galery" class="w-full h-full object-cover rounded-xl" :alt="data.title">

@@ -63,16 +63,16 @@ export default defineComponent( {
                         <img v-else src="/images/logo.svg" class="h-5 mt-1"/>
                     </Link>
 
-                    <p class="text-sm text-neutral/70 mt-3">© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
+                    <p class="text-xs text-neutral/70 mt-3">© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
                 </div>
 
             </aside>
         </div>
 
         <div class="container py-5 flex justify-center">
-            <Link href="/" class="text-xs text-neutral/70 flex">
-                desenvolvido por <img src="/images/logo.svg" class="h-4 ml-2 -mt-0.5"/>
-            </Link>
+            <a href="https://rifas8.com" target="_blank" class="text-xs text-neutral/70 flex">
+                desenvolvido por <img src="/images/logo.svg" class="h-3 ml-1"/>
+            </a>
         </div>
     </footer>
 </template>

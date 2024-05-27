@@ -204,7 +204,7 @@ export default {
                                 <Progress :value="raffle.percent" max="100"/>
                             </div>
 
-                            <Button type="button" color="primary" class="pulsate-fwd w-full" @click="goto('purchase', 75)">
+                            <Button type="button" color="primary" class="pulsate-fwd w-full" @click="goto('purchase', 60)">
                                 {{ status === 'Ativo' ? 'Adquira Já' : 'Ver Resultado' }}
                             </Button>
 
@@ -268,34 +268,67 @@ export default {
 
                     <ul class="grid gap-2">
                         <template v-for="(item, index) in raffle.raffle_awards" :key="index">
-                            <li class="bg-neutral/5 rounded-xl border border-primary/10 md:hover:bg-neutral/10">
-                               <div class="flex flex-col bg-primary px-4 py-3 rounded-xl">
-                                   <p class="text-lg text-primary-bw font-semibold">
-                                       {{item.order}}˚ Prêmio:
-                                   </p>
+                            <template v-if="index === 0">
+                                <li class="bg-neutral/5 rounded-xl border border-primary/10 md:hover:bg-neutral/10">
+                                    <div class="flex flex-col bg-primary px-4 py-3 rounded-xl">
+                                        <p class="text-lg text-primary-bw font-semibold">
+                                            {{item.order}}˚ Prêmio:
+                                        </p>
 
-                                   <p class="text-lg flex-1 text-primary-bw font-bold">
-                                       {{ item.description }}
-                                   </p>
-                               </div>
+                                        <p class="text-lg flex-1 text-primary-bw font-bold">
+                                            {{ item.description }}
+                                        </p>
+                                    </div>
 
-                                <div class="px-4 md:px-6 py-3">
-                                    <ul class="flex flex-col md:flex-row md:items-center gap-1 md:gap-10">
-                                        <li class="w-full md:w-3/12 grid-cols-1">
-                                            <p class="text-sm text-neutral/70">Número Sorteado</p>
-                                            <p class="font-bold text-neutral">{{item.number_award}}</p>
-                                        </li>
-                                        <li class="flex-1">
-                                            <p class="text-sm text-neutral/70">Ganhador</p>
-                                            <p class="font-bold text-neutral">{{item.winner_name}}</p>
-                                        </li>
-                                        <li class="w-full md:w-3/12 ">
-                                            <p class="text-sm text-neutral/70">Estado</p>
-                                            <p class="font-bold text-neutral">São Paulo</p>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
+                                    <div class="px-4 md:px-6 py-3">
+                                        <ul class="flex flex-col md:flex-row md:items-center gap-1 md:gap-10">
+                                            <li class="w-full md:w-3/12 grid-cols-1">
+                                                <p class="text-sm text-neutral/70">Número Sorteado</p>
+                                                <p class="font-bold text-neutral">{{item.number_award}}</p>
+                                            </li>
+                                            <li class="flex-1">
+                                                <p class="text-sm text-neutral/70">Ganhador</p>
+                                                <p class="font-bold text-neutral">{{item.winner_name}}</p>
+                                            </li>
+                                            <li class="w-full md:w-3/12 ">
+                                                <p class="text-sm text-neutral/70">Estado</p>
+                                                <p class="font-bold text-neutral">São Paulo</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </template>
+
+                            <template v-else>
+                                <li class="bg-neutral/5 rounded-xl border border-primary/10 md:hover:bg-neutral/10">
+                                    <div class="flex flex-col border border-primary px-4 py-3 rounded-xl">
+                                        <p class="text-content-bw font-semibold">
+                                            {{item.order}}˚ Prêmio:
+                                        </p>
+
+                                        <p class="flex-1 text-content-bw font-bold">
+                                            {{ item.description }}
+                                        </p>
+                                    </div>
+
+                                    <div class="px-4 md:px-6 py-3">
+                                        <ul class="flex flex-col md:flex-row md:items-center gap-1 md:gap-10">
+                                            <li class="w-full md:w-3/12 grid-cols-1">
+                                                <p class="text-sm text-neutral/70">Número Sorteado</p>
+                                                <p class="font-bold text-neutral">{{item.number_award}}</p>
+                                            </li>
+                                            <li class="flex-1">
+                                                <p class="text-sm text-neutral/70">Ganhador</p>
+                                                <p class="font-bold text-neutral">{{item.winner_name}}</p>
+                                            </li>
+                                            <li class="w-full md:w-3/12 ">
+                                                <p class="text-sm text-neutral/70">Estado</p>
+                                                <p class="font-bold text-neutral">São Paulo</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </template>
                         </template>
                     </ul>
                 </div>
@@ -309,7 +342,6 @@ export default {
 
                     <ul class="grid gap-2">
                        <template v-for="(item, index) in raffle.raffle_awards" :key="index" >
-
                            <template v-if="index === 0">
                                <li class="bg-neutral/5 rounded-xl border border-primary/10 md:hover:bg-neutral/10">
                                    <div class="flex flex-col bg-primary px-4 py-3 rounded-xl">
