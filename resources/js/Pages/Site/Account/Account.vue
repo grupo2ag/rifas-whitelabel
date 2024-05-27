@@ -43,7 +43,7 @@ export default {
             <div class="md:container">
                 <div class="c-content flex flex-col items-center">
                     <h2 class="text-2xl text-neutral font-bold">Olá, Luiz!</h2>
-                    <p class="text-neutral/60">Fique por dentro dos sorteios, números da sorte e ganhadores</p>
+                    <p class="text-neutral/60 text-center leading-tight">Fique por dentro dos sorteios, números da sorte e ganhadores</p>
 
                     <div class="pt-4 grid grid-cols-2 gap-2  flex items-center justify-center">
                         <Button type="button" :color="currentBox === 1 ? 'primary' : 'outline-primary'"
@@ -65,7 +65,7 @@ export default {
                             Meus Bilhetes
                         </p>
 
-                        <div class="w-6/12 mx-auto flex flex-col items-center gap-3">
+                        <div class="w-full md:w-6/12 mx-auto flex flex-col items-center gap-3">
                             <template v-if="paid.length > 0">
                                 <template v-for="(item, index) in paid" :key="index">
                                     <CardAccount :data="item"/>
@@ -90,7 +90,7 @@ export default {
                             Minhas Reservas
                         </p>
 
-                        <div class="w-6/12 mx-auto flex flex-col items-center gap-3">
+                        <div class="w-full md:w-6/12 mx-auto flex flex-col items-center gap-3">
                             <template v-if="reserved.length > 0">
                                 <template v-for="(item, index) in reserved" :key="index">
                                     <CardAccount :data="item"/>

@@ -86,12 +86,13 @@ export default defineComponent({
         goto(hash, position) {
             if (route().current('index')) {
                 var element = document.getElementById(hash);
-                var headerOffset = this.isLargeScreen ? position : 0;
+                var headerOffset = position;
 
                 var elementPosition = element.offsetTop;
                 var offsetPosition = elementPosition - headerOffset;
                 document.documentElement.scrollTop = offsetPosition;
                 document.body.scrollTop = offsetPosition; // For Safari
+                this.removeHumburger()
                 //this.$emit('close', false)
             } else {
                 window.localStorage.setItem('anchorMenu', hash)
@@ -107,7 +108,7 @@ export default defineComponent({
 
                 setTimeout(() => {
                     var element = document.getElementById(anchor);
-                    var headerOffset = this.isLargeScreen ? position : 0;
+                    var headerOffset = position;
 
                     var elementPosition = element.offsetTop;
                     var offsetPosition = elementPosition - headerOffset;
@@ -162,9 +163,9 @@ export default defineComponent({
                     <a :href="route('index')" :aria-label="$page.props.siteconfig.site_title">
                         <img v-if="!$page.props.siteconfig.logo"
                              :src="$page.props.siteconfig.logo"
-                             class="h-7"
+                             class="h-6 md:h-7"
                              :alt="$page.props.siteconfig.site_title">
-                        <img v-else src="/images/logo.svg" class="h-7"/>
+                        <img v-else src="/images/logo.svg" class="h-5 md:h-6"/>
                     </a>
                 </div>
 

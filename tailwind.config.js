@@ -6,6 +6,7 @@ import tailwindAnimated from 'tailwindcss-animated'
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: 'class',
+    important: true,
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './vendor/laravel/jetstream/**/*.blade.php',
@@ -13,7 +14,7 @@ export default {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],
-    important: true,
+
     theme: {
         extend: {
             colors: {

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Affiliate;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Inertia\Inertia;
 
 class AffiliateController extends Controller
@@ -18,23 +21,46 @@ class AffiliateController extends Controller
         return Inertia::render('Seller/Affiliate/AffiliateIndex', ['data' => $affiliates]);
     }
 
+    public function created()
+    {
+        return Inertia::render('Seller/Affiliate/AffiliateCreated');
+    }
+
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'require|string|max:255',
-            'link' => 'require|string|max:255',
-            'phone' => 'required|string|max:255',
-            'email' => 'required|string|max:255',
-            'document' => 'string|max:255',
-            'description' => 'string|max:255',
-            'pix_key' => 'required|string|max:255'
+        $userId = auth()->user()->id;
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required | string | max:80',
+            'description' => 'string | max:100',
+            'phone' => 'required',
+            'email' => 'required',
+            'document' => 'required',
+            'pixKey' => 'required'
         ]);
 
-        $dados = $request->all();
-        $dados['user_id'] = auth()->user();
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()], 403);
+        }
 
-        $affiliate = Affiliate::create($dados);
-        //dd($affiliate);
-        return response()->json($affiliate);
+        try {
+            $affiliate = Affiliate::create([
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'document' => $request->document,
+                'pix_key' => $request->pixKey,
+                'user_id' => $userId
+             ]);
+             return response()->json([
+                'message' => 'Afiliado adiciondo com sucesso!',
+                'data' => $affiliate
+            ], 200);
+        } catch (QueryException $e) {
+            setLogErros('AffiliateController', $e->getMessage(), $request->all());
+            DB::rollBack();
+            return response()->json(['message' => 'Problema ao inserir afiliado, verifique os campos!'], 403);
+        }
+
     }
 }
