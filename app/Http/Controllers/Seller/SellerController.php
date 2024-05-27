@@ -262,8 +262,6 @@ class SellerController extends Controller
         return redirect()->back()->with('success', 'Rifa encerrada com sucesso.');
     }
 
-
-
     public function getParticipants(Request $request)
     {
         $request->validate([
@@ -295,5 +293,60 @@ class SellerController extends Controller
             $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate(15, ['*'], 'page', $page);
 
         return response()->json($response);
+    }
+
+    public function edit($id)
+    {
+        $user = auth()->user();
+
+        $raffle = Raffle::with(['raffle_premium_numbers' => function ($query) {
+                                $query->orderBy('raffle_premium_numbers.number_premium', 'ASC');
+                            }])
+                            ->with(['raffle_images' => function ($query) {
+                                $query->orderBy('raffle_images.highlight', 'DESC');
+                            }])
+                            ->with(['raffle_awards' => function ($query) {
+                                $query->orderBy('raffle_awards.order', 'ASC');
+                            }])
+                            ->with(['raffle_popular_numbers' => function ($query) {
+                                $query->orderBy('raffle_popular_numbers.quantity_numbers', 'ASC');
+                            }])
+                            ->with(['raffle_promotions' => function ($query) {
+                                $query->orderBy('raffle_promotions.order', 'ASC');
+                            }])
+                            ->where('raffles.id', $id)
+                            ->Exclude(['numbers', 'video'])
+                            ->first();
+
+        $data['quantity_numbers'] = [
+            ['value' => 100, 'texto' => '100 cotas - (0 à 99)'],
+            ['value' => 1000, 'texto' => '1.000 cotas - (0 à 999)'],
+            ['value' => 10000, 'texto' => '10.000 cotas - (0 à 9.999)'],
+            ['value' => 100000, 'texto' => '100.000 cotas - (0 à 99.999)'],
+            ['value' => 1000000, 'texto' => '1.000.000 cotas - (0 à 999.999)'],
+            ['value' => 10000000, 'texto' => '10.000.000 cotas - (0 à 9.999.999)']
+        ];
+
+        $galery = [];
+        if(!empty($raffle->raffle_images)){
+            foreach($raffle->raffle_images as $image){
+                //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$this->user_id.'/gallery/'.$raffle->id.'/'.$image->path;
+
+                $s3TmpLink = new \stdClass();
+                $s3TmpLink->img = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
+                array_push($galery, $s3TmpLink);
+            }
+        }
+
+        if ($raffle->highlight == 1 && !empty($raffle->banner)){
+            $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($raffle->banner, now()->addMinutes(30));
+            $raffle->new_banner = $s3TmpLink;
+        }
+
+        $data['raffle'] = $raffle;
+        $data['raffle']['galery'] = $galery;
+
+
+        return Inertia::render('Seller/Raffle/RaffleCreate', $data);
     }
 }

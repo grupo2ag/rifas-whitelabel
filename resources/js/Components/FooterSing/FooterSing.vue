@@ -29,11 +29,15 @@ export default defineComponent( {
         <div class="md:container">
             <div class="c-content grid grid-cols-1 md:grid-cols-4 gap-6">
                 <aside>
-                    <Link href="/" class="text-2xl uppercase text-primary font-black" :aria-label="basic.sitem_title">
-                        {{ basic.logo }}
-                    </Link>
+<!--                    <Link href="/" class="text-2xl uppercase text-primary font-black" :aria-label="basic.sitem_title">
+                        <img v-if="basic.logo"
+                             :src="basic.logo"
+                             class="h-7"
+                             :alt="basic.site_title">
+                        <img v-else src="/images/logo.svg" class="h-7"/>
+                    </Link>-->
 
-                    <p class="text-sm text-neutral/70">{{ basic.site_title }}.<br>© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
+                    <p class="text-sm text-neutral/70">{{ basic.site_title }}<br>© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
                 </aside>
 
                 <nav class="flex flex-col">
@@ -63,9 +67,9 @@ export default defineComponent( {
             </div>
         </div>
 
-        <div class="container py-4 flex justify-center">
-            <Link href="/" class="text-sm uppercase text-neutral font-black">
-                PREMIO FACIL
+        <div class="container py-5 flex justify-center">
+            <Link href="/" class="text-xs text-neutral/70 flex">
+                desenvolvido por <img src="/images/logo.svg" class="h-4 ml-2 -mt-0.5"/>
             </Link>
         </div>
     </footer>

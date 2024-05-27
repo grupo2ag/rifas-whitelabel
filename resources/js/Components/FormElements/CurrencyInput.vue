@@ -50,7 +50,7 @@ export default {
         }
     },
     created() {
-        // this.amount = this.modelValue;
+        //this.amount = this.modelValue;
     },
     watch: {
         modelValue(val) {

@@ -32,6 +32,7 @@ class AffiliateController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required | string | max:80',
+            'description' => 'string | max:100',
             'phone' => 'required',
             'email' => 'required',
             'document' => 'required',

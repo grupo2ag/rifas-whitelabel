@@ -97,7 +97,7 @@ export default {
                     <template v-for="(item, index) in ativas" :key="index">
                         <a :href="route('raffle', item.link)" class="c-card__item">
                             <figure class="aspect-square overflow-hidden">
-                                <img :src="item.raffle_images.thumb"
+                                <img :src="item.raffle_images[0]?.thumb"
                                      class="w-full h-full object-cover rounded-xl" :alt="item.title">
                             </figure>
                             <div class="flex flex-col justify-between flex-1">
@@ -117,7 +117,6 @@ export default {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                     <template v-for="(item, index) in finish" :key="index">
-<!--                        <pre>{{item}}</pre>-->
                         <a :href="route('raffle', item.link)" class="c-card__item">
                             <figure>
                                 <img :src="item.raffle_images[0]?.thumb"

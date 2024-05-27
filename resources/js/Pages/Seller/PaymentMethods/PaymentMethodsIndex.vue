@@ -18,7 +18,7 @@ export default {
         data: Array
     },
     mounted() {
-        //console.log(this.$page.props.flash.message)
+        console.log(this.$page.props.flash.message)
     }
 }
 </script>

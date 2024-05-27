@@ -44,6 +44,7 @@ class Affiliate extends Model
 	protected $fillable = [
 		'name',
 		'link',
+		'description',
 		'phone',
 		'email',
 		'document',

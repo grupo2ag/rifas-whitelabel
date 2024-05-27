@@ -13,7 +13,6 @@ import Button from '@/Components/Button/Button.vue';
 import Select from '@/Components/FormElements/Select.vue';
 import CurrencyInput from '@/Components/FormElements/CurrencyInput.vue';
 import SwitchCheckbox from '@/Components/SwitchCheckbox/SwitchCheckbox.vue';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import {
     PlusCircleIcon,
     ArrowLeftIcon,
@@ -28,31 +27,9 @@ import {
     TrophyIcon,
     TicketIcon,
     AdjustmentsHorizontalIcon,
-    ReceiptPercentIcon
+    ReceiptPercentIcon,
+ArrowsRightLeftIcon
 } from '@heroicons/vue/24/outline';
-
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Font } from '@ckeditor/ckeditor5-font';
-import {
-    Image,
-    ImageCaption,
-    ImageStyle,
-    ImageToolbar,
-    ImageUpload
-} from '@ckeditor/ckeditor5-image';
-import { Base64UploadAdapter } from '@ckeditor/ckeditor5-upload';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-
-import { ref } from 'vue';
-const componentKey = ref(0);
-
-const forceRender = () => {
-    componentKey.value += 1;
-};
 
 export default {
     components: {
@@ -78,13 +55,13 @@ export default {
         ReceiptPercentIcon,
     },
     props: {
-        affiliate: Object,
-        quantity_numbers: Array
+        affiliate: Object
     },
     data() {
         return {
             form: {
                 name: this?.affiliate ? this?.affiliate?.name : '',
+                description: this?.affiliate ? this?.affiliate?.description : '',
                 document: this?.affiliate ? this?.affiliate?.document : '',
                 phone: this?.affiliate ? this?.affiliate?.phone : '',
                 email: this?.affiliate ? this?.affiliate?.email : '',
@@ -98,16 +75,10 @@ export default {
                 pixKey: '',
             },
             characterLenght: 0,
-            characterLenght2: 0,
+            characterLenghtDescription: 0,
         }
     },
     methods: {
-        countdown() {
-            if (this?.form?.name || this?.form?.subtitle) {
-                this.characterLenght = this?.form?.name?.length;
-                this.characterLenght2 = this?.form?.subtitle?.length;
-            }
-        },
         validateForm() {
             this.errors = {};
 
@@ -169,13 +140,6 @@ export default {
             }
         }
     },
-    // watch: {
-    //     "form.name"() {
-    //         const text = func.clieanString(this.form.name);
-    //     },
-    // },
-    mounted() {
-    }
 }
 </script>
 
@@ -206,8 +170,8 @@ export default {
 
                     <div class="flex flex-row flex-wrap w-full pt-3">
                         <div class="w-full px-1">
-                            <Input :validate="validateForm" label="Nome:" v-model="form.name" type="text" :name="'name'"
-                                :maxlength="80" v-on:keyup="countdown"
+                            <Input :validate="validateForm" label="*Nome" v-model="form.name" type="text" :name="'name'"
+                                :maxlength="80" v-on:keyup="(e) => characterLenght = e.target.value.length"
                                 :error="validator.name || $page.props.errors.name" placeholder="Insira o nome" />
                             <div class="relative z-30 flex justify-end w-full" :class="validator.name && '-top-6'">
                                 <p class="px-2 mb-2 -mt-2 text-xs text-neutral/70">
@@ -216,34 +180,58 @@ export default {
                             </div>
 
                         </div>
+                        <div class="w-full px-1">
+                            <Input :validate="validateForm" label="Descrição" v-model="form.description" type="textarea" :name="'description'"
+                                :maxlength="100" v-on:keyup="(e) => characterLenghtDescription = e.target.value.length"
+                                :error="validator.description || $page.props.errors.description" placeholder="Insira a descrição" />
+                            <div class="relative z-30 flex justify-end w-full" :class="validator.description && '-top-6'">
+                                <p class="px-2 mb-2 -mt-2 text-xs text-neutral/70">
+                                    {{ characterLenghtDescription }} de 100
+                                    caracteres</p>
+                            </div>
+
+                        </div>
                         <div class="w-full px-1 md:w-6/12">
                             <!-- documento -->
                             <Input v-mask="['###.###.###-##', '##.###.###/####-##']" :validate="validateForm"
-                                label="Documento:" v-model="form.document" type="text" :name="'document'"
-                                :maxlength="20" v-on:keyup="countdown"
+                                label="*Documento" v-model="form.document" type="text" :name="'document'"
+                                :maxlength="20"
                                 :error="validator?.document || $page?.props?.errors?.document"
                                 placeholder="Insira o documento" />
                         </div>
                         <div class="w-full px-1 md:w-6/12">
                             <!-- Email -->
-                            <Input :validate="validateForm" label="Email:" v-model="form.email" type="text"
-                                :name="'email'" :maxlength="20" v-on:keyup="countdown" :error="validator?.email"
+                            <Input :validate="validateForm" label="*Email" v-model="form.email" type="text"
+                                :name="'email'" :maxlength="20" :error="validator?.email"
                                 placeholder="Insira o email" />
                         </div>
                         <div class="w-full px-1 md:w-6/12">
                             <!-- Telefone -->
                             <Input v-mask="['(##) #####-####', '(##) ####-####']" :validate="validateForm"
-                                label="Telefone:" v-model="form.phone" type="text" :name="'phone'" :maxlength="20"
-                                v-on:keyup="countdown" :error="validator?.phone || $page?.props?.errors?.phone"
+                                label="*Telefone" v-model="form.phone" type="text" :name="'phone'" :maxlength="20"
+                             :error="validator?.phone || $page?.props?.errors?.phone"
                                 placeholder="Insira o telefone" />
                         </div>
                         <div class="w-full px-1 md:w-full">
                             <!-- chave pix -->
-                            <Input :validate="validateForm" label="Chave Pix:" v-model="form.pixKey" type="text"
-                                :name="'pixKey'" :maxlength="20" v-on:keyup="countdown"
+                            <Input :validate="validateForm" label="*Chave Pix" v-model="form.pixKey" type="text"
+                                :name="'pixKey'" :maxlength="20"
                                 :error="validator?.pixKey || $page?.props?.errors?.pixKey"
                                 placeholder="Insira a chave pix" />
                         </div>
+                    </div>
+                </div>
+
+                <div class="mb-4 c-content">
+                    <div class="flex flex-row w-full pb-2 border-b border-base-100">
+                        <div class="flex items-center">
+                            <ArrowsRightLeftIcon class="h-5 mr-1 stroke-neutral" />
+
+                            <h3 class="text-base font-semibold text-neutral">Vincular Rifas</h3>
+                        </div>
+                    </div>
+                    <div class="flex flex-row w-full">
+
                     </div>
                 </div>
 

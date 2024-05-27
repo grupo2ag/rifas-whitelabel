@@ -69,6 +69,9 @@ export default {
                 }
             })
         }
+    },
+    mounted() {
+        console.log(this.data);
     }
 }
 </script>
@@ -172,9 +175,9 @@ export default {
                 <div class="flex flex-wrap items-center w-full mt-2 lg:w-2/12 animate-fade-left">
                     <div class="flex flex-row flex-wrap w-full">
                         <div v-if="data?.status.toLowerCase() == 'ativo'" class="flex w-full mb-2">
-                            <button class="text-white btn btn-info btn-block btn-sm lg:btn-md">
+                            <a :href="route('raffles.raffleEdit', data.id)" class="text-white btn btn-info btn-block btn-sm lg:btn-md">
                                 <PencilSquareIcon class="w-6" /> Editar
-                            </button>
+                            </a>
                         </div>
                         <div v-if="data?.status.toLowerCase() == 'ativo'" class="flex w-full mb-2">
                             <button @click="onExclude()" class="text-white btn btn-error btn-block btn-sm lg:btn-md">

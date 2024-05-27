@@ -1,6 +1,7 @@
 <script setup>
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
+import {useForm } from '@inertiajs/vue3';
 </script>
 
 <script>
@@ -11,8 +12,34 @@ export default {
     },
     data() {
         return {
-            randomId: ''
+            randomId: '',
+            form: {
+                token: this.data?.config?.token ?? '',
+                login: this.data?.config?.login ?? ''
+            }
         };
+    },
+    methods: {
+      onSubmit(e){
+
+            if(!!this.form.token && !!this.form.login){
+
+                const form = useForm(this.form)
+
+                form.post(route('paymentMethods.store'), {
+                    onSuccess: () => {
+                        console.log('aqui');
+                        this.disabled = false
+                        this.loading = false
+                    },
+                    onError: () => {
+                        this.disabled = false
+                        this.loading = false
+
+                    }
+                })
+            }
+        }
     },
     created() {
         this.randomId = this.index ? this.index : Math.floor(Math.random() * 10000);
@@ -64,23 +91,21 @@ export default {
                                 <p>Atributos do metodo de pagamento 1</p>
                             </div> -->
                         </div>
-                        <div class="flex flex-row flex-wrap mb-2">
-                            <div class="w-full mb-2">
-                                <InputLabel for="login" class="text-neutral/70" value="Login" />
-                                <TextInput class="w-full" :value="data?.config?.login" type="text"></TextInput>
+                        <form @submit.prevent="onSubmit">
+                            <div class="flex flex-row flex-wrap mb-2">
+                                <div class="w-full mb-2">
+                                    <InputLabel for="login" class="text-neutral/70" value="Login" />
+                                    <TextInput class="w-full" v-model="form.login" type="text"></TextInput>
+                                </div>
+                                <div class="w-full mb-2">
+                                    <InputLabel for="token" class="text-neutral/70" value="Access Token" />
+                                    <TextInput class="w-full" v-model="form.token" type="text"></TextInput>
+                                </div>
                             </div>
-                            <!-- <div class="w-full mb-2">
-                                <InputLabel for="password" value="Senha" />
-                                <TextInput class="w-full" value="" type="password"></TextInput>
-                            </div> -->
-                            <div class="w-full mb-2">
-                                <InputLabel for="password" class="text-neutral/70" value="Access Token" />
-                                <TextInput class="w-full" :value="data?.config?.token" type="text"></TextInput>
+                            <div class="justify-end card-actions">
+                                <button type="submit" class="border-none btn btn-sm bg-primary text-primary-bw">Configurar</button>
                             </div>
-                        </div>
-                        <div class="justify-end card-actions">
-                            <button class="border-none btn btn-sm bg-primary text-primary-bw">Configurar</button>
-                        </div>
+                        </form>
                     </div>
                     <div class="absolute w-full h-full drawer-side ">
                         <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>

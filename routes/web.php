@@ -13,17 +13,8 @@ use App\Http\Controllers\Seller\GatewayController;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
-    Route::get('/teste', [TesteController::class, 'index']);
+    Route::get('/testee', [TesteController::class, 'index']);
 }
-
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
 
 Route::middleware(LevelMiddleware::class)->group(function (){
 
@@ -39,6 +30,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/', [SellerController::class, 'index'])->name('raffleIndex');
             Route::get('/view/{id}', [SellerController::class, 'view'])->name('raffleView');
             Route::get('/created', [SellerController::class, 'created'])->name('raffleCreated');
+            Route::get('/edit/{id}', [SellerController::class, 'edit'])->name('raffleEdit');
             Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
             Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
@@ -51,11 +43,11 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         });
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
+        Route::post('/paymentMethodsStore', [GatewayController::class, 'store'])->name('paymentMethods.store');
     });
 });
 
 /* ROTAS NAO AUTENTICADAS AQUI*/
-
 Route::get('/', [HomeController::class, 'index'])->name('index');
 Route::get('/termos-de-uso', [HomeController::class, 'termsUse'])->name('termsUse');
 Route::get('/pay/{order}', [RaffleController::class, 'pay'])->name('pay');

@@ -250,9 +250,6 @@ export default {
             }
         }
     },
-    mounted() {
-
-    }
 }
 </script>
 
@@ -293,7 +290,7 @@ export default {
                 <template v-for="item in data" :key="item.id">
                     <button type="button" :ref="'numb_' + item.number"
                             :id="item.number"
-                            class="c-raffle__number"
+                            class="c-raffle__number" :title="item.buyer.substring(0,5) + '...'"
                             :class="item.status === 'paid' ? 'c-raffle__number--paid' : item.status === 'reserved' ? 'c-raffle__number--reserved' : 'c-raffle__number--available'"
                             @click="addItem(item.number, item.status)">
                         {{ item.number }}

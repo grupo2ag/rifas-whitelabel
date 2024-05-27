@@ -1,6 +1,7 @@
 <script setup>
 // import Welcome from '@/Components/Welcome.vue';
 import {useForm } from '@inertiajs/vue3';
+import {dateFormat} from "@/Helpers/functions.js";
 </script>
 
 <script>
@@ -91,7 +92,8 @@ export default {
                 link: this.raffle ? this.raffle.link : '',
                 subtitle: this.raffle ? this.raffle.subtitle : '',
                 total: null,
-                price: this.raffle ? this.raffle.price : 0,
+                quantity: this.raffle ? this.raffle.quantity : 100,
+                price: this.raffle ? this.raffle : 0,
                 type: this.raffle ? this.raffle.type : 'automatico',
                 pix_expired: this.raffle ? this.raffle.pix_expired : '',
                 minimum_purchase: this.raffle ? this.raffle.minimum_purchase : 1,
@@ -100,7 +102,7 @@ export default {
 
                 buyer_ranking: this.raffle ? this.raffle.buyer_ranking : 5,
                 partial: this.raffle ? this.raffle.partial : 1,
-                expected_date: this.raffle ? this.raffle.expected_date : '',
+                expected_date: this.raffle ? func.dateFormat(this.raffle.expected_date) : '',
                 status: this.raffle ? this.raffle.status : 'Ativo',
                 banner: this.raffle ? this.raffle.banner : '',
                 highlight: this.raffle ? this.raffle.highlight : 0,
@@ -158,7 +160,7 @@ export default {
             characterLenght: 0,
             characterLenght2: 0,
             number_quota: null,
-            imageGallery: ''
+            imageGallery: this.raffle ? this.raffle.galery : '',
         }
     },
     methods: {
@@ -235,7 +237,8 @@ export default {
         },
     },
     mounted() {
-        //console.log(this.$page.props)
+        console.log(this.raffle)
+        //console.log(func.dateFormat(this.raffle.expected_date))
     }
 }
 </script>
@@ -307,14 +310,13 @@ export default {
 
                         <div class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
-                                <Select label="Quantidade de Números:"  v-model="form.total" :name="form.total"
-                                        :error="validator.total || $page.props.errors.total" >
-                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value" :selected="!!item.selected">{{ item.texto }}</option>
+                                <Select label="Quantidade de Números:" v-model="form.quantity" :name="form.quantity" :error="validator.total || $page.props.errors.total">
+                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value" >{{ item.texto }}</option>
                                 </Select>
                             </div>
 
                             <div class="w-full md:w-6/12">
-                                <CurrencyInput label="Valor" v-model="form.price"/>
+                                <CurrencyInput label="Valor" v-model="form.price" />
                             </div>
                         </div>
 
