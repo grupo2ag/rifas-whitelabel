@@ -30,6 +30,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/', [SellerController::class, 'index'])->name('raffleIndex');
             Route::get('/view/{id}', [SellerController::class, 'view'])->name('raffleView');
             Route::get('/created', [SellerController::class, 'created'])->name('raffleCreated');
+            Route::get('/edit/{id}', [SellerController::class, 'edit'])->name('raffleEdit');
             Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
             Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
