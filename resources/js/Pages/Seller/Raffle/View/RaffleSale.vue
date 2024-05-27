@@ -2,6 +2,7 @@
 import StatsRaffleSale from '@/Components/Stats/StatsRaffleSale.vue';
 import moment from 'moment';
 import PaginationApi from '@/Components/Pagination/PaginationApi.vue';
+import { Collapse } from 'vue-collapsed'
 import * as func from '@/Helpers/functions';
 import debounce from 'lodash/debounce';
 import {
@@ -11,17 +12,18 @@ import {
     EnvelopeIcon,
     CalendarDaysIcon,
     TicketIcon,
-    MagnifyingGlassIcon
-} from '@heroicons/vue/24/outline';
+    MagnifyingGlassIcon} from '@heroicons/vue/24/outline';
 </script>
 
 <script>
+
 export default {
     props: {
         data: Object
     },
     data() {
         return {
+            collapse: [],
             searchQuery: '',
             results: {
                 data: [],
@@ -29,7 +31,7 @@ export default {
                 last_page: 1
             },
             currentPage: 1,
-            loading: false
+            loading: false,
         };
     },
     methods: {
@@ -58,6 +60,13 @@ export default {
                 this.currentPage = page;
                 this.search();
             }
+        },
+        handleAccordion(index) {
+            this.collapse.forEach((val, i) => {
+                if(val.id === index){
+                    this.collapse[i].value = !val.value
+                }else this.collapse[i].value = false
+            })
         }
     },
     created() {
@@ -119,7 +128,7 @@ export default {
         </div>
         <div v-if="results?.data && results?.data?.length > 0" class="w-full pr-3">
             <!-- loop -->
-            <div v-for="sale in results?.data" :key="sale.id"
+            <div v-for="(sale, index) in results?.data" :key="sale.id" @click="handleAccordion(index)"
                 class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content animate-fade-down animate-duration-1000 ">
                 <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 break-all rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-neutral/70 text-primary-bw">
                     {{ sale?.id }}</div>
@@ -146,6 +155,15 @@ export default {
                     <CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />
                     {{ func.translateDate(sale?.created_at) }}
                 </div>
+                <Collapse :on-collapse="this.collapse.push({id: index, value: false})" :when="this.collapse[index].value">
+                    <p class="CollapseContent">
+                        <ul class="grid grid-cols-8 gap-1">
+                            <template v-for="item in sale?.numbers.split(',')">
+                                <li class="border border-primary/20 bg-primary/5 text-neutral font-semibold py-1 text-sm text-center ">{{item}}</li>
+                            </template>
+                        </ul>
+                    </p>
+                </Collapse>
             </div>
             <!--  -->
             <div class="flex flex-row w-full px-2"
