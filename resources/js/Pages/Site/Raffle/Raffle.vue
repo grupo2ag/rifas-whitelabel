@@ -325,9 +325,9 @@ export default {
                            </template>
 
                            <template v-else>
-                               <li class="flex flex-col md:flex-row items-start md:items-center justify-between bg-neutral/5 rounded-xl border border-primary/10 px-4 py-3 text-neutral font-bold hover:bg-neutral/10">
-                                   <p>{{item.order}}˚ Prêmio:</p>
-                                   <p class="flex-1">{{item.description}}</p>
+                               <li class="flex flex-col md:flex-row items-start md:items-center md:gap-1 justify-between bg-neutral/5 rounded-xl border border-primary/10 px-4 py-3 text-neutral font-bold hover:bg-neutral/10">
+                                   <p>{{item.order}}˚ Prêmio: </p>
+                                   <p class="flex-1"> {{item.description}}</p>
                                </li>
                            </template>
                         </template>
