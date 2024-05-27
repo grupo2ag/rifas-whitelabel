@@ -95,9 +95,7 @@ export default defineComponent({
                 //this.$emit('close', false)
             } else {
                 window.localStorage.setItem('anchorMenu', hash)
-
                 window.localStorage.setItem('positionMenu', position)
-
                 Inertia.visit(route('index'))
             }
         },
@@ -145,7 +143,6 @@ export default defineComponent({
             cpf: yup.string().min(13, 'CPF incompleto').required('Obrigatório').test('test-invalid-cpf', 'CPF Inválido', value => cpfIsValid(value))
                 .required('CPF é obrigatório'),
         })
-
     }
 })
 </script>
@@ -162,9 +159,12 @@ export default defineComponent({
                         </div>
                     </button>
 
-                    <a :href="route('index')" class="text-4xl uppercase text-primary font-black" :aria-label="$page.props.siteconfig.site_title">
-                        <img v-if="$page.props.siteconfig.logo" :src="$page.props.siteconfig.logo" :alt="$page.props.siteconfig.site_title">
-                        <span v-else>{{ 'RIFA8' }}</span>
+                    <a :href="route('index')" :aria-label="$page.props.siteconfig.site_title">
+                        <img v-if="!$page.props.siteconfig.logo"
+                             :src="$page.props.siteconfig.logo"
+                             class="h-7"
+                             :alt="$page.props.siteconfig.site_title">
+                        <img v-else src="/images/logo.svg" class="h-7"/>
                     </a>
                 </div>
 
