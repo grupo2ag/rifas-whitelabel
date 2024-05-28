@@ -71,7 +71,9 @@ export default {
         }
     },
     mounted() {
-        //console.log(this.data);
+        console.log(this.data);
+        var n = this.data.numbers.split(',');
+        console.log(n.length, n)
     }
 }
 </script>
@@ -138,6 +140,13 @@ export default {
                                 <a target="_blank" class="break-all link link-info"
                                     :href="!data?.visible ? route('raffle', 'visualizar|raffle-' + data?.link) : route('raffle', data?.link)">{{
                         data?.link }}</a>
+                            </div>
+                        </div>
+                        <div class="w-full mb-2">
+                            <div class="flex flex-row ">
+                                <LinkIcon class="hidden w-6 mr-2 lg:grid text-neutral/70" />
+                                <a target="_blank" class="break-all link link-info"
+                                   :href="route('raffles.raffleLive',data?.id )">Numeros Disponiveis</a>
                             </div>
                         </div>
                     </div>
