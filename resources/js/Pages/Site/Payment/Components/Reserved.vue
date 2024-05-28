@@ -56,15 +56,6 @@ export default {
         const actualDate = new Date()
         this.expire_time = expire_date - actualDate
 
-        setTimeout(() => {
-            window.fbq('track', 'AddPaymentInfo', {
-                content_ids: this.raffle.id,
-                currency: 'BRL',
-                value: this.raffle.amount / 100,
-                num_items: this.raffle.reserved
-            });
-        }, 3500)
-
         if(this.expire_time < 0){
             // this.status = 'CANCELED'
         }

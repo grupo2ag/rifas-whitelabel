@@ -1,6 +1,3 @@
-
-{{--{{dd($page['props']['siteconfig'])}}--}}
-
 @if(\Illuminate\Support\Facades\Route::currentRouteNamed('index') || \Illuminate\Support\Facades\Route::currentRouteNamed('checkout'))
     <meta head-key="description" name="description" content="{{ $meta['description'] ?? $page['props']['siteconfig']['meta_description'] }}"/>
     <meta head-key="keywords" name="keywords" content="{{ $meta['keywords'] ?? $page['props']['siteconfig']['meta_keywords'] }}"/>
@@ -25,7 +22,7 @@
     <meta name="og:locale" property="og:locale" content="pt_BR" />
     <meta property="og:type" content="website"/>
 
-    <meta name="twitter:title" property="twitter:title" content="{{$meta['title'] ?? $page['props']['siteconfig']['site_title'] }}"/>
+    <meta name="twitter:title" property="twitter:title" content="{{ $page['props']['siteconfig']['site_title'] }}"/>
     <meta name="twitter:description" property="twitter:description" content="{{ $meta['description'] ?? $page['props']['siteconfig']['meta_description'] }}"/>
     <meta name="twitter:image" property="twitter:image" content="{{$meta['image'] ?? $page['props']['siteconfig']['meta_image'] }}"/>
     <meta name="twitter:image:src" property="twitter:image:src" content="{{$meta['image'] ?? $page['props']['siteconfig']['meta_image'] }}"/>

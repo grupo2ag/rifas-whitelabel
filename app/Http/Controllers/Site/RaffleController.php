@@ -145,7 +145,14 @@ class RaffleController extends Controller
 
             $raffle['affiliate_id'] = $affiliateId;
 
-            return Inertia::render('Site/Raffle/Raffle', ['raffle' => $raffle]);
+//            dd($raffle);
+            $return['meta'] = [
+                'title'       => $raffle->title . ' | ' . inertia()->getShared('siteconfig')->site_title,
+                'description' => $raffle->subtitle,
+                'image'       => ''
+            ];
+
+            return Inertia::render('Site/Raffle/Raffle', ['raffle' => $raffle])->withViewData('meta', $return['meta']);
         }
 
         return redirect('/');

@@ -14,7 +14,7 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `${title}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         const application = createApp({render: () => h(App, props)})
