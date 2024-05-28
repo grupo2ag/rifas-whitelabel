@@ -137,6 +137,7 @@ export default {
         openModal() {
             this.showModal = true
             document.body.classList.add('active');
+            window.fbq('track', 'InitiateCheckout');
         },
         closeModal() {
             this.showModal = false
