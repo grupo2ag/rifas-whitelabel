@@ -82,7 +82,7 @@ export default {
             <div class="md:container w-full md:w-5/12 flex flex-col md:gap-2">
                 <Waiting v-if="status == 'PROCESSING' || status == 'CREATED'" :raffle="raffle" />
 
-                <Approved v-else-if="status == 'PAID'"/>
+                <Approved v-else-if="status == 'PAID'" :raffle="raffle"/>
 
                 <Cancel v-else-if="status == 'CANCELED' || status == 'REFUNDED' || status == 'CHARGEBACK'"/>
 

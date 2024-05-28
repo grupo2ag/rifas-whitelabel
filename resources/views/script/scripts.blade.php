@@ -1,4 +1,5 @@
 @if($page['props']['siteconfig']['facebook_pixel'])
+    @if(\Illuminate\Support\Facades\Route::currentRouteNamed('raffle'))
 
     <script>
         setTimeout(() => {
@@ -24,7 +25,9 @@
             fbq('track', 'PageView');
         }, 3000)
     </script>
-<noscript>
-    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{$page['props']['siteconfig']['facebook_pixel']}}&ev=PageView&noscript=1"/>
-</noscript>
+
+    <noscript>
+        <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{$page['props']['siteconfig']['facebook_pixel']}}&ev=PageView&noscript=1"/>
+    </noscript>
+    @endif
 @endif

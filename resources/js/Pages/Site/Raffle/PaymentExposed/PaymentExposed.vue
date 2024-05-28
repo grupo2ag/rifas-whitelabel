@@ -232,6 +232,7 @@ export default {
         openModal() {
             this.showCheckout = true
             document.body.classList.add('active');
+            window.fbq('track', 'InitiateCheckout');
         },
         closeModal() {
             this.showCheckout = false

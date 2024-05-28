@@ -190,7 +190,7 @@ export default {
                                 this.formPurchase.email = this.customer.email
                                 this.formPurchase.buyer = this.customer.buyer
                                 this.formPurchase.cpf = this.customer.cpf
-                                this.formPurchase.manual = this.manual?.length > 0 ? manualNumbers(this.manual)  : []
+                                this.formPurchase.manual = this.manual?.length > 0 ? manualNumbers(this.manual) : []
 
                                 this.step = 'CONFIRM'
                             } else {
@@ -221,36 +221,37 @@ export default {
                     .then((res) => {
                         let resposta = res.data
 
-                        if (resposta.pix === false){
-                            this.formVerify.processing = true;
+                        if (resposta.pix === false) {
+                            this.formPurchase.processing = true;
                             Inertia.visit(route('reserved', resposta.participant));
-                        }else if(typeof resposta.pix.order_id === "string" && resposta.pix.order_id.length > 0 && resposta.pix.order_id !== null){
+                        } else if (typeof resposta.pix.order_id === "string" && resposta.pix.order_id.length > 0 && resposta.pix.order_id !== null) {
                             this.formVerify.processing = true;
                             //console.log(resposta, resposta.pix.order_id);
                             Inertia.visit(route('pay', resposta.pix.order_id));
-                        }else{
-                            this.formVerify.processing = false;
+                        } else {
+                            this.formPurchase.processing = false;
                         }
                         //FECHA LOADING
                     }).catch((errors) => {
-                        this.numbers = [];
-                        this.formVerify.processing = false;
-                        this.errors = errors;
+                    this.formPurchase.processing = false;
+                    this.errors = errors;
 
-                        this.closeModal()
+                    this.closeModal()
+                    this.returnVerify()
 
-                        this.$swal({
-                            html: "<p class='text-xl font-normal text-black'>" + this.errors.response.data.message + "</p>",
-                            confirmButtonText: "Ok",
-                            icon: 'error',
-                            type: 'error',
-                            allowOutsideClick: true,
-                            customClass: {
-                                confirmButton: 'sw-btn sw-btn--red',
-                                popup: 'sw-popup',
-                                title: 'sw-title',
-                            }
-                        })
+                    this.$swal({
+                        title: "Erro!",
+                        html: "<p class='text-lg font-normal text-black/70'>Ocorreu um erro ao gerar o pix! Tente novamente mais tarde. </p>",
+                        confirmButtonText: "Ok",
+                        icon: 'error',
+                        type: 'error',
+                        allowOutsideClick: true,
+                        customClass: {
+                            confirmButton: 'sw-btn sw-btn--red',
+                            popup: 'sw-popup',
+                            title: 'sw-title',
+                        }
+                    })
                     //FECHA LOADING
                 })
 
@@ -316,6 +317,23 @@ export default {
                 cpf: '',
             }
 
+            this.formPurchase = {
+                name: '',
+                phone: '',
+                confirmPhone: '',
+                email: '',
+                cpf: '',
+                buyer: '',
+                affiliate_id: this.raffle.affiliate_id,
+                raffle_id: this.raffle.id,
+                raffle_type: this.raffle.type,
+                user_id: this.raffle.user_id,
+                quantity: this.quantity,
+                total: this.total,
+            }
+
+            this. customer = {},
+
             this.formVerify = {
                 cpf: ''
             };
@@ -339,7 +357,8 @@ export default {
     <Modal :show="open" @close="closeModal()">
         <template #header>
             <div class="relative">
-                <Button v-if="step !== 'VERIFY'" type="button" color="outline-primary" size="sm" class="!px-2 absolute left-0"
+                <Button v-if="step !== 'VERIFY'" type="button" color="outline-primary" size="sm"
+                        class="!px-2 absolute left-0"
                         @click="returnVerify">
                     <Icon name="icon-arrow-left" class="w-4 fill-primary md:mr-1"/>
                     <span class="hidden md:block">Voltar</span>

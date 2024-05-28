@@ -57,6 +57,7 @@ body{
     padding: 8px;
     background: #fff;
     margin-top: -2rem;
+    margin-bottom: 0;
     border-color: #F9BC00;
     color: #F9BC00;
     position: relative;
@@ -66,7 +67,7 @@ body{
      margin-top: -2rem;
 }
 
-.sw-title {
+.swal2-title.sw-title {
     padding-top: 0;
     font-size: 1.35rem;
     font-weight: 600;
@@ -78,7 +79,7 @@ body{
 }
 
 .sw-popup {
-    border-radius: 15px;
+    border-radius: 20px !important;
 }
 
 .sw-btn {
@@ -100,7 +101,7 @@ body{
 }
 
 .sw-btn--red {
-    background: #f27474 !important;
+    background: #f55353 !important;
     color: #fff !important;
 }
 
@@ -132,7 +133,7 @@ body{
 }
 
 .swal2-actions {
-    margin-top: 8px;
+    margin-top: 5px !important;
     flex-direction: row-reverse;
 }
 
@@ -146,6 +147,6 @@ body{
 }
 
 .swal2-html-container {
-    margin-top: 8px;
+    margin-top: 5px !important;
     font-size: 1rem !important;
 }
