@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Affiliate;
+use App\Models\Participant;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,9 +13,26 @@ use Inertia\Inertia;
 
 class AffiliateController extends Controller
 {
-    public function index()
+    public function index($affiliateId = null)
     {
         $user = auth()->user();
+
+        if(!empty($affiliateId)){
+            $affiliate = $user->affiliate()->where('affiliates.id', $affiliateId)->first();
+
+            $ganhos = Participant::join('raffles', 'raffles.id', 'participants.raffle_id')
+                                ->where('participants.paid', '>', 0)
+                                ->where('participants.affiliate_id', $affiliateId)
+                                ->select('raffles.id', DB::raw('SUM(participants.amount) as total, SUM(paid) as cotas, COUNT(participants.id) as vendas'))
+                                ->groupBy('raffles.id')
+                                ->get();
+
+            dd($ganhos);
+        }
+
+        if(!empty($affiliate)){
+            dd($affiliate);
+        }
 
         $affiliates = $user->affiliate()->paginate();
 
@@ -57,8 +75,8 @@ class AffiliateController extends Controller
                 'data' => $affiliate
             ], 200);
         } catch (QueryException $e) {
-            setLogErros('AffiliateController', $e->getMessage(), $request->all());
             DB::rollBack();
+            setLogErros('AffiliateController', $e->getMessage(), $request->all());
             return response()->json(['message' => 'Problema ao inserir afiliado, verifique os campos!'], 403);
         }
 

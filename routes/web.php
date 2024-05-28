@@ -38,7 +38,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         });
 
         Route::prefix('/affiliate')->name('affiliate.')->group(function () {
-            Route::get('/', [AffiliateController::class, 'index'])->name('affiliateIndex');
+            Route::get('/{affiliate?}', [AffiliateController::class, 'index'])->name('affiliateIndex');
             Route::get('/created', [AffiliateController::class, 'created'])->name('affiliateCreated');
             Route::post('/store', [AffiliateController::class, 'store'])->name('affiliateStore');
         });
