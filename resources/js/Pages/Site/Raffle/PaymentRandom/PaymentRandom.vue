@@ -100,15 +100,16 @@ export default {
             let temPromo = promotion(this.raffle, this.quantity)
 
             if(temPromo){
-                if (this.quantity < this.max) {
+                if (this.quantity <= this.max) {
+                    this.quantity++
                     this.total = temPromo[2]
                     this.value = temPromo[1]
-                }
+                }else this.quantity--
             }else{
                 this.value = this.raffle.price
-                if (this.quantity < this.max) {
+                if (this.quantity <= this.max) {
                     this.total = this.quantity * this.value
-                }
+                } else this.quantity--
             }
         },
         addQuotas(quotas) {
