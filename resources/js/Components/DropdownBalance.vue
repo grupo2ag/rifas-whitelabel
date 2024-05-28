@@ -91,7 +91,7 @@ const sizeClasses = computed(() => {
                 enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-75 ease-in"
                 leave-class="transform scale-100 opacity-100 " leave-to-class="transform  opacity-0">
                 <div v-show="isOpen"
-                    class="w-[270px] mt-4 rounded-b-xl overflow-hidden ring-opacity-5 bg-content border border-base-100"
+                    class="w-[270px] mt-4 md:mt-5 rounded-b-xl overflow-hidden ring-opacity-5 bg-content border border-base-100"
                     :class="[isOpen ? 'active' : '']">
                     <span class="square"></span>
                     <div class="" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
