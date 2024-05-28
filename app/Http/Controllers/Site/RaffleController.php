@@ -145,7 +145,13 @@ class RaffleController extends Controller
 
             $raffle['affiliate_id'] = $affiliateId;
 
-            return Inertia::render('Site/Raffle/Raffle', ['raffle' => $raffle]);
+            $return['meta'] = [
+                'title'       => $raffle->title . ' | ' . inertia()->getShared('siteconfig')->site_title,
+                'description' => $raffle->subtitle,
+                'image'       => $galery[0]->img,
+            ];
+
+            return Inertia::render('Site/Raffle/Raffle', ['raffle' => $raffle])->withViewData('meta', $return['meta']);
         }
 
         return redirect('/');
@@ -291,7 +297,11 @@ class RaffleController extends Controller
                 if($rifa->pago) $status = 'PAID';
                 //else $status = 'CANCELED';
 
-                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status]);
+                $return['meta'] = [
+                    'title'       => 'Detalhe do Pagamento',
+                ];
+
+                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status])->withViewData('meta', $return['meta']);
             }
         } else {
             return back();
@@ -324,6 +334,10 @@ class RaffleController extends Controller
                     'raffles.pix_expired'
                 ]);
 
+            $return['meta'] = [
+                'title'       => 'Detalhe do Pagamento',
+            ];
+
             if(!empty($rifa->raffle_id) && !empty($rifa->reserved)){
                 $image = RaffleImage::where('raffle_id', $rifa->raffle_id)->where('highlight', 1)->first();
 
@@ -340,12 +354,13 @@ class RaffleController extends Controller
                 $rifa['expired'] = Carbon::parse($rifa->expired_at)->subMinutes(Raffle::TOLERANCIA_PAGAMENTO);
 
                 //dd(['raffle' => $rifa, 'status' => $status]);
-                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status]);
+
+                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status])->withViewData('meta', $return['meta']);
             }else{
                 $status = 'PROCESSING';
                 if($rifa->paid) $status = 'PAID';
                 //dd(['raffle' => $rifa, 'status' => $status]);
-                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status]);
+                return Inertia::render('Site/Payment/PaymentIndex', ['raffle' => $rifa, 'status' => $status])->withViewData('meta', $return['meta']);
             }
         } else {
             return redirect('/');

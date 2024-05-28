@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\Affiliate;
 use App\Models\Participant;
+use App\Models\AffiliateRaffle;
+use App\Models\Raffle;
 use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -92,7 +94,9 @@ class AffiliateController extends Controller
 
     public function created()
     {
-        return Inertia::render('Seller/Affiliate/AffiliateCreated');
+        $user = auth()->user();
+        $raffles = Raffle::activateRaffles()->userID($user->id)->get();
+        return Inertia::render('Seller/Affiliate/AffiliateCreated', ['raffles' => $raffles]);
     }
 
     public function store(Request $request)
@@ -121,8 +125,26 @@ class AffiliateController extends Controller
                 'pix_key' => $request->pixKey,
                 'user_id' => $userId
              ]);
+
+             if(count($request->raffles) > 0) {
+                 foreach ($request->raffles as $vinculation) {
+                   if($vinculation['raffleId'] && $vinculation['link'] && $vinculation['type']) {
+
+                    AffiliateRaffle::create([
+                        'affiliate_id' => (integer)$affiliate->id,
+                        'raffle_id' => (integer)$vinculation['raffleId'],
+                        'actived' => (integer)1,
+                        'type' => (string)$vinculation['type'],
+                        'value' => (integer)bcmul($vinculation['value'], 100),
+                        'link' => (string)$vinculation['link'],
+                    ]);
+
+                   }
+                }
+            }
+
              return response()->json([
-                'message' => 'Afiliado adiciondo com sucesso!',
+                'message' => 'Afiliado adicionado com sucesso!',
                 'data' => $affiliate
             ], 200);
         } catch (QueryException $e) {

@@ -46,9 +46,12 @@ class AffiliateRaffle extends Model
 	];
 
 	protected $fillable = [
-		'actived',
-		'type',
-		'value'
+        'affiliate_id',
+        'raffle_id',
+        'actived',
+        'type',
+        'value',
+        'link'
 	];
 
 	public function affiliate()

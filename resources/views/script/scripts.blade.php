@@ -1,5 +1,5 @@
 @if($page['props']['siteconfig']['facebook_pixel'])
-    @if(\Illuminate\Support\Facades\Route::currentRouteNamed('raffle'))
+    @if(\Illuminate\Support\Facades\Route::currentRouteNamed('raffle') || \Illuminate\Support\Facades\Route::currentRouteNamed('pay'))
 
     <script>
         setTimeout(() => {

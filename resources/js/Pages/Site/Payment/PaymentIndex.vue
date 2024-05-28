@@ -1,28 +1,30 @@
 <script>
 import App from '@/Pages/App.vue'
+import {defineAsyncComponent} from "vue";
+
 import LoadingScreen from "@/Components/LoadingScreen/LoadingScreen.vue";
 import Button from "@/Components/Button/Button.vue";
-import VueCountdown from '@chenfengyuan/vue-countdown';
 import QRCode from "@/Components/QRCode/QRCode.vue";
 import Icon from "@/Components/Icon/Icon.vue";
-import Waiting from "@/Pages/Site/Payment/Components/Waiting.vue";
-import Approved from "@/Pages/Site/Payment/Components/Approved.vue";
-import Cancel from "@/Pages/Site/Payment/Components/Cancel.vue";
-import Reserved from "@/Pages/Site/Payment/Components/Reserved.vue";
+const Reserved = defineAsyncComponent(() => import('@/Pages/Site/Payment/Components/Reserved.vue'))
+const Cancel = defineAsyncComponent(() => import('@/Pages/Site/Payment/Components/Cancel.vue'))
+const Approved = defineAsyncComponent(() => import('@/Pages/Site/Payment/Components/Approved.vue'))
+const Waiting = defineAsyncComponent(() => import('@/Pages/Site/Payment/Components/Waiting.vue'))
+import VueCountdown from '@chenfengyuan/vue-countdown';
 
 export default {
     name: "ResponseIndex",
     components: {
         App,
+        LoadingScreen,
+        Button,
+        QRCode,
+        Icon,
         Waiting,
         Approved,
         Cancel,
         Reserved,
-        LoadingScreen,
-        Button,
         VueCountdown,
-        QRCode,
-        Icon
     },
     props: {
         raffle: Object,
@@ -56,6 +58,8 @@ export default {
             this.status = 'CANCELED'
         }
 
+
+
         //console.log(this.status)
     },
     created(){
@@ -80,7 +84,9 @@ export default {
     <App>
         <section class="pt-16 md:pb-3 md:pt-24 w-full flex flex-col">
             <div class="md:container w-full md:w-5/12 flex flex-col md:gap-2">
-                <Waiting v-if="status == 'PROCESSING' || status == 'CREATED'" :raffle="raffle" />
+                <template v-if="status == 'PROCESSING' || status == 'CREATED'" >
+                    <Waiting :raffle="raffle" />
+                </template>
 
                 <Approved v-else-if="status == 'PAID'" :raffle="raffle"/>
 
@@ -129,19 +135,20 @@ export default {
                                 <p>{{ status === 'PAID' ? 'Pago' : status === 'CANCELED' ? 'Cancelado' : status === 'RESERVED' ? 'Reservado' : 'Aguardando Pagamento'}}</p>
                             </li>
                             <li class="c-details__item">
-                                Titulos
-                                <template v-if="status != 'PAID' || status != 'RESERVED' && raffle.type === 'automatico'">
-                                    <p>Os titulos são liberados após o pagamento</p>
-                                </template>
-                                <template v-else>
+                                Títulos
+
+                                <template v-if="(status === 'RESERVED' || raffle.type === 'manual') || (raffle.type === 'manual' || status === 'PAID')">
                                     <div class="flex flex-wrap gap-0.5 mt-1 mb-2">
                                         <template v-for="item in raffle.numbers.split(',')">
                                             <span class="w-16 border border-primary/20 bg-primary/5 text-neutral font-semibold py-1 text-sm text-center">{{item}}</span>
                                         </template>
                                     </div>
                                 </template>
+                                <template v-else>
+                                    <p>Os títulos são liberados após o pagamento</p>
+                                </template>
                             </li>
-                            <li v-if="status === 'PAID'" class="c-details__item">
+                            <li class="c-details__item">
                                 Quantidade
                                 <p> {{ status !== 'PAID' ? raffle.reserved :  raffle.paid }} </p>
                             </li>

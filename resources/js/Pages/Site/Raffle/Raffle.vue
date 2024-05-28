@@ -204,7 +204,7 @@ export default {
                                 <Progress :value="raffle.percent" max="100"/>
                             </div>
 
-                            <Button type="button" color="primary" class="pulsate-fwd w-full" @click="goto('purchase', 60)">
+                            <Button type="button" color="primary" class="pulsate-fwd w-full" @click="goto('purchase', 75)">
                                 {{ status === 'Ativo' ? 'Adquira Já' : 'Ver Resultado' }}
                             </Button>
 

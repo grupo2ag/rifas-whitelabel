@@ -63,6 +63,15 @@ export default {
         if(this.expire_time < 0){
            // this.status = 'CANCELED'
         }
+
+        setTimeout(() => {
+            window.fbq('track', 'AddPaymentInfo', {
+                content_ids: this.raffle.id,
+                currency: 'BRL',
+                value: this.raffle.amount / 100,
+                num_items: this.raffle.reserved
+            });
+        }, 3500)
         //console.log(this.expire_time, expire_date, actualDate);
     }
 }
