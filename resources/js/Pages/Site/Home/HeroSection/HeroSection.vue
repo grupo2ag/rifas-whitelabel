@@ -89,12 +89,10 @@ export default {
                         class="swiper-hero">
 
                     <swiper-slide v-for="(item, key) in highlight" :key="key">
-                        <a :href="route('raffle', item.link)" class="w-full h-full rounded-2xl border-base-200 overflow-hidden ">
-                            <div class="aspect-[2/3] md:aspect-[4/1.8]" :aria-label="item.name">
+                        <a :href="route('raffle', item.link)" class="w-full h-full rounded-2xl overflow-hidden">
+                            <div class="aspect-[2/3] md:aspect-[4/1.8] overflow-hidden rounded-2xl" :aria-label="item.name">
                                 <img :src="item.new_banner"
-                                     class="w-full h-full object-cover pointer-events-none hidden md:block" :alt="item.title">
-                                <img :src="item.new_banner"
-                                     class="w-full h-full object-cover pointer-events-none md:hidden" :alt="item.title">
+                                     class="w-full h-full object-cover" :alt="item.title">
                             </div>
 
                             <div class="box-banner">
