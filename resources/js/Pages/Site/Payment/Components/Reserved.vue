@@ -56,6 +56,14 @@ export default {
         const actualDate = new Date()
         this.expire_time = expire_date - actualDate
 
+        console.log(this.raffle)
+
+       /* window.fbq('track', 'AddPaymentInfo', {
+            content_ids: this.data.data.id,
+            currency: 'BRL',
+            value: this.data.data.value_tax / 100,
+            num_items: this.data.data.qtd_items
+        });*/
         if(this.expire_time < 0){
             // this.status = 'CANCELED'
         }
