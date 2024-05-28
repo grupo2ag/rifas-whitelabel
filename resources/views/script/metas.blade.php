@@ -1,4 +1,12 @@
-@if(\Illuminate\Support\Facades\Route::currentRouteNamed('index') || \Illuminate\Support\Facades\Route::currentRouteNamed('checkout'))
+@if(\Illuminate\Support\Facades\Route::currentRouteNamed('index'))
+    <link rel="preload" as="image" href="{{ $page['props']['raffles'][0]['new_banner'] }}" type="image/webp" fetchpriority="high">
+@endif
+
+@if(\Illuminate\Support\Facades\Route::currentRouteNamed('raffle'))
+    <link rel="preload" as="image" href="{{ $page['props']['raffle']['galery'][0]->img }}" type="image/webp" fetchpriority="high">
+@endif
+
+@if(\Illuminate\Support\Facades\Route::currentRouteNamed('index') || \Illuminate\Support\Facades\Route::currentRouteNamed('raffle'))
     <meta head-key="description" name="description" content="{{ $meta['description'] ?? $page['props']['siteconfig']['meta_description'] }}"/>
     <meta head-key="keywords" name="keywords" content="{{ $meta['keywords'] ?? $page['props']['siteconfig']['meta_keywords'] }}"/>
 
@@ -22,7 +30,7 @@
     <meta name="og:locale" property="og:locale" content="pt_BR" />
     <meta property="og:type" content="website"/>
 
-    <meta name="twitter:title" property="twitter:title" content="{{ $page['props']['siteconfig']['site_title'] }}"/>
+    <meta name="twitter:title" property="twitter:title" content="{{ $meta['title'] ?? $page['props']['siteconfig']['site_title'] }}"/>
     <meta name="twitter:description" property="twitter:description" content="{{ $meta['description'] ?? $page['props']['siteconfig']['meta_description'] }}"/>
     <meta name="twitter:image" property="twitter:image" content="{{$meta['image'] ?? $page['props']['siteconfig']['meta_image'] }}"/>
     <meta name="twitter:image:src" property="twitter:image:src" content="{{$meta['image'] ?? $page['props']['siteconfig']['meta_image'] }}"/>
