@@ -64,7 +64,7 @@ class Pixcred
             return $responseBody;
         } else {
             if($isTransaction) DB::rollback();
-            setLogErros('LIBRARIE->pixcred', 'Erro geração do pix', [$response->status(), $response->json()], 'catch', $statusCode);
+            setLogErros('LIBRARIE->pixcred', 'Erro geração do pix', [$response->status(), $response->json(), $data], 'catch', $statusCode);
             return false;
         }
     }
