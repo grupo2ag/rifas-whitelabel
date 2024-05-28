@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
 
 if(!function_exists('pixcred_generate')) {
 
-    function pixcred_generate(int $raffleId, array $pix_data)
+    function pixcred_generate(int $raffleId, array $pix_data, bool $isTransaction = false)
     {
 
         $rifa = Raffle::join('gateways', 'gateways.id', '=', 'raffles.gateway_id')
@@ -42,7 +42,7 @@ if(!function_exists('pixcred_generate')) {
 
         if(!empty($pix_data['payer_doc'])) $params['payer_doc'] = $pix_data['payer_doc'];
 
-        $generator = $pix->pix_generate($params);
+        $generator = $pix->pix_generate($params, $isTransaction);
 
         if(!empty($generator['pix_link'])) {
             //$generator['qrCode'] = QrCode::size(250)->generate($generator['pix_link']);
@@ -162,10 +162,10 @@ if(!function_exists('numbers_reserve')) {
                 ]);
 
                 if(empty($participant->id)){
+                    DB::rollBack();
                     //throw new Exception('Erro geração do pix');
                     setLogErros('HELPERS->numbers_reserve', 'Erro inserir participant', $participant, 'catch', $raffleId);
                     return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente. code => 02'];
-                    DB::rollBack();
                 }
 
                 //if(empty($numbers)){
@@ -179,13 +179,13 @@ if(!function_exists('numbers_reserve')) {
                         "order_id" => UUID::uuid4(),
                         "participant" => $participant->id
                     ];
-                    $generate = pixcred_generate($raffleId, $pix_data);
+                    $generate = pixcred_generate($raffleId, $pix_data, true);
 
                     if(!$generate){
+                        DB::rollBack();
                         //throw new Exception('Erro geração do pix');
                         setLogErros('HELPERS->pixcred_generate', 'Erro geração do pix', $pix_data, 'catch', $raffleId);
                         return ['errors' => true, 'message' => 'Problema ao reservar, tente novamente. code => 10'];
-                        DB::rollBack();
                     }
 
                     Charge::create([
@@ -207,9 +207,9 @@ if(!function_exists('numbers_reserve')) {
 
                 DB::commit();
             }catch (QueryException $e){
+                DB::rollBack();
                 setLogErros('HELPERS->numbers_reserve', $e->getMessage(), [$raffleId, $qttNumbers, $customerId, $registration_data, $paid,  $numbers], 'catch', $raffleId);
                 return ['errors' => true, 'message' => 'Problema ao efetuar reserva, tente novamente. code 20'];
-                DB::rollBack();
             }
 
             return ['errors' => false, 'numbers' => $resutlNumbers, 'participant' => $participant->id, 'amount' => $amount, 'totalNotDiscount' => $totalNotDiscount, 'discount' => $discount, 'pix' => $generate];
@@ -291,8 +291,8 @@ if(!function_exists('numbers_devolution')) {
 
                     DB::commit();
                 }catch (QueryException $e){
-                    setLogErros('HELPERS->numbers_devolution', $e->getMessage(), [$rifa, $participant]);
                     DB::rollBack();
+                    setLogErros('HELPERS->numbers_devolution', $e->getMessage(), [$rifa, $participant]);
                     return false;
                 }
                 return true;

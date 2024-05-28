@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use App\Models\Raffle;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class Pixcred
@@ -25,16 +26,16 @@ class Pixcred
         $this->webhook_notify = (string)config('app.url').'/webhook_pixcred';
     }
 
-    public function pix_generate($data)
+    public function pix_generate($data, $isTransaction = false)
     {
         $data['url_notify'] = $this->webhook_notify;
         $router = 'cob_requests/create';
-        $return = $this->send($router, 'POST', $data);
+        $return = $this->send($router, 'POST', $data, $isTransaction);
 
         return $return;
     }
 
-    private function send($router = "", $method = 'POST', $data = [])
+    private function send($router = "", $method = 'POST', $data = [], $isTransaction = false)
     {
         switch ($method) {
             case 'POST':
@@ -62,7 +63,8 @@ class Pixcred
 
             return $responseBody;
         } else {
-            setLogErros('LIBRARIE->pixcred', 'Erro geração do pix', $response, 'catch', $statusCode);
+            if($isTransaction) DB::rollback();
+            setLogErros('LIBRARIE->pixcred', 'Erro geração do pix', [$response->status(), $response->json(), $data], 'catch', $statusCode);
             return false;
         }
     }

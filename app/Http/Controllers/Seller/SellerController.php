@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Charge;
 use App\Models\GatewayConfiguration;
 use App\Models\Participant;
 use App\Models\Raffle;
@@ -70,10 +71,15 @@ class SellerController extends Controller
 
         $data['participants']['data'] = $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate();
 
-        $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('document')->count();
+        if($data['raffle']['type'] === 'manual'){
+            $data['participants']['reserved'] = $raffle->participants()->orderBy('id')->where('reserved', '>', 0)->paginate();
+        }
+
+        $data['participants']['distinct'] = $raffle->participants()->select('document')->distinct('customer_id')->count();
         $data['participants']['ranking'] = $raffle->participants()->select('document', 'name', 'email', DB::raw('COUNT(*) as quantity'), DB::raw('SUM(amount) as total_value'))->groupBy('document', 'name', 'email')->orderByDesc('total_value')->take(3)->get();
 
         $data['raffle']['paid'] = $raffle->participants()->sum('paid');
+        $data['raffle']['reserved'] = $raffle->participants()->sum('reserved');
         $image = $raffle->raffle_images()->first();
 
         if (!empty($image)) {
@@ -199,8 +205,8 @@ class SellerController extends Controller
                     if (!empty($raffleAwards))
                         RaffleAward::insert($raffleAwards);
                 } else {
-                    setLogErros('SellerController', 'Erro Rifa Insert Awards', [$request->all(), $rifa]);
                     DB::rollBack();
+                    setLogErros('SellerController', 'Erro Rifa Insert Awards', [$request->all(), $rifa]);
                     return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
                 }
 
@@ -230,8 +236,8 @@ class SellerController extends Controller
                         RaffleImage::insert($raffleImages);
                 }
             } else {
-                setLogErros('SellerController', 'Erro Rifa Insert', $request->all());
                 DB::rollBack();
+                setLogErros('SellerController', 'Erro Rifa Insert', $request->all());
                 return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
             }
 
@@ -239,8 +245,8 @@ class SellerController extends Controller
 
             return $this->index();
         } catch (QueryException $e) {
-            setLogErros('SellerController', $e->getMessage(), $request->all());
             DB::rollBack();
+            setLogErros('SellerController', $e->getMessage(), $request->all());
             return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
         }
     }
@@ -270,6 +276,8 @@ class SellerController extends Controller
             'idRaffle' => 'required|integer|string'
         ]);
 
+        $type = !empty($request->reserved) ? 'reserved' : 'paid';
+
         $query = $request->input('query');
         $query = htmlspecialchars($query, ENT_QUOTES, 'UTF-8');
 
@@ -282,6 +290,7 @@ class SellerController extends Controller
 
         // Busca no banco de dados com paginação
         $response = $query ? $raffle->participants()
+            ->where($type, '>', 0)
             ->where(function ($subquery) use ($query) {
                 $query = strtolower($query);
                 $subquery->where(DB::raw('LOWER(name)'), 'LIKE', "%{$query}%")
@@ -290,7 +299,7 @@ class SellerController extends Controller
                     ->orWhere(DB::raw('LOWER(phone)'), 'LIKE', "%{$query}%");
             })->paginate(15, ['*'], 'page', $page)
             :
-            $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate(15, ['*'], 'page', $page);
+            $raffle->participants()->orderBy('id')->where($type, '>', 0)->paginate(15, ['*'], 'page', $page);
 
         return response()->json($response);
     }
@@ -348,5 +357,40 @@ class SellerController extends Controller
 
 
         return Inertia::render('Seller/Raffle/RaffleCreate', $data);
+    }
+
+    public function reservedCanceled($participantId, $raffleId)
+    {
+        $user = auth()->user();
+
+        $charge = Charge::leftJoin('charge_paids', 'charge_paids.charge_id', 'charges.id')
+            ->join('participants', 'participants.id', 'charges.participant_id')
+            ->join('raffles', 'raffles.id', 'participants.raffle_id')
+            ->where('raffles.user_id', $user->id)
+            ->where('participants.id', $participantId)
+            ->where('participants.raffle_id', $raffleId)
+            ->where('participants.paid', 0)
+            ->where('charges.expired', '>', now())
+            ->first([
+                'charges.*',
+                'charge_paids.id as pago'
+            ]);
+
+        if(empty($charge)){ //se tiver PIX gerado e dentro da expiracao nao deleta reserva
+            $delete = numbers_devolution($raffleId, $participantId);
+            if($delete) return response()->json(true);
+        }
+        return response()->json(false);
+
+        /*$raffle = $user->raffles()->find($raffleId);
+        if($raffle) $participant = $raffle->participants()->find($participantId);
+        else return response()->json(false);
+
+        if($participant){
+            $delete = numbers_devolution($raffleId, $participantId);
+            if($delete) return response()->json(true);
+
+            return response()->json(false);
+        }else return response()->json(false);*/
     }
 }

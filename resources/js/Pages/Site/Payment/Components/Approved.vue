@@ -10,11 +10,26 @@ export default {
     components: {
         Button,
     },
+    props: {
+        raffle: Object
+    },
     data(){
         return{
 
         }
     },
+    mounted() {
+        console.log(this.raffle)
+        setTimeout(() => {
+            window.fbq('track', 'Purchase', {
+                content_ids: this.raffle.id,
+                content_type: 'raffle',
+                currency: 'BRL',
+                value: this.raffle.amount / 100,
+                num_items:  this.raffle.paid
+            });
+        }, 3500)
+    }
 }
 </script>
 

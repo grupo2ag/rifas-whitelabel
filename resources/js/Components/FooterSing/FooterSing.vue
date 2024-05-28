@@ -27,20 +27,9 @@ export default defineComponent( {
 <template>
     <footer class="md:pt-3">
         <div class="md:container">
-            <div class="c-content grid grid-cols-1 md:grid-cols-4 gap-6">
-                <aside>
-<!--                    <Link href="/" class="text-2xl uppercase text-primary font-black" :aria-label="basic.sitem_title">
-                        <img v-if="basic.logo"
-                             :src="basic.logo"
-                             class="h-7"
-                             :alt="basic.site_title">
-                        <img v-else src="/images/logo.svg" class="h-7"/>
-                    </Link>-->
+            <aside class="c-content grid grid-cols-1 md:grid-cols-4 gap-6">
 
-                    <p class="text-sm text-neutral/70">{{ basic.site_title }}<br>© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
-                </aside>
-
-                <nav class="flex flex-col">
+                <nav class="flex flex-col md:order-2">
                     <h6 class="text-lg font-bold text-neutral mb-1">Suporte</h6>
 
                     <a v-if="basic.phone" :href="'https://api.whatsapp.com/send?phone=' + basic.phone" target="_blank"
@@ -53,24 +42,37 @@ export default defineComponent( {
                     </a>
                 </nav>
 
-                <nav class="flex flex-col items-start">
+                <nav class="flex flex-col items-start md:order-3">
                     <h6 class="text-lg font-bold text-neutral mb-1">Forma de Pagamento</h6>
 
                     <img src="/images/pix.svg" class="h-10" alt="Pagamento Pix">
                 </nav>
 
-                <nav class="flex flex-col">
+                <nav class="flex flex-col  md:order-4" v-if="basic.whatsapp || basic.telegram || basic.instagram || basic.facebook">
                     <h6 class="text-lg font-bold text-neutral mb-1">Grupos</h6>
 
                     <SocialMenu />
                 </nav>
-            </div>
+
+                <div class="md:order-1">
+                    <Link href="/" class="text-2xl uppercase text-primary font-black" :aria-label="basic.sitem_title">
+                        <img v-if="basic.logo"
+                             :src="basic.logo"
+                             class="h-5 mt-1"
+                             :alt="basic.site_title">
+                        <img v-else src="/images/logo.svg" class="h-5 mt-1"/>
+                    </Link>
+
+                    <p class="text-xs text-neutral/70 mt-3">© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
+                </div>
+
+            </aside>
         </div>
 
         <div class="container py-5 flex justify-center">
-            <Link href="/" class="text-xs text-neutral/70 flex">
-                desenvolvido por <img src="/images/logo.svg" class="h-4 ml-2 -mt-0.5"/>
-            </Link>
+            <a href="https://rifas8.com" target="_blank" class="text-xs text-neutral/70 flex">
+                desenvolvido por <img src="/images/logo.svg" class="h-3 ml-1"/>
+            </a>
         </div>
     </footer>
 </template>

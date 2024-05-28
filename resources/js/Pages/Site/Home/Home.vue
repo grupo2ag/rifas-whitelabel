@@ -101,7 +101,7 @@ export default {
                                      class="w-full h-full object-cover rounded-xl" :alt="item.title">
                             </figure>
                             <div class="flex flex-col justify-between flex-1">
-                                <p class="text-neutral/60">{{ item.title }}</p>
+                                <p class="text-neutral/60 leading-tight">{{ item.title }}</p>
                                 <p class="text-neutral font-bold text-xl">{{ func.formatValue(item.price) }}</p>
                                 <Button type="button" color="primary" class="mt-2">Clique e Participe</Button>
                             </div>
@@ -123,15 +123,15 @@ export default {
                                      class="w-full h-full object-cover" :alt="item.title">
                             </figure>
                             <div class="flex-1 flex flex-col justify-between gap-1">
-                                <p class="text-lg font-semibold text-neutral line-clamp-2" :title="item.title">{{ item.title }}</p>
+                                <p class="flex-1 text-lg font-normal text-neutral line-clamp-2 leading-tight" :title="item.title">{{ item.title }}</p>
 
-                                <p class="text-neutral" v-if="item.raffle_awards[0]?.number_award">
-                                    Sorteado: <span class="font-bold">N° {{item.raffle_awards[0]?.number_award}}</span>
+                                <p class="text-neutral text-neutral/70" v-if="item.raffle_awards[0]?.number_award">
+                                    Sorteado: <span class="text-neutral font-bold">N° {{item.raffle_awards[0]?.number_award}}</span>
                                 </p>
 
-                                <p class="text-neutral leading-tight" v-if="item.raffle_awards[0]?.winner_name">
+                                <p class="text-neutral/70 leading-tight" v-if="item.raffle_awards[0]?.winner_name">
                                     Ganhador:
-                                    <span class="font-bold">{{item.raffle_awards[0]?.winner_name}}</span>
+                                    <span class="text-neutral font-bold">{{item.raffle_awards[0]?.winner_name}}</span>
                                 </p>
 
                                 <Button type="button" color="primary" class="mt-2">Ver Resultado</Button>

@@ -50,7 +50,7 @@ export default {
 </script>
 
 <template>
-    <div class="w-full p-3 border border-neutral/10 rounded-xl">
+    <div class="w-full p-3 border border-primary/20 bg-neutral/5 rounded-xl">
         <div class="w-full flex items-center justify-center gap-4">
             <figure class="flex-1 aspect-square overflow-hidden">
                 <img :src="data.galery" class="w-full h-full object-cover rounded-xl" :alt="data.title">
@@ -85,8 +85,8 @@ export default {
             </div>
         </div>
         <div class="mt-2 border-t border-neutral/10 pt-2">
-            <p class="text-sm text-neutral mb-2">Quantidade de bilhetes: <strong class="font-bold">{{ data.quantity }}</strong></p>
-            <ul v-if="data.raffle.type === 'manual' || data.purchase === 'PAID'" class="grid grid-cols-8 gap-1">
+            <p class="text-sm text-neutral mb-2">Títulos:</p>
+            <ul v-if="data.raffle.type === 'manual' || data.purchase === 'PAID'" class="grid grid-cols-5 md:grid-cols-8 gap-1">
                 <template v-for="item in data.numbers.split(',')">
                     <li class="border border-primary/20 bg-primary/5 text-neutral font-semibold py-1 text-sm text-center ">{{item}}</li>
                 </template>
