@@ -56,8 +56,8 @@ class PixPaymentController extends Controller
                     $updt = Participant::where('id', $participant->id)->update(['paid' => $qtdeTitulos, 'reserved' => 0]);
 
                     if(!$updt){
-                        setLogErros('WEBHOOK->update-participant', $participant, [$updt, $response, $charge]);
                         DB::rollBack();
+                        setLogErros('WEBHOOK->update-participant', $participant, [$updt, $response, $charge]);
                         return false;
                     }
 
@@ -94,8 +94,8 @@ class PixPaymentController extends Controller
 
                     DB::commit();
                 }catch (QueryException $e){
-                    setLogErros('WEBHOOK->catch', $e->getMessage(), $response);
                     DB::rollBack();
+                    setLogErros('WEBHOOK->catch', $e->getMessage(), $response);
                     return false;
                 }
             }else return true;

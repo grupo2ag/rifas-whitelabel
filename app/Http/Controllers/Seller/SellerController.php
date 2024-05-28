@@ -205,8 +205,8 @@ class SellerController extends Controller
                     if (!empty($raffleAwards))
                         RaffleAward::insert($raffleAwards);
                 } else {
-                    setLogErros('SellerController', 'Erro Rifa Insert Awards', [$request->all(), $rifa]);
                     DB::rollBack();
+                    setLogErros('SellerController', 'Erro Rifa Insert Awards', [$request->all(), $rifa]);
                     return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
                 }
 
@@ -236,8 +236,8 @@ class SellerController extends Controller
                         RaffleImage::insert($raffleImages);
                 }
             } else {
-                setLogErros('SellerController', 'Erro Rifa Insert', $request->all());
                 DB::rollBack();
+                setLogErros('SellerController', 'Erro Rifa Insert', $request->all());
                 return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
             }
 
@@ -245,8 +245,8 @@ class SellerController extends Controller
 
             return $this->index();
         } catch (QueryException $e) {
-            setLogErros('SellerController', $e->getMessage(), $request->all());
             DB::rollBack();
+            setLogErros('SellerController', $e->getMessage(), $request->all());
             return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
         }
     }
