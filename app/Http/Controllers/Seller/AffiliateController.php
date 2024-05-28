@@ -20,14 +20,7 @@ class AffiliateController extends Controller
         if(!empty($affiliateId)){
             $affiliate = $user->affiliate()->where('affiliates.id', $affiliateId)->first();
 
-            $ganhos = Participant::join('raffles', 'raffles.id', 'participants.raffle_id')
-                                ->where('participants.paid', '>', 0)
-                                ->where('participants.affiliate_id', $affiliateId)
-                                ->select('raffles.id', DB::raw('SUM(participants.amount) as total, SUM(paid) as cotas, COUNT(participants.id) as vendas'))
-                                ->groupBy('raffles.id')
-                                ->get();
-
-            dd($ganhos);
+            return Inertia::render('Seller/Affiliate/AffiliateDashboard', ['data' => $affiliate]);
         }
 
         if(!empty($affiliate)){
@@ -37,6 +30,64 @@ class AffiliateController extends Controller
         $affiliates = $user->affiliate()->paginate();
 
         return Inertia::render('Seller/Affiliate/AffiliateIndex', ['data' => $affiliates]);
+    }
+
+    public function commissions(Request $request)
+    {
+        $request->validate([
+            'query' => 'max:255',
+            'page' => 'integer|string',
+            'idAffiliate' => 'required|integer|string'
+        ]);
+        //dd($request->all());
+        $winnings = Participant::join('raffles', 'raffles.id', 'participants.raffle_id')
+            ->join('affiliate_raffles', 'affiliate_raffles.raffle_id', 'raffles.id')
+            ->where('participants.paid', '>', 0)
+            ->where('participants.affiliate_id', $request->idAffiliate)
+            ->select('raffles.id',
+                'raffles.status',
+                'raffles.title',
+                'raffles.price',
+                'affiliate_raffles.type',
+                'affiliate_raffles.value',
+                'affiliate_raffles.link',
+                DB::raw('SUM(participants.amount) as total,
+                                                SUM(participants.paid) as paids,
+                                                COUNT(participants.id) as sales'))
+            ->groupBy('raffles.id', 'affiliate_raffles.raffle_id', 'affiliate_raffles.affiliate_id')
+            ->orderBy('raffles.id', 'DESC')
+            ->get();
+
+        //dd($winnings);
+        if(!empty($winnings)){
+            $retorno = [];
+            foreach ($winnings as $item){
+                if($item->type === 'percent'){
+                    $commission = number_format(($item->total/100)*(($item->value/100)/100), 2);
+                    $commission_value = ($item->value/100).'%';
+                }else{
+                    $commission = $item->paids*($item->value/100);
+                    $commission_value = 'R$ '.($item->value/100);
+                }
+                array_push($retorno, [
+                    'raffle' => $item->id,
+                    'title' => $item->title,
+                    'status' => $item->status,
+                    'price' => $item->price,
+                    'link' => $item->link,
+                    'commission' => $commission,
+                    'commission_type' => $item->type,
+                    'commission_value' => $commission_value,
+                    'sales' => $item->sales,
+                    'quotas' => $item->paids,
+                    'total' => $item->total
+                ]);
+            }
+
+            return response()->json($retorno);
+        }
+
+        return response()->json(false);
     }
 
     public function created()
