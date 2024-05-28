@@ -75,13 +75,14 @@ export default {
                     }))
                         .then(response => {
                             this.loading = false;
-                            if(response){
+                            //console.log(response);
+                            if(response.data){
                                 this.search();
                                 this.$swal.fire('Removidos!', '', 'success')
-                            }
+                            }else this.$swal.fire('Reserva tem pix gerado a expirar!', '', 'info')
                         })
                         .catch(error => {
-                            console.error('Erro na busca:', error);
+                            this.$swal.fire('Tente novamente', '', 'info')
                             this.loading = false;
                         });
 
