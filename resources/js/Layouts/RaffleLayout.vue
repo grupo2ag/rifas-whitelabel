@@ -181,6 +181,13 @@ export default {
                                 <p class="text-neutral/70">Visível</p>
                             </div>
                         </div>
+                        <div class="w-full mb-2">
+                            <div class="flex flex-row ">
+                                <LinkIcon class="hidden w-6 mr-2 lg:grid text-neutral/70" />
+                                <a target="_blank" class="break-all link link-info"
+                                   :href="route('raffles.raffleExport',data?.id )">Exportar participantes</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-wrap items-center w-full mt-2 lg:w-2/12 animate-fade-left">
