@@ -24,9 +24,9 @@ export default {
     data() {
         return {
             collapse: [],
-            array_raffle: this.data?.raffle.split(','),
-            array_reserved: this.data?.reserved.split(','),
-            array_paid: this.data?.paid.split(','),
+            array_raffle: this.data.raffle ? this.data?.raffle.split(',') : [],
+            array_reserved: this.data.reserved ? this.data?.reserved.split(',') : [],
+            array_paid: this.data.paid ? this.data?.paid.split(',') : [],
             numbers: this.adjust(),
             searchQuery: '',
             currentPage: 1,
@@ -75,9 +75,9 @@ export default {
             }
         },
         adjust() {
-            let array_raffle = this.data?.raffle.split(',');
-            let array_reserved = this.data?.reserved.split(',');
-            let array_paid = this.data?.paid.split(',');
+            let array_raffle = this.data.raffle ? this.data?.raffle.split(',') : [];
+            let array_reserved = this.data.reserved ? this.data?.reserved.split(',') : [];
+            let array_paid = this.data.paid ? this.data?.paid.split(',') : [];
 
             let all = array_raffle.concat(array_paid)
             all = all.concat(array_reserved)
