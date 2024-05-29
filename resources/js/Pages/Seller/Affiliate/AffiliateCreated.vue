@@ -435,7 +435,7 @@ export default {
                         <Button :href="route('affiliate.affiliateIndex')" class="animate-fade-right" size="sm" color="outline-light">
                             Cancelar
                         </Button>
-                        <Button type="button" @click="submitForm" color="success" class="animate-fade-left"oading="loading"
+                        <Button type="button" @click="submitForm" color="success" class="animate-fade-left" :loading="loading"
                             :disabled="disabled">
                             Salvar
                         </Button>
