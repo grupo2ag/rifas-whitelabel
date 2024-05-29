@@ -35,13 +35,19 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
             Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
             Route::get('/reserved_canceled/{participant}/{raffle}',[SellerController::class, 'reservedCanceled'])->name('raffleRemoveReserve');
+            Route::get('/live/{id}', [SellerController::class, 'live'])->name('raffleLive');
+            Route::get('/export/{id}',[SellerController::class, 'export'])->name('raffleExport');
+            Route::get('/sale/{id}/{condition}', [SellerController::class, 'sale'])->name('raffleSale');
         });
 
         Route::prefix('/affiliate')->name('affiliate.')->group(function () {
             Route::get('/created', [AffiliateController::class, 'created'])->name('affiliateCreated');
             Route::get('/commissions', [AffiliateController::class, 'commissions'])->name('affiliateCommissions');
-            Route::post('/store', [AffiliateController::class, 'store'])->name('affiliateStore');
+            Route::get('/edit/{id}',[AffiliateController::class, 'edit'])->name('affiliateEdit');
             Route::get('/{affiliate?}', [AffiliateController::class, 'index'])->name('affiliateIndex');
+            Route::post('/store', [AffiliateController::class, 'store'])->name('affiliateStore');
+            Route::post('/updated/{id}',[AffiliateController::class, 'updated'])->name('affiliateUpdated');
+            Route::delete('/deleteVinculation',[AffiliateController::class, 'deleteVinculation'])->name('affiliateDeleteVinculation');
         });
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');

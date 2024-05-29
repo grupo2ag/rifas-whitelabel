@@ -1,16 +1,17 @@
 <script setup>
 import Error from "@/Components/Error/Error.vue";
 
-defineProps(['modelValue','id', 'label', 'name', 'options', 'error','multiple', 'text']);
+defineProps(['modelValue','id', 'label', 'name', 'options', 'error','multiple', 'text', 'role']);
 
 defineEmits(['update:modelValue', 'validate', 'change','multiple']);
 </script>
 
 <template>
-    <div class="py-3 relative">
+    <div class="relative py-3">
         <label class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">{{ label }}</label>
         <select
-            class="block px-3 pb-2 pt-3 text-base w-full text-neutral border rounded-xl focus:outline-none focus:ring-0 focus:border-blue appearance-none"
+            :role="role"
+            class="block w-full px-3 pt-3 pb-2 text-base border appearance-none text-neutral rounded-xl focus:outline-none focus:ring-0 focus:border-blue"
             :name="name"
             :id="name"
             :multiple="multiple"

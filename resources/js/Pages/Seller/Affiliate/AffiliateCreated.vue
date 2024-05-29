@@ -9,10 +9,11 @@ import * as func from '@/Helpers/functions.js'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 import Input from '@/Components/FormElements/Input.vue';
+import InputPercent from '@/Components/FormElements/InputPercent.vue';
 import Button from '@/Components/Button/Button.vue';
 import Select from '@/Components/FormElements/Select.vue';
-import CurrencyInput from '@/Components/FormElements/CurrencyInput.vue';
 import SwitchCheckbox from '@/Components/SwitchCheckbox/SwitchCheckbox.vue';
+import CurrencyInput from '@/Components/FormElements/CurrencyInput.vue';
 import {
     PlusCircleIcon,
     ArrowLeftIcon,
@@ -28,8 +29,10 @@ import {
     TicketIcon,
     AdjustmentsHorizontalIcon,
     ReceiptPercentIcon,
-ArrowsRightLeftIcon
+    ArrowsRightLeftIcon,
+    PlusIcon
 } from '@heroicons/vue/24/outline';
+import InputPercentVue from '@/Components/FormElements/InputPercent.vue';
 
 export default {
     components: {
@@ -54,18 +57,54 @@ export default {
         AdjustmentsHorizontalIcon,
         ReceiptPercentIcon,
     },
+    mounted() {
+        if (this.affiliate) {
+            this.form.id = this.affiliate.id;
+            this.form.name = this.affiliate.name;
+            this.form.description = this.affiliate.description;
+            this.form.document = this.affiliate.document;
+            this.form.phone = this.affiliate.phone;
+            this.form.email = this.affiliate.email;
+            this.form.pixKey = this.affiliate.pix_key;
+            }
+
+        if (this?.affiliate?.vinculations && this?.affiliate?.vinculations.length > 0) {
+            this.form.raffles = this.affiliate?.vinculations.map(raffle => ({
+                raffle_id: raffle.raffle_id,
+                type: raffle.type,
+                value: raffle.value,
+                link: raffle.link,
+                affiliate_id: raffle?.affiliate_id,
+                actived: raffle?.actived,
+                created_at: raffle?.created_at,
+                updated_at: raffle?.updated_at
+            }));
+        }
+        console.log(this.raffles);
+        console.log(this.affiliate);
+    },
     props: {
-        affiliate: Object
+        affiliate: Object,
+        raffles: Array
     },
     data() {
         return {
             form: {
-                name: this?.affiliate ? this?.affiliate?.name : '',
-                description: this?.affiliate ? this?.affiliate?.description : '',
-                document: this?.affiliate ? this?.affiliate?.document : '',
-                phone: this?.affiliate ? this?.affiliate?.phone : '',
-                email: this?.affiliate ? this?.affiliate?.email : '',
-                pixKey: this?.affiliate ? this?.affiliate?.pixKey : '',
+                id: '',
+                name: '',
+                description: '',
+                document: '',
+                phone: '',
+                email: '',
+                pixKey: '',
+                raffles: [
+                {
+                    raffle_id: '',
+                    type: '',
+                    value: 0,
+                    link: ''
+                }
+                ]
             },
             validator: {
                 name: '',
@@ -73,14 +112,92 @@ export default {
                 phone: '',
                 email: '',
                 pixKey: '',
+                raffles: []
             },
             characterLenght: 0,
             characterLenghtDescription: 0,
+            propAffiliate: {}
         }
     },
     methods: {
+        ///////////////////////////////// METODOS PARA COMPARAR ARRAYS DE OBJETOS
+    areArraysEqual(arr1, arr2) {
+      if (arr1.length !== arr2.length) {
+        return false;
+      }
+
+      return arr1.every((item, index) => this.areObjectsEqual(item, arr2[index]));
+    },
+    areObjectsEqual(obj1, obj2) {
+        const obj1Keys = Object.keys(obj1);
+        const obj2Keys = Object.keys(obj2);
+
+        if (obj1Keys.length !== obj2Keys.length) {
+            return false;
+        }
+
+        return obj1Keys.every(key => obj1[key] === obj2[key]);
+        },
+    ////////////////////////////////// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        addRaffle() {
+            if (this.form.raffles.length < this.raffles.length) {
+                this.form.raffles.push({
+                    raffle_id: '',
+                    type: '',
+                    value: 0,
+                    link: ''
+                })
+            }
+            console.log(this.form, this.affiliate);
+        },
+        removeRaffle(index, nameRaffle) {
+            console.log(this?.affiliate?.vinculations[index], this?.form?.raffles[index])
+            if(this.areObjectsEqual(this?.affiliate?.vinculations[index] ?? {}, this?.form?.raffles[index])) //verifica se vinculacao ja existe no banco, se sim, deleta, se nao, apenas exclui do array
+            {
+                this.$swal({
+                    title: `Deseja realmente desvincular a rifa ${nameRaffle} de ${this?.form?.name}?`,
+                    text: 'Caso deseje desfazer a ação, deverá fazer a vinculação novamente.',
+                    confirmButtonText: "Sim, Desvincular",
+                    showCancelButton: true,
+                    cancelButtonText: "Não, Cancelar",
+                    icon: 'question',
+                    type: 'question',
+                    allowOutsideClick: true,
+                    customClass: {
+                        confirmButton: 'sw-btn sw-btn--red',
+                        cancelButton: 'sw-btn sw-btn--blue',
+                        popup: 'sw-popup',
+                        title: 'sw-title',
+                }
+                }).then((res) => {
+                    if (res?.isConfirmed) {
+                        axios.delete(route('affiliate.affiliateDeleteVinculation', { data: {affiliateId: this?.affiliate?.id, raffleId: this.form?.raffles[index].raffle_id} }))
+                            .then(response => {
+                                this.$swal(
+                                    'Pronto!',
+                                    `Desvinculação realizada com sucesso!`,
+                                    'success'
+                                )
+                                this.form.raffles.splice(index, 1);
+                            })
+                            .catch(error => {
+                                this.$swal(
+                                    'Ops!',
+                                    `Ocorreu um erro ao desvincular rifa.`,
+                                    'error'
+                                )
+                                console.error(error?.response);
+                            });
+                    }
+                })
+            }else {
+                this.form.raffles.splice(index, 1);
+            }
+        },
         validateForm() {
-            this.errors = {};
+            this.errors = {
+                raffles: []
+            };
 
             // Validação do nome
             if (!this?.form?.name) {
@@ -118,8 +235,36 @@ export default {
                 this.errors.pixKey = 'Chave Pix inválida.';
             }
 
+            this.form.raffles.map((vinculation, index) => {
+                if (!!vinculation?.raffle_id || !!vinculation?.type || !!vinculation?.value) {
+                    const objErrorRaffle = {};
+                    if (!vinculation?.raffle_id) {
+                        objErrorRaffle['raffle_id'] = 'Preencha o campo'
+                    }
+                    if (!vinculation?.type) {
+                        objErrorRaffle['type'] = 'Preencha o campo'
+                    }
+                    if (!vinculation?.value) {
+                        objErrorRaffle['value'] = 'Preencha o campo'
+                    }
+                    this.errors.raffles[index] = objErrorRaffle;
+                }
+            });
+
             this.validator = this.errors;
-            return Object.keys(this.errors).length === 0;
+            return Object.keys(this.errors).length === 1;
+        },
+        verifyVinculations() {
+            const seen = new Set();
+            this.form.raffles = this.form.raffles.filter(raffle => {
+                if (raffle.raffle_id === '') return true;
+                if (seen.has(raffle.raffle_id)) {
+                    return false; // Remove duplicado
+                } else {
+                    seen.add(raffle.raffle_id);
+                    return true;
+                }
+            });
         },
         submitForm() {
             if (this.validateForm()) {
@@ -129,7 +274,16 @@ export default {
                         'Afiliado adicionado com sucesso!',
                         'success'
                     );
-                    this.form = {};
+                    // this.form = {
+                    //     raffles: [
+                    //         {
+                    //             raffle_id: '',
+                    //             type: '',
+                    //             value: 0,
+                    //             link: ''
+                    //         }
+                    //     ]
+                    // };
                 }).catch(() => {
                     this.$swal(
                         'Ops!',
@@ -153,23 +307,23 @@ export default {
                 Criar Afiliado
             </h2>
         </template>
-        <div class="w-full py-5 md:container lg:w-6/12">
+        <div class="container w-full py-5 lg:w-6/12">
             <form @submit.prevent="onSubmit">
-                <div class="mb-4 c-content" ref="geral">
+                <div class="mb-4 rounded-lg c-content" ref="geral">
                     <div class="flex items-center justify-between w-full pb-2 border-b border-base-100">
-                        <div class="flex items-center">
+                        <div class="flex items-center animate-fade-right">
                             <TicketIcon class="h-5 mr-1 stroke-neutral" />
 
-                            <h3 class="text-base font-semibold text-neutral">Informações de Afiliado</h3>
+                            <h3 class="text-base font-semibold text-neutral ">Informações de Afiliado</h3>
                         </div>
 
-                        <Button :href="route('affiliate.affiliateIndex')" size="sm" color="outline-light">
+                        <Button :href="route('affiliate.affiliateIndex')" size="sm" color="outline-light" class="animate-fade-left">
                             <ArrowLeftIcon class="w-4 mr-2 fill-white" /> Voltar
                         </Button>
                     </div>
 
                     <div class="flex flex-row flex-wrap w-full pt-3">
-                        <div class="w-full px-1">
+                        <div class="w-full px-1 animate-fade-right">
                             <Input :validate="validateForm" label="*Nome" v-model="form.name" type="text" :name="'name'"
                                 :maxlength="80" v-on:keyup="(e) => characterLenght = e.target.value.length"
                                 :error="validator.name || $page.props.errors.name" placeholder="Insira o nome" />
@@ -180,70 +334,108 @@ export default {
                             </div>
 
                         </div>
-                        <div class="w-full px-1">
-                            <Input :validate="validateForm" label="Descrição" v-model="form.description" type="textarea" :name="'description'"
-                                :maxlength="100" v-on:keyup="(e) => characterLenghtDescription = e.target.value.length"
-                                :error="validator.description || $page.props.errors.description" placeholder="Insira a descrição" />
-                            <div class="relative z-30 flex justify-end w-full" :class="validator.description && '-top-6'">
+                        <div class="w-full px-1 animate-fade-left">
+                            <Input :validate="validateForm" label="Descrição" v-model="form.description" type="textarea"
+                                :name="'description'" :maxlength="100"
+                                v-on:keyup="(e) => characterLenghtDescription = e.target.value.length"
+                                :error="validator.description || $page.props.errors.description"
+                                placeholder="Insira a descrição" />
+                            <div class="relative z-30 flex justify-end w-full"
+                                :class="validator.description && '-top-6'">
                                 <p class="px-2 mb-2 -mt-2 text-xs text-neutral/70">
                                     {{ characterLenghtDescription }} de 100
                                     caracteres</p>
                             </div>
 
                         </div>
-                        <div class="w-full px-1 md:w-6/12">
+                        <div class="w-full px-1 md:w-6/12 animate-fade-right">
                             <!-- documento -->
                             <Input v-mask="['###.###.###-##', '##.###.###/####-##']" :validate="validateForm"
                                 label="*Documento" v-model="form.document" type="text" :name="'document'"
-                                :maxlength="20"
-                                :error="validator?.document || $page?.props?.errors?.document"
+                                :maxlength="20" :error="validator?.document || $page?.props?.errors?.document"
                                 placeholder="Insira o documento" />
                         </div>
-                        <div class="w-full px-1 md:w-6/12">
+                        <div class="w-full px-1 md:w-6/12 animate-fade-left">
                             <!-- Email -->
                             <Input :validate="validateForm" label="*Email" v-model="form.email" type="text"
-                                :name="'email'" :maxlength="20" :error="validator?.email"
+                                :name="'email'" :maxlength="100" :error="validator?.email"
                                 placeholder="Insira o email" />
                         </div>
-                        <div class="w-full px-1 md:w-6/12">
+                        <div class="w-full px-1 md:w-6/12 animate-fade-right">
                             <!-- Telefone -->
                             <Input v-mask="['(##) #####-####', '(##) ####-####']" :validate="validateForm"
                                 label="*Telefone" v-model="form.phone" type="text" :name="'phone'" :maxlength="20"
-                             :error="validator?.phone || $page?.props?.errors?.phone"
+                                :error="validator?.phone || $page?.props?.errors?.phone"
                                 placeholder="Insira o telefone" />
                         </div>
-                        <div class="w-full px-1 md:w-full">
+                        <div class="w-full px-1 md:w-full animate-fade-left">
                             <!-- chave pix -->
                             <Input :validate="validateForm" label="*Chave Pix" v-model="form.pixKey" type="text"
-                                :name="'pixKey'" :maxlength="20"
+                                :name="'pixKey'" :maxlength="100"
                                 :error="validator?.pixKey || $page?.props?.errors?.pixKey"
                                 placeholder="Insira a chave pix" />
                         </div>
                     </div>
                 </div>
 
-                <div class="mb-4 c-content">
+                <div v-if="!!raffles && raffles?.length > 0" class="mb-4 rounded-lg c-content">
                     <div class="flex flex-row w-full pb-2 border-b border-base-100">
-                        <div class="flex items-center">
-                            <ArrowsRightLeftIcon class="h-5 mr-1 stroke-neutral" />
+                        <div class="flex flex-row items-center w-full">
+                            <div class="flex justify-start w-6/12 animate-fade-right">
+                                <ArrowsRightLeftIcon class="h-5 mr-1 stroke-neutral" />
 
-                            <h3 class="text-base font-semibold text-neutral">Vincular Rifas</h3>
+                                <h3 class="text-base font-semibold text-neutral">Vincular Rifas</h3>
+                            </div>
+                            <div class="flex justify-end w-6/12 animate-fade-left">
+                                <button class="btn btn-sm bg-primary text-primary-bw" @click="addRaffle">
+                                    <PlusIcon class="w-4" />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex flex-row w-full">
-
+                    <div v-for="(raffle, index) in form.raffles" :key="raffle"
+                        class="flex flex-row flex-wrap w-full p-2 mb-2 border rounded-lg animate-fade-down xl:border-none border-neutral/70">
+                        <div class="w-full px-1 xl:w-4/12">
+                            <Select :label="'Rifa'" v-model="form.raffles[index].raffle_id"
+                                @input="form.raffles[index].link = raffles[index]?.link"
+                                :error="validator?.raffles[index]?.raffle_id" :name="'raffle' + index" :role="'button'">
+                                <option v-for="raffle in this.raffles" :key="raffle?.id" :value="raffle?.id">
+                                    {{ raffle?.title }}</option>
+                            </Select>
+                        </div>
+                        <div class="w-full px-1 xl:w-3/12">
+                            <Select :label="'Tipo'" :modelValue="form.raffles[index].type"
+                                :error="validator?.raffles[index]?.type" :name="'type' + index" :role="'button'"
+                                @input="(e) => (form.raffles[index].type = e.target.value, form.raffles[index].value = 0)">
+                                <option value="percent">Porcentagem</option>
+                                <option value="fixed">Fixo</option>
+                            </Select>
+                        </div>
+                        <div v-if="form.raffles[index].type == '' || form.raffles[index].type == 'fixed'" class="w-full px-1 xl:w-4/12 animate-fade-left">
+                            <CurrencyInput label="Valor" :name="'value' + index" v-model="form.raffles[index].value" :value="raffle?.value/100" >
+                            </CurrencyInput>
+                        </div>
+                        <div v-else class="w-full px-1 xl:w-4/12 animate-fade-left">
+                            <InputPercent :label="'Porcentagem'" :type="'number'" :name="'value' + index" v-model="form.raffles[index].value" :value="raffle?.value" />
+                            <!-- <Input :maxlength="'2'" :label="'Porcentagem'" :type="'text'" :name="'value' + index" /> -->
+                        </div>
+                        <div class="flex items-center justify-center w-full xl:w-1/12">
+                            <button @click="removeRaffle(index, raffles[index]?.title)" class="w-full xl:w-auto btn btn-sm btn-error">
+                                <TrashIcon class="w-4 text-white" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="c-content">
+                <div class="rounded-lg c-content">
                     <div class="flex justify-end gap-4" v-if="$page.props.message">
                         <p>{{ $page.props.message }}</p>
                     </div>
                     <div class="flex justify-end gap-4" v-else>
-                        <Button :href="route('affiliate.affiliateIndex')" size="sm" color="outline-light">
+                        <Button :href="route('affiliate.affiliateIndex')" class="animate-fade-right" size="sm" color="outline-light">
                             Cancelar
                         </Button>
-                        <Button type="button" @click="submitForm" color="success" :loading="loading"
+                        <Button type="button" @click="submitForm" color="success" class="animate-fade-left" :loading="loading"
                             :disabled="disabled">
                             Salvar
                         </Button>

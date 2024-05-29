@@ -20,6 +20,7 @@
         "predis/predis": "^2.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-webhook-client": "^3.3",
+        "spatie/simple-excel": "^3.6",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

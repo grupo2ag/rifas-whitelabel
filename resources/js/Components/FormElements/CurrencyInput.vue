@@ -7,7 +7,7 @@
             v-model.number="amount"
             v-bind="config"
             :id="name"
-            class="block px-3 pb-2 pt-3 text-base bg-content w-full text-neutral border rounded-xl focus:outline-none focus:ring-0 focus:border-blue"
+            class="block w-full px-3 pt-3 pb-2 text-base border bg-content text-neutral rounded-xl focus:outline-none focus:ring-0 focus:border-blue"
             :class="[!!error ? 'border-red' :  'border-white-dark']"
         />
 
@@ -32,11 +32,12 @@ export default {
         max: {type: Number, default: 10000000000},
         label: String,
         error: String,
-        name: String
+        name: String,
+        value: Number
     },
     data() {
         return {
-            amount: null,
+            amount: this.value ?? null,
             config: {
                 masked: false,
                 prefix: this.prefix,
@@ -60,10 +61,10 @@ export default {
     },
     watch: {
         modelValue(val) {
-            this.amount = val;
+            this.amount = val*100;
         },
         amount(val) {
-            this.$emit("update:modelValue", val);
+            this.$emit("update:modelValue", val*100);
         },
     }
 }

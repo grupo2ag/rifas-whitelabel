@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Ramsey\Uuid\Uuid;
 
 if(!function_exists('pixcred_generate')) {
@@ -308,6 +309,8 @@ if(!function_exists('numbers_generate')) {
         $numbers = [];
         $left_zero = strlen($quantity) - 1;
 
+        //$inicio = $quantity > 10000 ? 1 : 0;
+
         for ($i = 0; $i < $quantity; $i++) {
             $arr = str_pad($i, $left_zero,  '0', STR_PAD_LEFT);
             array_push( $numbers, $arr);
@@ -394,6 +397,25 @@ if (!function_exists('hideString')) {
         $mask_number =  substr_replace($text, $star, $initial, ($final*(-1)));
 
         return $mask_number;
+    }
+}
+
+if (!function_exists('getDDDState')) {
+    function getDDDState($phone){
+        $telefone = preg_replace('/[()]/', '', $phone);
+
+        if (preg_match('/^(?:(?:\+|00)?(55)\s?)?(?:\(?([0-0]?[0-9]{1}[0-9]{1})\)?\s?)??(?:((?:9\d|[2-9])\d{3}\-?\d{4}))$/', $telefone, $matches) === false) {
+            return null;
+        }
+
+        $ddi = $matches[1] ?? '';
+        $ddd = preg_replace('/^0/', '', $matches[2] ?? '');
+
+        $json = File::get(base_path("database/data/ddd.json"));
+        $states = json_decode($json);
+
+        return !empty($states->{$ddd}) ? $states->{$ddd} : '';
+
     }
 }
 

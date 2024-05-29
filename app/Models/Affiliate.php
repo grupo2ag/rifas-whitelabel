@@ -38,10 +38,12 @@ class Affiliate extends Model
     public $timestamps = true;
 
     protected $casts = [
-		'user_id' => 'int'
+		'user_id' => 'int',
+        'id' => 'int'
 	];
 
 	protected $fillable = [
+        'id',
 		'name',
 		'link',
 		'description',
@@ -63,4 +65,14 @@ class Affiliate extends Model
 					->withPivot('actived', 'type', 'value')
 					->withTimestamps();
 	}
+    public function affiliate_raffles()
+    {
+        return $this->hasMany(AffiliateRaffle::class);
+    }
+    public function scopeOfId($query, $id) {
+       return $query->where('id', $id);
+    }
+    public function scopeOfUserId($query, $userId) {
+        return $query->where('user_id', $userId);
+    }
 }

@@ -6,15 +6,18 @@ use App\Events\PixManual;
 use App\Events\PixPayment;
 use App\Libraries\Pixcred;
 use App\Models\Customer;
+use App\Models\Participant;
 use App\Models\Raffle;
 use App\Models\RafflePromotion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class TesteController extends Controller
 {
@@ -55,6 +58,52 @@ class TesteController extends Controller
         ];
         dd(numbers_reserve(1, 2, 1, $registration_data, false));*/
         //dd(numbers_available(1));
+    }
+
+    public function numbers($id)
+    {
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->ofId($id)->first();
+
+        $paid = $raffle->participants()->where('participants.raffle_id', $id)
+            ->where('participants.paid', '>', 0)
+            ->groupBy('participants.raffle_id', 'participants.id')
+            ->get([DB::raw("string_agg(participants.numbers, ',') as numbers"), 'participants.name', 'participants.phone']);
+
+        //$reserved = Participant::where('raffle_id', $id)->where('reserved', '>', 0)->groupBy('raffle_id')->get(DB::raw("string_agg(numbers, ',') as numbers"), 'id');
+
+        $part = [];
+        foreach ($paid as $item){
+            $array_numbers = explode(',', $item->numbers);
+            foreach ($array_numbers as $number){
+                $part[(int)$number] = [
+                    'Numero' => $number,
+                    'Nome' => $item->name,
+                    'Telefone' => hideString($item->phone, 10, 3),
+                    'Estado' => getDDDState($item->phone)
+                ];
+            }
+        }
+        sort($part);
+
+        $arqName = Str::slug($raffle->title).'.csv';
+
+        $writer = SimpleExcelWriter::streamDownload($arqName);
+
+        $lazy = collect($part);
+
+        $i = 0;
+        foreach ($lazy->lazy() as $item)
+        {
+            $writer->addRow($item);
+
+            if ($i % 1000 === 0) {
+                flush(); // Flush the buffer every 1000 rows
+            }
+            $i++;
+        }
+        $writer->toBrowser();
     }
 
     public function simulacao_compra(Request $request)

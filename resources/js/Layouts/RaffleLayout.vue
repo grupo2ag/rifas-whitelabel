@@ -71,7 +71,9 @@ export default {
         }
     },
     mounted() {
-        //console.log(this.data);
+        console.log(this.data);
+        var n = this.data.numbers.split(',');
+        console.log(n.length, n)
     }
 }
 </script>
@@ -140,6 +142,13 @@ export default {
                         data?.link }}</a>
                             </div>
                         </div>
+                        <div class="w-full mb-2">
+                            <div class="flex flex-row ">
+                                <LinkIcon class="hidden w-6 mr-2 lg:grid text-neutral/70" />
+                                <a target="_blank" class="break-all link link-info"
+                                   :href="route('raffles.raffleLive',data?.id )">Numeros Disponiveis</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="flex hidden w-4/12 mb-2 lg:grid animate-fade-right">
@@ -170,6 +179,13 @@ export default {
                             <div class="flex flex-row" v-else>
                                 <EyeIcon class="w-6 mr-2 text-neutral/70" />
                                 <p class="text-neutral/70">Visível</p>
+                            </div>
+                        </div>
+                        <div class="w-full mb-2">
+                            <div class="flex flex-row ">
+                                <LinkIcon class="hidden w-6 mr-2 lg:grid text-neutral/70" />
+                                <a target="_blank" class="break-all link link-info"
+                                   :href="route('raffles.raffleExport',data?.id )">Exportar participantes</a>
                             </div>
                         </div>
                     </div>
