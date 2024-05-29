@@ -1,13 +1,13 @@
 <script setup>
-// import Welcome from '@/Components/Welcome.vue';
-import {useForm } from '@inertiajs/vue3';
-import {dateFormat} from "@/Helpers/functions.js";
+import * as func from '@/Helpers/functions.js';
 </script>
 
 <script>
 import * as func from '@/Helpers/functions.js'
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import {useForm} from "@inertiajs/inertia-vue3";
+import Error from "@/Components/Error/Error.vue";
 
 import Input from '@/Components/FormElements/Input.vue';
 import Button from '@/Components/Button/Button.vue';
@@ -15,6 +15,9 @@ import Select from '@/Components/FormElements/Select.vue';
 import CurrencyInput from '@/Components/FormElements/CurrencyInput.vue';
 import SwitchCheckbox from '@/Components/SwitchCheckbox/SwitchCheckbox.vue';
 import {ClassicEditor} from '@ckeditor/ckeditor5-editor-classic';
+import * as yup from "yup";
+import {pt} from 'yup-locale-pt';
+
 import {
     PlusCircleIcon,
     ArrowLeftIcon,
@@ -50,6 +53,7 @@ import {Base64UploadAdapter} from '@ckeditor/ckeditor5-upload';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format';
 
 import { ref } from 'vue';
+
 const componentKey = ref(0);
 
 const forceRender = () => {
@@ -79,6 +83,7 @@ export default {
         TicketIcon,
         AdjustmentsHorizontalIcon,
         ReceiptPercentIcon,
+        Error,
     },
     props: {
         raffle: Object,
@@ -111,15 +116,17 @@ export default {
 
                 quotas: this.raffle ? this.raffle.gallery : [],
 
-                awards: [{description: null, order: null}]
+                awards: [{description: ''}],
+                // awards: [],
+                processing: false
             },
-            validator: {
+           /* validator: {
                 id: '',
                 title: '',
                 image: '',
                 description: '',
                 galleries: ''
-            },
+            },*/
             editorType: ClassicEditor,
             editorConfig: {
                 plugins: [
@@ -161,23 +168,53 @@ export default {
             characterLenght2: 0,
             number_quota: null,
             imageGallery: this.raffle ? this.raffle.galery : '',
+            validator: {
+                title: '',
+                subtitle: '',
+                price: 0,
+                pix_expired: '',
+                description: '',
+                expected_date: '',
+                'awards[0].description': '',
+            },
+            today: new Date()
         }
     },
     methods: {
         onSubmit() {
             const form = useForm(this.form)
 
-            form.post(route('raffles.raffleStore'), {
-                onSuccess: () => {
-                    this.disabled = false
-                    this.loading = false
-                },
-                onError: () => {
-                    this.disabled = false
-                    this.loading = false
-
-                }
+            Object.keys(this.validator).forEach(key => {
+                this.validator[key] = ''
             })
+
+            this.schema
+                .validate(this.form, {abortEarly: false}).then(() => {
+                    this.form.processing = true;
+
+                form.post(route('raffles.raffleStore'), {
+                    onSuccess: () => {
+                        this.disabled = false
+                        this.loading = false
+                    },
+                    onError: () => {
+                        this.disabled = false
+                        this.loading = false
+                    }
+                })
+
+            }).catch((err) => {
+                this.form.processing = false;
+
+                console.log(err)
+                // console.log(err.inner)
+                // document.getElementById(err.inner[0].path).scrollIntoView();
+
+                err.inner.forEach((error) => {
+                    console.log(error )
+                    this.validator = {...this.validator, [error.path]: error.message};
+                });
+            });
         },
         countdown() {
             if (this.form.title || this.form.subtitle) {
@@ -237,8 +274,21 @@ export default {
         },
     },
     mounted() {
-        console.log(this.raffle)
-        //console.log(func.dateFormat(this.raffle.expected_date))
+        yup.setLocale(pt);
+        this.schema = yup.object().shape({
+            title: yup.string().min(10, 'Digite ao menos 10 caracteres').max(80, 'Digite ao máximo 80 caracteres').required('Obrigatório'),
+            subtitle: yup.string().min(5, 'Digite ao menos 5 caracteres').max(160, 'Digite ao máximo 160 caracteres').required('Obrigatório'),
+            price: yup.number().positive().nullable(true).required('Obrigatório'),
+            pix_expired: yup.string().required('Obrigatório'),
+            description: yup.string().required('Obrigatório'),
+            expected_date: yup.string().required('Obrigatório'),
+            awards: yup.array().of(
+                yup.object().shape({
+                    description: yup.string().required('Obrigatório')
+                })
+            ).min(1, '1 no minimo').required('Obrigatório')
+
+        })
     }
 }
 </script>
@@ -269,7 +319,7 @@ export default {
                     <div class="w-full pt-3">
                         <div class="w-full">
                             <Input label="Nome:" v-model="form.title"
-                                   type="text" :name="form.title"
+                                   type="text" name="title"
                                    :maxlength="80"
                                    v-on:keyup="countdown"
                                    :error="validator.title || $page.props.errors.title"
@@ -297,7 +347,7 @@ export default {
 
                         <div class="w-full">
                             <Input label="Subtítulo:" v-model="form.subtitle"
-                                   type="text" :name="form.subtitle"
+                                   type="text" name="subtitle"
                                    :maxlength="160"
                                    v-on:keyup="countdown"
                                    :error="validator.subtitle || $page.props.errors.subtitle"
@@ -310,20 +360,21 @@ export default {
 
                         <div class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
-                                <Select label="Quantidade de Números:" v-model="form.quantity" :name="form.quantity" :error="validator.total || $page.props.errors.total">
-                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value" >{{ item.texto }}</option>
+                                <Select label="Quantidade de Números:" v-model="form.quantity" name="quantity" :error="validator.total || $page.props.errors.total">
+                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value"
+                                    >{{ item.texto }}</option>
                                 </Select>
                             </div>
 
                             <div class="w-full md:w-6/12">
-                                <CurrencyInput label="Valor" v-model="form.price" />
+                                <CurrencyInput label="Valor" v-model="form.price" name="price"
+                                               :error="validator.price || $page.props.errors.price"/>
                             </div>
                         </div>
 
                         <div class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
-                                <Select label="Tipo de Reserva:" v-model="form.type" :name="form.type"
-                                        :error="validator.type || $page.props.errors.type">
+                                <Select label="Tipo de Reserva:" v-model="form.type" name="type">
                                     <option value="automatico">
                                         Automático (Aleatório)
                                     </option>
@@ -335,7 +386,7 @@ export default {
 
                             <div class="w-full md:w-6/12">
                                 <Select label="Tempo de expiração (min):" v-model="form.pix_expired"
-                                        :name="form.pix_expired"
+                                        name="pix_expired"
                                         :error="validator.pix_expired || $page.props.errors.pix_expired">
                                     <option value="5">
                                         5 minutos (recomendado)
@@ -378,19 +429,15 @@ export default {
                             </div>
                         </div>
 
-                        <div class="relative w-full pt-3">
+                        <div class="relative w-full pt-3" id="description" :class="[!!validator.description ? 'ck-error' :  '']">
                             <label
                                 class="px-2 block text-neutral/70 text-[13px] font-medium absolute top-[3px] left-1 z-10 bg-content">Regulamento:</label>
 
                             <ckeditor :editor="editorType" v-model="form.description"
-                                      :config="editorConfig" class="text-neutral"></ckeditor>
+                                      :config="editorConfig" class="text-neutral"
+                                      ></ckeditor>
 
-                            <div v-if="validator.description || $page.props.errors.description"
-                                 class="inline-block">
-                                <p class="px-2 py-1 text-xs text-white rounded bg-red">
-                                    {{ validator.description }}
-                                </p>
-                            </div>
+                            <Error :message="validator.description"/>
                         </div>
                     </div>
                 </div>
@@ -405,8 +452,8 @@ export default {
                     <div class="pt-3">
                         <div class="flex flex-col gap-4 md:flex-row">
                             <div class="w-full md:w-6/12">
-                                <Input label="Data prevista do Sorteio" type="date"
-                                       :name="form.expected_date" class="appearance-none"
+                                <Input label="Data prevista do Sorteio" type="date" :min="func.dateFormatInvert(today)"
+                                       name="expected_date" class="appearance-none"
                                        :error="validator.expected_date || $page.props.errors.date"
                                        placeholder="dd/mm/aaaa" v-model="form.expected_date"/>
                             </div>
@@ -489,9 +536,10 @@ export default {
 
                     <div class="w-full pt-3">
                         <div v-if="form.status === 'Ativo'" class="flex flex-col items-end gap-4 md:flex-row">
-                            <div class="grid w-full grid-cols-1 ">
+                            <div class="grid w-full grid-cols-1">
                                 <div v-for="(item, index) in form.awards" :key="index" class="flex items-center gap-3">
                                     <span class="w-6 text-lg text-right text-neutral">{{ index + 1 }}˚</span>
+
                                     <Input label="Prêmio:" v-model="item.description"
                                            type="text" :name="item.description" class="flex-1"
                                            :placeholder="'Preencha o ' + (index + 1) + '˚ prêmio'"/>
@@ -503,6 +551,9 @@ export default {
                                         </Button>
                                     </div>
                                 </div>
+
+                                <Error :message="validator['awards[0].description']"/>
+
 
                                 <div class="flex items-center w-full gap-3">
                                     <div class="w-6"></div>
@@ -726,6 +777,10 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.ck-error{
+    --ck-color-base-border: red;
 }
 
 :root{
