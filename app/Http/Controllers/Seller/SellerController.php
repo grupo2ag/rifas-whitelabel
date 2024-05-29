@@ -393,4 +393,29 @@ class SellerController extends Controller
             return response()->json(false);
         }else return response()->json(false);*/
     }
+
+    public function live($id)
+    {
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->ofId($id)->first();
+
+        $paid = Participant::where('raffle_id', $id)->where('paid', '>', 0)->groupBy('raffle_id')->get(DB::raw("string_agg(numbers, ',') as numbers"));
+        $reserved = Participant::where('raffle_id', $id)->where('reserved', '>', 0)->groupBy('raffle_id')->get(DB::raw("string_agg(numbers, ',') as numbers"));
+
+        /*$array_rifa = explode(',', $raffle->numbers);
+        $array_reserva = explode(',', $reserved[0]['numbers']);
+        $array_pagos = explode(',', $paid[0]['numbers']);
+
+        $array_merge = array_merge($array_rifa, $array_pagos);
+        $array_merge = array_merge($array_merge, $array_reserva);
+        sort($array_merge);
+
+        dd($array_merge);*/
+        $data['reserved'] = $reserved[0]['numbers'];
+        $data['paid'] = $paid[0]['numbers'];
+        $data['raffle'] = $raffle->numbers;
+
+        return Inertia::render('Seller/Raffle/View/RaffleLive', ['data' => $data]);
+    }
 }
