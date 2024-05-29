@@ -70,11 +70,11 @@ export default {
             })
         }
     },
-    mounted() {
+    /*mounted() {
         console.log(this.data);
         var n = this.data.numbers.split(',');
         console.log(n.length, n)
-    }
+    }*/
 }
 </script>
 
