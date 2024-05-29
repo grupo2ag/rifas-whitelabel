@@ -6,17 +6,21 @@
         <money3
             v-model.number="amount"
             v-bind="config"
+            :id="name"
             class="block px-3 pb-2 pt-3 text-base bg-content w-full text-neutral border rounded-xl focus:outline-none focus:ring-0 focus:border-blue"
             :class="[!!error ? 'border-red' :  'border-white-dark']"
         />
+
+        <Error :message="error"/>
     </div>
 </template>
 
 <script>
 import {Money3Component} from 'v-money3'
+import Error from "@/Components/Error/Error.vue";
 
 export default {
-    components: {money3: Money3Component},
+    components: {money3: Money3Component, Error},
     emits: ['update:modelValue'],
     props: {
         masked: {type: Boolean, default: false},
@@ -26,7 +30,9 @@ export default {
         disabled: {type: Boolean, default: false},
         min: {type: Number, default: 0},
         max: {type: Number, default: 10000000000},
-        label: String
+        label: String,
+        error: String,
+        name: String
     },
     data() {
         return {

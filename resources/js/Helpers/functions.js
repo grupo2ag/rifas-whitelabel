@@ -405,3 +405,12 @@ export const clieanString = (string) => {
     /** TIRAR CARACTERES ESPECIAIS */
     return string.replaceAll(/[^a-zA-Z0-9\- ]/g, "");
 }
+
+export const dateFormatInvert = (date) => {
+    let dataAtual = new Date(date);
+    console.log(dataAtual.getFullYear())
+    let data = (dataAtual.getFullYear() + "-" + (adicionaZero(dataAtual.getMonth()+1).toString()) + "-" +adicionaZero(dataAtual.getDate().toString()));
+    console.log(data)
+
+    return data;
+}

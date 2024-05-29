@@ -122,7 +122,7 @@ class SellerController extends Controller
             'link' => 'required',
             'price' => 'required|numeric|gt:0',
             'status' => 'required',
-            'total' => 'required',
+            'quantity' => 'required',
             'type' => 'required',
             'highlight' => 'required',
             'minimum_purchase' => 'required',
@@ -135,6 +135,7 @@ class SellerController extends Controller
             'expected_date' => 'required|date|after:today',
             'awards' => 'required'
         ]);
+
         if ($validator->fails()) {
             return response()->json(['message' => $validator->messages()], 403);
         }
@@ -149,9 +150,11 @@ class SellerController extends Controller
             $link = $link . '-' . $num . $string;
         }
 
-        $numbers = numbers_generate($request->total);
+       // dd($request);
+
+        $numbers = numbers_generate($request->quantity);
         $price = (int) ($request->price * 100);
-        $total = $price * $request->total;
+        $total = $price * $request->quantity;
 
         if ($request->file('banner')) {
             $name = (string) Str::uuid();
@@ -174,7 +177,7 @@ class SellerController extends Controller
                 'link' => $link,
                 'price' => $price,
                 'status' => $request->status,
-                'quantity' => $request->total,
+                'quantity' => $request->quantity,
                 'numbers' => $numbers,
                 'type' => $request->type,
                 'highlight' => $request->highlight,
