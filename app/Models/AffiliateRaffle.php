@@ -38,6 +38,7 @@ class AffiliateRaffle extends Model
 
 	public $incrementing = false;
 
+    protected $primaryKey = 'raffle_id'; // Use o nome de uma das colunas, mas isso é apenas um truque.
 	protected $casts = [
 		'affiliate_id' => 'int',
 		'raffle_id' => 'int',
@@ -68,4 +69,13 @@ class AffiliateRaffle extends Model
 	{
 		return $this->hasMany(AffiliateGain::class, 'raffle_id');
 	}
+
+    public function scopeOfAffiliateId($query, $affiliateId)
+    {
+        return $query->where('affiliate_id', $affiliateId);
+    }
+    public function scopeOfRaffleId($query, $raffleId)
+    {
+        return $query->where('raffle_id', $raffleId);
+    }
 }

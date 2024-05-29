@@ -72,7 +72,7 @@ export default {
         <div class="mb-4 rounded">
             <Popper content="Afiliados" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
-                <NavLink :active="false">
+                <NavLink :href="route('affiliate.affiliateIndex')" :active="false">
                     <UsersIcon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>

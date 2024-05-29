@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import Error from "@/Components/Error/Error.vue";
-defineProps(['modelValue', 'name', 'type', 'error', 'label', 'min', 'max', 'maxlength', 'placeholder', 'disabled', 'autofocus', 'loading', 'autocomplete', 'required', 'ref']);
+defineProps(['value', 'modelValue', 'name', 'type', 'error', 'label', 'min', 'max', 'maxlength', 'placeholder', 'disabled', 'autofocus', 'loading', 'autocomplete', 'required', 'ref']);
 
 defineEmits(['update:modelValue', 'validate']);
 
@@ -18,7 +18,7 @@ export default {
   name: 'InputPercent',
   data() {
     return {
-      numberValue: null
+      numberValue: this.value ?? null
     };
   },
   methods: {

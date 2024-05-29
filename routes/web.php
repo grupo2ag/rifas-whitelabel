@@ -40,8 +40,11 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         Route::prefix('/affiliate')->name('affiliate.')->group(function () {
             Route::get('/created', [AffiliateController::class, 'created'])->name('affiliateCreated');
             Route::get('/commissions', [AffiliateController::class, 'commissions'])->name('affiliateCommissions');
-            Route::post('/store', [AffiliateController::class, 'store'])->name('affiliateStore');
+            Route::get('/edit/{id}',[AffiliateController::class, 'edit'])->name('affiliateEdit');
             Route::get('/{affiliate?}', [AffiliateController::class, 'index'])->name('affiliateIndex');
+            Route::post('/store', [AffiliateController::class, 'store'])->name('affiliateStore');
+            Route::post('/updated/{id}',[AffiliateController::class, 'updated'])->name('affiliateUpdated');
+            Route::delete('/deleteVinculation',[AffiliateController::class, 'deleteVinculation'])->name('affiliateDeleteVinculation');
         });
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
