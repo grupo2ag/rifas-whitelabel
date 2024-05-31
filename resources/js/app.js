@@ -9,6 +9,8 @@ import VueTheMask from 'vue-the-mask';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import VueSweetalert2 from 'vue-sweetalert2';
+import Vue3ColorPicker from "vue3-colorpicker";
+import "vue3-colorpicker/style.css";
 
 // If you don't need the styles, do not connect
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -23,6 +25,7 @@ createInertiaApp({
             .use(CKEditor)
             .use(ZiggyVue)
             .use(VueSweetalert2)
+            .use(Vue3ColorPicker)
             .mount(el);
 
         delete el.dataset.page
