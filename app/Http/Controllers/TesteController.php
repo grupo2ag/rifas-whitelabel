@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\PixManual;
 use App\Events\PixPayment;
+use App\Jobs\ResultFederal;
 use App\Libraries\Pixcred;
 use App\Models\Customer;
 use App\Models\Participant;
@@ -23,7 +24,7 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-
+        //ResultFederal::dispatch();
         //Event::dispatch(new PixPayment('5bf76e86-4361-4bd1-8b2b-997798eb6a28'));
         //dd(numbers_premium(25, 1, ['00001', '00002']));
         //$resp = numbers_devolution(1, 5);

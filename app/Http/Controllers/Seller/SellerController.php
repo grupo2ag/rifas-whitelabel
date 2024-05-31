@@ -469,4 +469,17 @@ class SellerController extends Controller
 
         return back()->withInput();
     }
+
+    public function awards($id)
+    {
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->ofId($id)->first();
+
+        $awards = $raffle->raffle_awards()
+            ->leftJoin('customers', 'customers.id', 'raffle_awards.customer_id')
+            ->get(['raffle_awards.*', 'customers.name', 'customers.phone', 'customers.cpf']);
+        //dd($awards);
+        return Inertia::render('Seller/Raffle/View/RaffleAwards', ['awards' => $awards]);
+    }
 }

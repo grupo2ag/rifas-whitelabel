@@ -37,7 +37,9 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/reserved_canceled/{participant}/{raffle}',[SellerController::class, 'reservedCanceled'])->name('raffleRemoveReserve');
             Route::get('/live/{id}', [SellerController::class, 'live'])->name('raffleLive');
             Route::get('/export/{id}',[SellerController::class, 'export'])->name('raffleExport');
-            Route::get('/sale/{id}/{condition}', [SellerController::class, 'sale'])->name('raffleSale');
+            //Route::get('/sale/{id}/{condition}', [SellerController::class, 'sale'])->name('raffleSale');
+            Route::get('/awards/{id}', [SellerController::class, 'awards'])->name('raffleAwards');
+            Route::get('/award/{number}', [SellerController::class, 'award'])->name('raffleAward');
         });
 
         Route::prefix('/affiliate')->name('affiliate.')->group(function () {
