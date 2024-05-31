@@ -41,6 +41,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
             Route::get('/reserved_canceled/{participant}/{raffle}',[SellerController::class, 'reservedCanceled'])->name('raffleRemoveReserve');
             Route::get('/live/{id}', [SellerController::class, 'live'])->name('raffleLive');
+            Route::get('/export/{id}',[SellerController::class, 'export'])->name('raffleExport');
             Route::get('/sale/{id}/{condition}', [SellerController::class, 'sale'])->name('raffleSale');
         });
 

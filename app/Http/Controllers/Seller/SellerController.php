@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Intervention\Image\Facades\Image;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 
 class SellerController extends Controller
 {
@@ -122,7 +123,7 @@ class SellerController extends Controller
             'link' => 'required',
             'price' => 'required|numeric|gt:0',
             'status' => 'required',
-            'total' => 'required',
+            'quantity' => 'required',
             'type' => 'required',
             'highlight' => 'required',
             'minimum_purchase' => 'required',
@@ -149,9 +150,9 @@ class SellerController extends Controller
             $link = $link . '-' . $num . $string;
         }
 
-        $numbers = numbers_generate($request->total);
+        $numbers = numbers_generate($request->quantity);
         $price = (int) ($request->price * 100);
-        $total = $price * $request->total;
+        $total = $price * $request->quantity;
 
         if ($request->file('banner')) {
             $name = (string) Str::uuid();
@@ -174,7 +175,7 @@ class SellerController extends Controller
                 'link' => $link,
                 'price' => $price,
                 'status' => $request->status,
-                'quantity' => $request->total,
+                'quantity' => $request->quantity,
                 'numbers' => $numbers,
                 'type' => $request->type,
                 'highlight' => $request->highlight,
@@ -412,10 +413,60 @@ class SellerController extends Controller
         sort($array_merge);
 
         dd($array_merge);*/
-        $data['reserved'] = $reserved[0]['numbers'];
-        $data['paid'] = $paid[0]['numbers'];
-        $data['raffle'] = $raffle->numbers;
+        $data['reserved'] = !empty($reserved[0]['numbers']) ? $reserved[0]['numbers'] : null;
+        $data['paid'] = !empty($paid[0]['numbers']) ? $paid[0]['numbers'] : null;
+        $data['raffle'] = !empty($raffle->numbers) ? $raffle->numbers : null;
 
         return Inertia::render('Seller/Raffle/View/RaffleLive', ['data' => $data]);
+    }
+
+    public function export($id)
+    {
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->ofId($id)->first();
+
+        $paid = $raffle->participants()->where('participants.raffle_id', $id)
+            ->where('participants.paid', '>', 0)
+            ->groupBy('participants.raffle_id', 'participants.id')
+            ->get([DB::raw("string_agg(participants.numbers, ',') as numbers"), 'participants.name', 'participants.phone']);
+
+        //$reserved = Participant::where('raffle_id', $id)->where('reserved', '>', 0)->groupBy('raffle_id')->get(DB::raw("string_agg(numbers, ',') as numbers"), 'id');
+
+        if($paid->isNotEmpty()){
+            $part = [];
+            foreach ($paid as $item){
+                $array_numbers = explode(',', $item->numbers);
+                foreach ($array_numbers as $number){
+                    $part[(int)$number] = [
+                        'Numero' => $number,
+                        'Nome' => $item->name,
+                        'Telefone' => hideString($item->phone, 10, 3),
+                        'Estado' => getDDDState($item->phone)
+                    ];
+                }
+            }
+            sort($part);
+
+            $arqName = Str::slug($raffle->title).'.csv';
+
+            $writer = SimpleExcelWriter::streamDownload($arqName);
+
+            $lazy = collect($part);
+
+            $i = 0;
+            foreach ($lazy->lazy() as $item)
+            {
+                $writer->addRow($item);
+
+                if ($i % 1000 === 0) {
+                    flush(); // Flush the buffer every 1000 rows
+                }
+                $i++;
+            }
+            $writer->toBrowser();
+        }
+
+        return back()->withInput();
     }
 }

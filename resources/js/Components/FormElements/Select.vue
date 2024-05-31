@@ -13,7 +13,7 @@ defineEmits(['update:modelValue', 'validate', 'change','multiple']);
             :role="role"
             class="block w-full px-3 pt-3 pb-2 text-base border appearance-none text-neutral rounded-xl focus:outline-none focus:ring-0 focus:border-blue"
             :name="name"
-            :id="id"
+            :id="name"
             :multiple="multiple"
             @change="$emit('validate'), $emit('change')"
             @input="$emit('update:modelValue', $event.target.value), $emit('validate')" ref="input"
