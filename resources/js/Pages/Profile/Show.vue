@@ -5,6 +5,7 @@ import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOther
 import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue';
 import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
+import EditStyleProfile from '@/Pages/Profile/Partials/EditStyleProfile.vue';
 
 defineProps({
     confirmsTwoFactorAuthentication: Boolean,
@@ -54,6 +55,11 @@ defineProps({
                         <div v-if="$page.props.jetstream.canUpdatePassword">
                             <UpdatePasswordForm />
                         </div>
+                    </div>
+                </div>
+                <div class="w-full px-2 mb-4 lg:w-6/12">
+                    <div class="items-center h-full rounded-lg bg-content">
+                            <EditStyleProfile />
                     </div>
                 </div>
 

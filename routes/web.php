@@ -10,6 +10,7 @@ use App\Http\Controllers\Site\RaffleController;
 use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\GatewayController;
+use App\Http\Controllers\Seller\UserConfigurationsController;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
@@ -25,6 +26,10 @@ Route::middleware(LevelMiddleware::class)->group(function (){
         'verified',
     ])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::prefix('/user')->name('user.')->group(function () {
+            Route::put('/store', [UserConfigurationsController::class, 'store'])->name('userStore');
+        });
 
         Route::prefix('/raffles')->name('raffles.')->group(function () {
             Route::get('/', [SellerController::class, 'index'])->name('raffleIndex');
