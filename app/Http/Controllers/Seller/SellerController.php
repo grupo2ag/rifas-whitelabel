@@ -482,4 +482,59 @@ class SellerController extends Controller
         //dd($awards);
         return Inertia::render('Seller/Raffle/View/RaffleAwards', ['awards' => $awards]);
     }
+
+    public function award($raffleId, $number)
+    {
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->ofId($raffleId)->first();
+
+        if($number >= $raffle->quantity) return response()->json(['msg' => 'Esse numero não pertence a rifa!']);
+
+        $disponiveis = explode(",", $raffle->numbers); //pega os numeros disponiveis da rifa
+
+        foreach ($disponiveis as $resultNumber) { //retira os numeros do array da rifa
+            if($resultNumber === $number){
+                return response()->json(['msg' => 'Esse numero não foi vendido!']);
+            }
+        }
+
+        $participants = $raffle->participants()->where('participants.paid', '>', 0)->get();
+        foreach ($participants as $participant){
+            $numbersPart = explode(',', $participant->numbers);
+            foreach ($numbersPart as $np){
+                if($np === $number){
+                    return response()->json($participant);
+                }
+            }
+        }
+
+        return response()->json(['msg' => 'Esse numero está reservado!']);
+    }
+
+    public function awardPart($raffleId, $awardId, $partId, $number)
+    {
+        $user = auth()->user();
+
+        DB::beginTransaction(); //inicia a transaction no banco
+        try {
+            $raffle = $user->raffles()->ofId($raffleId)->first();
+            $participant = $raffle->participants()->where('participants.id', $partId)->first();
+
+            $up = $raffle->raffle_awards()->where('raffle_awards.id', $awardId)->first();
+
+            $up->winner_name = $participant->name;
+            $up->winner_phone = $participant->phone;
+            $up->number_award = $number;
+            $up->customer_id = $participant->customer_id;
+            $up->save();
+
+            DB::commit();
+            return response()->json(true);
+        }catch (QueryException $e){
+            DB::rollBack();
+            setLogErros('Awards->save', $e->getMessage(), [$raffleId, $awardId, $partId, $number], 'catch', $raffleId);
+            return response()->json(false);
+        }
+    }
 }

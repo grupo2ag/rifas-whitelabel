@@ -1,5 +1,6 @@
 <script>
 import Button from "@/Components/Button/Button.vue";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     components: {Button},
@@ -12,7 +13,7 @@ export default {
         };
     },
     methods: {
-        onAwarded(id) {
+        onAwarded(raffle, id) {
             this.$swal.fire({
                 title: "Informe o numero sorteado",
                 input: "text",
@@ -22,24 +23,74 @@ export default {
                 showCancelButton: true,
                 confirmButtonText: "Procurar Ganhador",
                 showLoaderOnConfirm: true,
-                preConfirm: async (login) => {
+                allowOutsideClick: () => !this.$swal.isLoading()
+            }).then(async (result) => {
+               // console.log(result)
+                if (result.isConfirmed) {
                     try {
-                        const response = await fetch(route('raffles.RaffleAward'));
+                        let number = result.value;
+                        const response = await fetch(route('raffles.raffleAward', [raffle, result.value]));
+
                         if (!response.ok) {
-                            return this.$swal.showValidationMessage(`${JSON.stringify(await response.json())}`);
+                            return this.$swal.fire({
+                                title: "Não encontrado",
+                                text: 'Verifique o numero e pesquise novamente',
+                                icon: "error"
+                            });
+                        }else{
+                            let data = await response.json()
+
+                            if (data.msg && data.msg.length) {
+                                return this.$swal.fire({
+                                    title: "Não encontrado",
+                                    text: data.msg,
+                                    icon: "error"
+                                });
+                            }else{
+
+                                this.$swal.fire({
+                                    title: "Dados do participante",
+                                    html: "Nome: <b>"+data.name+"</b></br>"+
+                                        "Telefone: <b>"+data.phone+"</b></br>"+
+                                        "Email: <b>"+data.email+"</b></br>"+
+                                        "CPF: <b>"+data.document+"</b>",
+                                    showCancelButton: true,
+                                    confirmButtonText: "Definir Ganhador",
+                                    showLoaderOnConfirm: true,
+                                    allowOutsideClick: () => !this.$swal.isLoading()
+                                }).then(async (resp) => {
+                                    if (resp.isConfirmed) {
+                                        try {
+                                            const responsePart = await fetch(route('raffles.raffleAwardPart', [raffle, id, data.id, number]));
+                                            let dataPart = await responsePart.json();
+
+                                            if(dataPart){
+                                                this.$swal.fire({
+                                                    title: "Ganhador definido",
+                                                    icon: "success"
+                                                }).then(()=>{Inertia.reload()})
+                                            }else{
+                                                this.$swal.fire({
+                                                    title: "Problema ao registrar ganhador",
+                                                    icon: "error"
+                                                });
+                                            }
+
+                                        }catch (error) {
+                                            return this.$swal.fire({
+                                                title: "Problema ao registrar ganhador",
+                                                text: `Request failed: ${error}`,
+                                                icon: "error"
+                                            });
+                                            //this.$swal.showValidationMessage(`Request failed: ${error}`);
+                                        }
+                                    }
+                                })
+                            }
                         }
-                        return response.json();
                     } catch (error) {
                         this.$swal.showValidationMessage(`Request failed: ${error}`);
                     }
-                },
-                allowOutsideClick: () => !this.$swal.isLoading()
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.$swal.fire({
-                        title: `${result.value.login}'s avatar`,
-                        imageUrl: result.value.avatar_url
-                    });
                 }
             });
         }
@@ -82,7 +133,7 @@ export default {
                     {{ award?.cpf }}
                 </div>
                 <div>
-                    <Button type="button" @click="onAwarded(award?.id)" color="primary" class="mt-2"></Button>
+                    <Button type="button" @click="onAwarded(award?.raffle_id, award?.id)" color="primary" class="mt-2"></Button>
                 </div>
             </div>
         </div>
