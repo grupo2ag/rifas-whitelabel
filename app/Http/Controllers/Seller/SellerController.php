@@ -20,6 +20,7 @@ use Inertia\Inertia;
 use Intervention\Image\Facades\Image;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
+
 class SellerController extends Controller
 {
 
@@ -121,7 +122,7 @@ class SellerController extends Controller
             'pix_expired' => 'required',
             'buyer_ranking' => 'required',
             'link' => 'required',
-            'price' => 'required|numeric|gt:0',
+            'value' => 'required|numeric|gt:0',
             'status' => 'required',
             'quantity' => 'required',
             'type' => 'required',
@@ -151,8 +152,10 @@ class SellerController extends Controller
         }
 
         $numbers = numbers_generate($request->quantity);
-        $price = (int) ($request->price * 100);
+        $price = (int) ($request->value * 100);
         $total = $price * $request->quantity;
+
+//        dd($price);
 
         if ($request->file('banner')) {
             $name = (string) Str::uuid();
@@ -464,12 +467,12 @@ class SellerController extends Controller
                             ->first();
 
         $data['quantity_numbers'] = [
-            ['value' => 100, 'texto' => '100 cotas - (0 à 99)'],
-            ['value' => 1000, 'texto' => '1.000 cotas - (0 à 999)'],
-            ['value' => 10000, 'texto' => '10.000 cotas - (0 à 9.999)'],
-            ['value' => 100000, 'texto' => '100.000 cotas - (0 à 99.999)'],
-            ['value' => 1000000, 'texto' => '1.000.000 cotas - (0 à 999.999)'],
-            ['value' => 10000000, 'texto' => '10.000.000 cotas - (0 à 9.999.999)']
+            ['value' => 100, '100' => '100 cotas - (0 à 99)'],
+            ['value' => 1000, '1.000' => '1.000 cotas - (0 à 999)'],
+            ['value' => 10000, '10.000' => '10.000 cotas - (0 à 9.999)'],
+            ['value' => 100000, '100.000' => '100.000 cotas - (0 à 99.999)'],
+            ['value' => 1000000, '1.000.000' => '1.000.000 cotas - (0 à 999.999)'],
+            ['value' => 10000000, '10.000.000' => '10.000.000 cotas - (0 à 9.999.999)']
         ];
 
         $galery = [];

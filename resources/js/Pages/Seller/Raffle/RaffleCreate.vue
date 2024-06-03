@@ -3,8 +3,6 @@ import * as func from '@/Helpers/functions.js';
 </script>
 
 <script>
-import * as func from '@/Helpers/functions.js'
-
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {useForm} from "@inertiajs/inertia-vue3";
 import Error from "@/Components/Error/Error.vue";
@@ -53,6 +51,7 @@ import {Base64UploadAdapter} from '@ckeditor/ckeditor5-upload';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format';
 
 import { ref } from 'vue';
+import {dateFormatInvert} from "@/Helpers/functions";
 
 const componentKey = ref(0);
 
@@ -86,7 +85,7 @@ export default {
         Error,
     },
     props: {
-        raffle: Object,
+        raffle: Array,
         quantity_numbers: Array
     },
     data() {
@@ -96,9 +95,9 @@ export default {
                 title: this.raffle ? this.raffle.title : '',
                 link: this.raffle ? this.raffle.link : '',
                 subtitle: this.raffle ? this.raffle.subtitle : '',
-                total: null,
+               // total: null,
                 quantity: this.raffle ? this.raffle.quantity : 100,
-                price: this.raffle ? this.raffle : 0,
+                value: this.raffle ? this.raffle.price : 0,
                 type: this.raffle ? this.raffle.type : 'automatico',
                 pix_expired: this.raffle ? this.raffle.pix_expired : '',
                 minimum_purchase: this.raffle ? this.raffle.minimum_purchase : 1,
@@ -107,26 +106,17 @@ export default {
 
                 buyer_ranking: this.raffle ? this.raffle.buyer_ranking : 5,
                 partial: this.raffle ? this.raffle.partial : 1,
-                expected_date: this.raffle ? func.dateFormat(this.raffle.expected_date) : '',
+                expected_date: this.raffle ? func.dateFormatInvert(this.raffle.expected_date) : '',
                 status: this.raffle ? this.raffle.status : 'Ativo',
-                banner: this.raffle ? this.raffle.banner : '',
+                banner: this.raffle ? this.raffle.new_banner : '',
                 highlight: this.raffle ? this.raffle.highlight : 0,
 
-                gallery: this.raffle ? this.raffle.gallery : [],
+                gallery: this.raffle ? this.raffle.galery : [],
+                quotas: this.raffle ? this.raffle.raffle_awards : [],
+                awards: this.raffle ? this.raffle.raffle_awards : [{description: ''}],
 
-                quotas: this.raffle ? this.raffle.gallery : [],
-
-                awards: [{description: ''}],
-                // awards: [],
                 processing: false
             },
-           /* validator: {
-                id: '',
-                title: '',
-                image: '',
-                description: '',
-                galleries: ''
-            },*/
             editorType: ClassicEditor,
             editorConfig: {
                 plugins: [
@@ -171,13 +161,15 @@ export default {
             validator: {
                 title: '',
                 subtitle: '',
-                price: 0,
+                price: '',
                 pix_expired: '',
                 description: '',
                 expected_date: '',
                 'awards[0].description': '',
+                gallery: '',
             },
-            today: new Date()
+            today: new Date(),
+
         }
     },
     methods: {
@@ -206,12 +198,7 @@ export default {
             }).catch((err) => {
                 this.form.processing = false;
 
-                console.log(err)
-                // console.log(err.inner)
-                // document.getElementById(err.inner[0].path).scrollIntoView();
-
                 err.inner.forEach((error) => {
-                    console.log(error )
                     this.validator = {...this.validator, [error.path]: error.message};
                 });
             });
@@ -234,7 +221,6 @@ export default {
             this.number_quota = ''
         },
         removeQuota(item){
-            console.log(item)
             for (let i = this.form.quotas.length; i--;) {
                 if (this.form.quotas[i] === item) {
                     this.form.quotas.splice(i, 1);
@@ -274,11 +260,17 @@ export default {
         },
     },
     mounted() {
+        console.log(this.raffle)
+
+        let greaterThanTen = quantity_numbers.filter(element => element.texto !== '1.000.000' && element.texto !== '10.000.000');
+        console.log(greaterThanTen)
+
+
         yup.setLocale(pt);
         this.schema = yup.object().shape({
             title: yup.string().min(10, 'Digite ao menos 10 caracteres').max(80, 'Digite ao máximo 80 caracteres').required('Obrigatório'),
             subtitle: yup.string().min(5, 'Digite ao menos 5 caracteres').max(160, 'Digite ao máximo 160 caracteres').required('Obrigatório'),
-            price: yup.number().positive().nullable(true).required('Obrigatório'),
+            value: yup.number().positive().nullable(true).required('Obrigatório'),
             pix_expired: yup.string().required('Obrigatório'),
             description: yup.string().required('Obrigatório'),
             expected_date: yup.string().required('Obrigatório'),
@@ -286,8 +278,12 @@ export default {
                 yup.object().shape({
                     description: yup.string().required('Obrigatório')
                 })
-            ).min(1, '1 no minimo').required('Obrigatório')
-
+            ).min(1, '1 no minimo').required('Obrigatório'),
+            gallery: yup.array().of(
+                yup.object().shape({
+                    image: yup.string().required('Obrigatório')
+                })
+            ).min(1, 'Imagem obrigatória').required('Obrigatório')
         })
     }
 }
@@ -296,8 +292,9 @@ export default {
 <template>
     <AuthenticatedLayout title="Dashboard">
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Rifa
+            <h2 class="flex items-center font-semibold text-primary-bw lg:text-xl">
+                <TicketIcon class="w-5 h-5 mr-2 text-primary-bw lg:w-6 lg:h-6" />
+                Rifas
             </h2>
         </template>
 
@@ -358,7 +355,7 @@ export default {
                                 caracteres</p>
                         </div>
 
-                        <div class="flex flex-col md:flex-row md:gap-4">
+                        <div v-if="!raffle" class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
                                 <Select label="Quantidade de Números:" v-model="form.quantity" name="quantity" :error="validator.total || $page.props.errors.total">
                                     <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value"
@@ -367,12 +364,12 @@ export default {
                             </div>
 
                             <div class="w-full md:w-6/12">
-                                <CurrencyInput label="Valor" v-model="form.price" name="price"
-                                               :error="validator.price || $page.props.errors.price"/>
+                                <CurrencyInput label="Valor" v-model="form.value" name="price" :value="form.value / 100"
+                                               :error="validator.value || $page.props.errors.value"/>
                             </div>
                         </div>
 
-                        <div class="flex flex-col md:flex-row md:gap-4">
+                        <div v-if="!raffle" class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
                                 <Select label="Tipo de Reserva:" v-model="form.type" name="type">
                                     <option value="automatico">
@@ -542,6 +539,7 @@ export default {
 
                                     <Input label="Prêmio:" v-model="item.description"
                                            type="text" :name="item.description" class="flex-1"
+                                           :error="index === 0 ? validator['awards[0].description'] : ''"
                                            :placeholder="'Preencha o ' + (index + 1) + '˚ prêmio'"/>
 
                                     <div class="w-12">
@@ -551,9 +549,6 @@ export default {
                                         </Button>
                                     </div>
                                 </div>
-
-                                <Error :message="validator['awards[0].description']"/>
-
 
                                 <div class="flex items-center w-full gap-3">
                                     <div class="w-6"></div>
@@ -611,8 +606,8 @@ export default {
                             </div>
 
                             <div class="w-full md:w-6/12">
-                                <CurrencyInput label="Valor de Desconto"
-                                               v-model="form.price"/>
+<!--                                <CurrencyInput label="Valor de Desconto"
+                                               v-model="form.price"/>-->
                             </div>
                         </div>
                     </div>
@@ -682,7 +677,7 @@ export default {
                         <div class="flex flex-col gap-4 md:flex-row">
                             <div class="w-full">
                                 <div class="flex flex-col md:flex-row md:gap-4">
-                                    <div class="relative flex flex-col items-center w-3/12">
+                                    <div class="relative flex flex-col w-3/12">
                                         <UploadImage imgCurrent=""
                                                      label="Imagem"
                                                      size="aspect-1"
@@ -692,6 +687,8 @@ export default {
                                                      :key="componentKey"
                                                      filesize="2MB" name="image-galery"/>
 
+                                        <Error :message="validator.gallery"/>
+
                                         <Button type="button" @click="addImage(form.gallery)"
                                                 class="w-full mt-2"
                                                 size="sm" color="primary">Adicionar Imagem
@@ -699,9 +696,10 @@ export default {
                                     </div>
                                     <div class="flex-1">
                                         <p class="w-full text-sm font-medium rounded-md text-neutral">
-                                            Galeria:</p>
-                                        <div
-                                            class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
+                                            Galeria:
+                                        </p>
+
+                                        <div class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
                                             <div v-for="(item, index) in form.gallery" :key="index"
                                                  class="relative">
                                                 <div class="absolute w-full h-full transition-all opacity-0 cursor-pointer cover-remove hover:opacity-100">
@@ -711,7 +709,7 @@ export default {
                                                         <TrashIcon class="w-4 h-4 stroke-white"/>
                                                     </button>
                                                 </div>
-                                                <img class="object-cover w-full h-full" :src="item.image" alt="">
+                                                <img class="object-cover aspect-square w-full h-full" :src="item.image" alt="">
                                             </div>
                                         </div>
                                     </div>
