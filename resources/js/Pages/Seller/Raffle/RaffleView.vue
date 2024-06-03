@@ -5,6 +5,7 @@ import RaffleLayout from '@/Layouts/RaffleLayout.vue';
 import RaffleDashboard from '@/Pages/Seller/Raffle/View/RaffleDashboard.vue';
 import RaffleSale from '@/Pages/Seller/Raffle/View/RaffleSale.vue';
 import RaffleReserve from '@/Pages/Seller/Raffle/View/RaffleReserve.vue';
+import RaffleLive from './View/RaffleLive.vue';
 import {
     TicketIcon,
     DocumentTextIcon,
@@ -47,9 +48,9 @@ export default {
     <Head title="Rifa"></Head>
     <AuthenticatedLayout :user="$page.props.auth.user">
         <template #header>
-            <h2 class="flex items-center font-semibold text-content lg:text-xl">
-                <TicketIcon class="w-5 h-5 mr-2 text-content lg:w-6 lg:h-6" />
-                Rifa
+            <h2 class="flex items-center font-semibold text-primary-bw lg:text-xl">
+                <TicketIcon class="w-5 h-5 mr-2 lg:w-6 lg:h-6 text-primary-bw" />
+                {{`Rifa #${data?.raffle?.id}`}}
             </h2>
         </template>
         <div class="container-none !w-full px-2">
@@ -66,6 +67,9 @@ export default {
                     </div>
                     <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 3, '': openTab === 3}">
                         <RaffleReserve :data="results"/>
+                    </div>
+                    <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 5, '': openTab === 5}">
+                        <RaffleLive :id="data?.raffle?.id"/>
                     </div>
                 </template>
             </RaffleLayout>

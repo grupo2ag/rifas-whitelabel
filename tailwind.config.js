@@ -17,6 +17,10 @@ export default {
 
     theme: {
         extend: {
+            gridTemplateColumns: {
+                '20': 'repeat(20, minmax(0, 1fr))',
+                '10': 'repeat(10, minmax(0, 1fr))',
+            },
             colors: {
                 'primary': {
                     DEFAULT: 'rgb(var(--primary) / <alpha-value>)',

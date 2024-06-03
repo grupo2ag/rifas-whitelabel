@@ -13,7 +13,8 @@ import {
     FlagIcon,
     TableCellsIcon,
     EyeSlashIcon,
-    EyeIcon
+    EyeIcon,
+    MagnifyingGlassCircleIcon
 } from '@heroicons/vue/24/outline';
 import moment from 'moment';
 import * as func from '@/Helpers/functions';
@@ -142,11 +143,18 @@ export default {
                         data?.link }}</a>
                             </div>
                         </div>
-                        <div class="w-full mb-2">
+                        <!-- <div class="w-full mb-2">
                             <div class="flex flex-row ">
                                 <LinkIcon class="hidden w-6 mr-2 lg:grid text-neutral/70" />
                                 <a target="_blank" class="break-all link link-info"
                                    :href="route('raffles.raffleLive',data?.id )">Numeros Disponiveis</a>
+                            </div>
+                        </div> -->
+                        <div class="w-full mb-2">
+                            <div class="flex flex-row ">
+                                <button class="btn btn-sm btn-accent text-neutral" @click="setToggleTabs(5)">
+                                    <MagnifyingGlassCircleIcon class="hidden w-6 lg:grid text-neutral" />
+                                    Consultar Números</button>
                             </div>
                         </div>
                     </div>

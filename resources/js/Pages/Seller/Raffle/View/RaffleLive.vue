@@ -1,9 +1,4 @@
 <script setup>
-import StatsRaffleSale from '@/Components/Stats/StatsRaffleSale.vue';
-import moment from 'moment';
-import PaginationApi from '@/Components/Pagination/PaginationApi.vue';
-import { Collapse } from 'vue-collapsed'
-import * as func from '@/Helpers/functions';
 import debounce from 'lodash/debounce';
 import {
     UserIcon,
@@ -12,26 +7,50 @@ import {
     EnvelopeIcon,
     CalendarDaysIcon,
     TicketIcon,
-    MagnifyingGlassIcon} from '@heroicons/vue/24/outline';
+    MagnifyingGlassIcon
+} from '@heroicons/vue/24/outline';
 </script>
 
 <script>
 
 export default {
     props: {
-        data: Object
+        id: Number | String
     },
     data() {
         return {
+            dataNumbers: {},
             collapse: [],
-            array_raffle: this.data.raffle ? this.data?.raffle.split(',') : [],
-            array_reserved: this.data.reserved ? this.data?.reserved.split(',') : [],
-            array_paid: this.data.paid ? this.data?.paid.split(',') : [],
-            numbers: this.adjust(),
+            displayedNumbers: [],
+            pageSize: 100, // Quantos números carregar por vez
+            currentIndex: 0, // Índice atual para controlar a páginação
+            displayedNumbersPaid: [],
+            currentIndexPaid: 0,
+            displayedNumbersReserved: [],
+            currentIndexReserved: 0,
+            array_raffle: [],
+            array_reserved: [],
+            array_paid: [],
+            // numbers: this.adjust(),
             searchQuery: '',
-            currentPage: 1,
             loading: false,
         };
+    },
+    computed: {
+        allNumbersLoaded() {
+            if (this.dataNumbers?.raffle) {
+                return this.currentIndex <= this.array_raffle.length;
+            }
+        },
+        allNumbersReservedLoaded() {
+            if (this.dataNumbers?.reserved) {
+                return this.currentIndexReserved <= this.array_reserved.length;
+            }
+        },
+        allNumbersPaidLoaded() {
+            if (this.dataNumbers?.paid)
+                return this.currentIndexPaid <= this.array_paid.length;
+        }
     },
     methods: {
         /*async search() {
@@ -39,7 +58,7 @@ export default {
                await axios.get(route('raffles.raffleParticipants', {
                     query: this.searchQuery,
                     page: this.currentPage,
-                    idRaffle: this?.data?.raffle?.id
+                    idRaffle: this?.dataNumbers?.raffle?.id
                 }))
                 .then(response => {
                     this.results = response?.data;
@@ -50,76 +69,131 @@ export default {
                     this.loading = false;
                 });
         },*/
+        loadMore() {
+            const nextIndex = this.currentIndex + this.pageSize;
+            const moreNumbers = this.array_raffle.slice(this.currentIndex, nextIndex);
+            this.displayedNumbers.push(...moreNumbers);
+            this.currentIndex = nextIndex;
+        },
+        loadMorePaid() {
+            const nextIndex = this.currentIndexPaid + this.pageSize;
+            const moreNumbers = this.array_paid.slice(this.currentIndexPaid, nextIndex);
+            this.displayedNumbersPaid.push(...moreNumbers);
+            this.currentIndexPaid = nextIndex;
+        },
+        loadMoreReserved() {
+            const nextIndex = this.currentIndexReserved + this.pageSize;
+            const moreNumbers = this.array_reserved.slice(this.currentIndexReserved, nextIndex);
+            this.displayedNumbersReserved.push(...moreNumbers);
+            this.currentIndexReserved = nextIndex;
+        },
+
+        getNumbers() {
+            this.loading = true;
+            axios.get(route('raffles.raffleLive', { 'id': this?.id ?? 3 }))
+                .then(response => {
+                    this.dataNumbers = response?.data?.data;
+                    this.array_raffle = this.translateToArray(response?.data?.data?.raffle ?? []);
+                    this.array_paid = this.translateToArray(response?.data?.data?.paid ?? []);
+                    this.array_reserved = this.translateToArray(response?.data?.data?.reserved ?? []);
+                    this.loadMore();
+                    this.loadMorePaid();
+                    this.loadMoreReserved();
+                    this.loading = false;
+                })
+                .catch(error => {
+                    console.error('Erro na busca:', error);
+                    this.loading = false;
+                });
+        },
         search() {
-            if(this.searchQuery.length){
-                var buscaRaffle = this.array_raffle.filter((item)=>{
+            if (this.searchQuery.length) {
+                var buscaRaffle = this.array_raffle.filter((item) => {
                     return item.startsWith(this.searchQuery);
                 })
-                if(buscaRaffle.length){
-                    alert('numero está disponivel:'+ this.searchQuery)
+                if (buscaRaffle.length) {
+                    this.$swal(
+                        'Disponível!',
+                        `O número ${this.searchQuery} está disponível.`,
+                        'info'
+                    )
                 }
 
-                var buscaReserved = this.array_reserved.filter((item)=>{
+                var buscaReserved = this.array_reserved.filter((item) => {
                     return item.startsWith(this.searchQuery);
                 })
-                if(buscaReserved.length){
-                    alert('numero está reservado:'+  this.searchQuery)
+                if (buscaReserved.length) {
+                    this.$swal(
+                        'Reservado!',
+                        `O número ${this.searchQuery} está reservado!`,
+                        'warning'
+                    )
                 }
 
-                var buscaPaid = this.array_paid.filter((item)=>{
+                var buscaPaid = this.array_paid.filter((item) => {
                     return item.startsWith(this.searchQuery);
                 })
-                if(buscaPaid.length){
-                    alert('numero está pago:'+  this.searchQuery)
+                if (buscaPaid.length) {
+                    this.$swal(
+                        'Pago!',
+                        `O número ${this.searchQuery} está pago!`,
+                        'success'
+                    )
                 }
             }
         },
-        adjust() {
-            let array_raffle = this.data.raffle ? this.data?.raffle.split(',') : [];
-            let array_reserved = this.data.reserved ? this.data?.reserved.split(',') : [];
-            let array_paid = this.data.paid ? this.data?.paid.split(',') : [];
+        // adjust() {
+        //     let array_raffle = this?.dataNumbers?.raffle ? this.dataNumbers?.raffle.split(',') : [];
+        //     let array_reserved = this?.dataNumbers?.reserved ? this.dataNumbers?.reserved.split(',') : [];
+        //     let array_paid = this?.dataNumbers?.paid ? this.dataNumbers?.paid.split(',') : [];
 
-            let all = array_raffle.concat(array_paid)
-            all = all.concat(array_reserved)
-            all = all.sort();
+        //     let all = array_raffle.concat(array_paid)
+        //     all = all.concat(array_reserved)
+        //     all = all.sort();
 
-            return all;
+        //     return all;
+        // },
+        translateToArray(numbers) {
+            if (numbers && typeof numbers == 'string') {
+                return numbers?.split(',');
+            }
+            return [];
         },
         handleSearch() {
             this.search();
         },
-        encontrarDuplicados(array) {
-            var elementosDuplicados = [];
-            var contador = {};
+        // encontrarDuplicados(array) {
+        //     var elementosDuplicados = [];
+        //     var contador = {};
 
-            // Conta a ocorrência de cada elemento no array
-            array.forEach(function(elemento) {
-                if (contador[elemento]) {
-                    contador[elemento]++;
-                } else {
-                    contador[elemento] = 1;
-                }
-            });
+        //     // Conta a ocorrência de cada elemento no array
+        //     array.forEach(function (elemento) {
+        //         if (contador[elemento]) {
+        //             contador[elemento]++;
+        //         } else {
+        //             contador[elemento] = 1;
+        //         }
+        //     });
 
-            // Verifica quais elementos têm mais de uma ocorrência
-            for (var elemento in contador) {
-                if (contador[elemento] > 1) {
-                    for (var i = 1; i < contador[elemento]; i++) {
-                        elementosDuplicados.push(elemento);
-                    }
-                }
-            }
+        //     // Verifica quais elementos têm mais de uma ocorrência
+        //     for (var elemento in contador) {
+        //         if (contador[elemento] > 1) {
+        //             for (var i = 1; i < contador[elemento]; i++) {
+        //                 elementosDuplicados.push(elemento);
+        //             }
+        //         }
+        //     }
 
-            return elementosDuplicados;
-        }
+        //     return elementosDuplicados;
+        // }
     },
     created() {
+        this.getNumbers();
         this.search()
-        this.debouncedSearch = debounce(this.handleSearch, 1000); // 300ms debounce
+        this.debouncedSearch = debounce(this.handleSearch, 1000); // 1000ms debounce
     },
-    /*mounted() {
-
-    }*/
+    // mounted() {
+    // }
 }
 </script>
 <template>
@@ -131,7 +205,8 @@ export default {
             <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 card-title">
                 <div class="w-full join">
                     <input v-model="searchQuery" @input="debouncedSearch"
-                        class="w-full input input-sm input-bordered join-item xl:btn-md bg-content" placeholder="Buscar..." />
+                        class="w-full input input-sm input-bordered join-item xl:btn-md bg-content"
+                        placeholder="Buscar..." />
                     <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw">
                         <MagnifyingGlassIcon class="w-6" />
                     </button>
@@ -139,19 +214,78 @@ export default {
             </div>
         </div>
 
-        <div class="grid grid-cols-12">
-            numeros disponiveis
-            <p class="grid grid-cols-12">{{this.data.raffle}}</p>
+        <div class="flex flex-row flex-wrap w-full px-4 mb-4">
+            <div
+                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 top-[1px] border-neutral/50">
+                Números
+                Disponíveis</div>
+            <div class="z-0 w-full p-2 border rounded-b-lg rounded-r-lg border-neutral/50">
+                <ul class="grid grid-cols-4 gap-2 lg:grid-cols-20">
+                    <li v-for="(number, index) in displayedNumbers" :key="number"
+                        :class="index % 2 == 0 ? 'animate-fade-right' : 'animate-fade-left'"
+                        class="py-1 text-sm font-semibold text-center border rounded-lg border-primary/20 bg-primary/5 text-neutral">
+                        {{ number }}</li>
+                </ul>
+                <div v-if="allNumbersLoaded" class="flex flex-row justify-end mt-2 text-sm">
+                    <div class="w-auto">
+                        <button class="btn btn-sm btn-success text-primary-bw " @click="loadMore">
+                            Ver Mais ...
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="flex justify-end">
-            numeros vendidos
-            {{this.data.paid}}
+        <div class="flex flex-row flex-wrap w-full px-4 mb-4">
+            <div
+                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 border-neutral/50 top-[1px]">
+                Números
+                Vendidos</div>
+            <div class="z-0 w-full p-2 border rounded-b-lg rounded-r-lg border-neutral/50">
+                <div v-if="displayedNumbersPaid.length > 0">
+                    <ul class="grid grid-cols-4 gap-2 lg:grid-cols-20">
+                        <li v-for="(number, index) in displayedNumbersPaid" :key="number"
+                            :class="index % 2 == 0 ? 'animate-fade-right' : 'animate-fade-left'"
+                            class="py-1 text-sm font-semibold text-center border rounded-lg border-primary/20 bg-primary/5 text-neutral">
+                            {{ number }}</li>
+                    </ul>
+                </div>
+                <div v-else class="flex justify-center w-full py-4">
+                    <h2>Não há nenhum número pago.</h2>
+                </div>
+                <div v-if="allNumbersPaidLoaded" class="flex flex-row justify-end mt-2 text-sm">
+                    <div class="w-auto">
+                        <button class="btn btn-sm btn-success text-primary-bw " @click="loadMorePaid">
+                            Ver Mais ...
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="flex justify-end">
-            numeros reservados
-            {{this.data.reserved}}
+        <div class="flex flex-row flex-wrap w-full px-4">
+            <div
+                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 border-neutral/50 top-[1px]">
+                Números
+                Reservados</div>
+            <div class="z-0 w-full p-2 border rounded-b-lg rounded-r-lg border-neutral/50">
+                <div v-if="displayedNumbersReserved.length > 0">
+                    <ul class="grid grid-cols-4 gap-2 lg:grid-cols-20">
+                        <li v-for="(number, index) in displayedNumbersReserved" :key="number"
+                            :class="index % 2 == 0 ? 'animate-fade-right' : 'animate-fade-left'"
+                            class="py-1 text-sm font-semibold text-center border rounded-lg border-primary/20 bg-primary/5 text-neutral">
+                            {{ number }}</li>
+                    </ul>
+                </div>
+                <div v-else class="flex justify-center w-full py-4">
+                    <h2>Não há nenhum número reservado.</h2>
+                </div>
+                <div v-if="allNumbersReservedLoaded" class="flex flex-row justify-end mt-2 text-sm">
+                    <div class="w-auto">
+                        <button class="btn btn-sm btn-success text-primary-bw " @click="loadMoreReserved">
+                            Ver Mais ...
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
