@@ -417,7 +417,7 @@ class SellerController extends Controller
         $data['paid'] = !empty($paid[0]['numbers']) ? $paid[0]['numbers'] : null;
         $data['raffle'] = !empty($raffle->numbers) ? $raffle->numbers : null;
 
-        return Inertia::render('Seller/Raffle/View/RaffleLive', ['data' => $data]);
+        return ['data' => $data];
     }
 
     public function export($id)

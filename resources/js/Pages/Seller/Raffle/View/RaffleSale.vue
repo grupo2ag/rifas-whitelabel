@@ -6,13 +6,15 @@ import { Collapse } from 'vue-collapsed'
 import * as func from '@/Helpers/functions';
 import debounce from 'lodash/debounce';
 import {
+    CreditCardIcon,
     UserIcon,
     CurrencyDollarIcon,
     PhoneIcon,
     EnvelopeIcon,
     CalendarDaysIcon,
     TicketIcon,
-    MagnifyingGlassIcon} from '@heroicons/vue/24/outline';
+    MagnifyingGlassIcon
+} from '@heroicons/vue/24/outline';
 </script>
 
 <script>
@@ -37,11 +39,11 @@ export default {
     methods: {
         async search() {
             this.loading = true;
-               await axios.get(route('raffles.raffleParticipants', {
-                    query: this.searchQuery,
-                    page: this.currentPage,
-                    idRaffle: this?.data?.raffle?.id
-                }))
+            await axios.get(route('raffles.raffleParticipants', {
+                query: this.searchQuery,
+                page: this.currentPage,
+                idRaffle: this?.data?.raffle?.id
+            }))
                 .then(response => {
                     this.results = response?.data;
                     this.loading = false;
@@ -63,9 +65,9 @@ export default {
         },
         handleAccordion(index) {
             this.collapse.forEach((val, i) => {
-                if(val.id === index){
+                if (val.id === index) {
                     this.collapse[i].value = !val.value
-                }else this.collapse[i].value = false
+                } else this.collapse[i].value = false
             })
         }
     },
@@ -109,7 +111,8 @@ export default {
             <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 card-title">
                 <div class="w-full join">
                     <input v-model="searchQuery" @input="debouncedSearch"
-                        class="w-full input input-sm input-bordered join-item xl:btn-md bg-content" placeholder="Buscar..." />
+                        class="w-full input input-sm input-bordered join-item xl:btn-md bg-content"
+                        placeholder="Buscar..." />
                     <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw">
                         <MagnifyingGlassIcon class="w-6" />
                     </button>
@@ -128,15 +131,20 @@ export default {
         </div>
         <div v-if="results?.data && results?.data?.length > 0" class="w-full pr-3">
             <!-- loop -->
-            <div v-for="(sale, index) in results?.data" :key="sale.id" @click="handleAccordion(index)"
-                class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content animate-fade-down animate-duration-1000 ">
-                <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 break-all rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-base-300 lg:bg-content lg:text-neutral/70 text-primary-bw">
+            <div v-for="(sale, index) in results?.data" :key="sale.id" @click="handleAccordion(index)" role="button"
+                class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content animate-fade-down animate-duration-1000 hover:!bg-base-300 lg:pl-2">
+                <div
+                    class="flex justify-center w-full p-2 px-2 mx-2 mb-2 break-all rounded-lg lg:m-0 lg:w-1/12 bg-primary lg:bg-content lg:text-neutral/70 text-primary-bw">
                     {{ sale?.id }}</div>
                 <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
-                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ func.truncateString(sale?.name, 20) }}
+                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{
+        func.truncateString(sale?.name,
+            20) }}
                 </div>
                 <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
-                    <UserIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ sale?.document }}
+                    <CreditCardIcon class="flex w-6 lg:m-0 lg:hidden text-neutral/70" />
+                    <UserIcon class="relative w-2 right-3 top-[2px] lg:m-0 lg:hidden text-neutral" />
+                    {{ sale?.document }}
                 </div>
                 <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
                     <EnvelopeIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />{{ sale?.email }}
@@ -155,15 +163,26 @@ export default {
                     <CalendarDaysIcon class="flex w-6 mr-1 lg:m-0 lg:hidden text-neutral/70" />
                     {{ func.translateDate(sale?.created_at) }}
                 </div>
-                <Collapse :on-collapse="this.collapse.push({id: index, value: false})" :when="this.collapse[index].value">
-                    <p class="CollapseContent">
-                        <ul class="grid grid-cols-8 gap-1">
-                            <template v-for="item in sale?.numbers.split(',')">
-                                <li class="border border-primary/20 bg-primary/5 text-neutral font-semibold py-1 text-sm text-center ">{{item}}</li>
-                            </template>
-                        </ul>
-                    </p>
-                </Collapse>
+                <div class="flex flex-row flex-wrap w-full px-1 mt-2">
+                    <div class="w-full">
+                        <Collapse :on-collapse="this.collapse.push({ id: index, value: false })"
+                            :when="this.collapse[index].value">
+                            <div class="w-full border-t border-neutral/50 animate-fade-up"></div>
+                            <div class="flex flex-row w-full mt-2 mb-2 font-bold animate-fade-right">
+                                <h2>Cotas Adquiridas</h2>
+                            </div>
+                            <p class="CollapseContent">
+                            <ul class="grid grid-cols-6 gap-2 md:grid-cols-10 lg:grid-cols-20">
+                                <template v-for="(item, indexLine) in sale?.numbers.split(',')" :key="item">
+                                    <li :class="indexLine % 2 == 0 ? 'animate-fade-right' : 'animate-fade-left'"
+                                        class="py-1 text-sm font-semibold text-center border rounded-lg border-primary/20 bg-primary/5 text-neutral">
+                                        {{ item }}</li>
+                                </template>
+                            </ul>
+                            </p>
+                        </Collapse>
+                    </div>
+                </div>
             </div>
             <!--  -->
             <div class="flex flex-row w-full px-2"
@@ -173,11 +192,32 @@ export default {
                 </div>
             </div>
         </div>
-        <div v-else-if="loading" class="flex flex-row flex-wrap items-center justify-center w-full px-4 py-8 mb-4 rounded-lg bg-base-100">
-            <div v-for="skn in [...Array(5).keys()].map(i => i + 1)" :key="skn" class="w-full mb-2 rounded-lg skeleton h-14 shrink-0"></div>
+        <div v-else-if="loading"
+            class="flex flex-row flex-wrap items-center justify-center w-full px-4 py-8 mb-4 rounded-lg bg-base-100">
+            <div v-for="skn in [...Array(5).keys()].map(i => i + 1)" :key="skn"
+                class="w-full mb-2 rounded-lg skeleton h-14 shrink-0"></div>
         </div>
         <div v-else class="flex flex-row flex-wrap items-center justify-center w-full py-8 mb-4 rounded-lg bg-base-100">
             <span class="text-base text-xl font-medium title-font text-neutral/70">Nenhuma venda encontrada</span>
         </div>
     </div>
 </template>
+
+<style scoped>
+.custom-grid-20 {
+    @apply grid;
+    grid-template-columns: repeat(20, minmax(0, 1fr));
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-20 {
+        grid-template-columns: repeat(20, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .lg\:grid-cols-20 {
+        grid-template-columns: repeat(20, minmax(0, 1fr));
+    }
+}
+</style>
