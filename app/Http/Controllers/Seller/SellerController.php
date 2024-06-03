@@ -282,7 +282,7 @@ class SellerController extends Controller
             'pix_expired' => 'required',
             'buyer_ranking' => 'required',
             'link' => 'required',
-            'price' => 'required|numeric|gt:0',
+            'value' => 'required|numeric|gt:0',
             'status' => 'required',
             'quantity' => 'required',
             //'type' => 'required',
@@ -294,7 +294,6 @@ class SellerController extends Controller
             //'gateway_id' => 'required',
             'banner' => 'required_if:highlight,true|image|nullable|max:2048', //|dimensions:max_width=768,max_height=560',
             'partial' => 'required',
-            'expected_date' => 'required|date|after:today',
             'awards' => 'required'
         ]);
         if ($validator->fails()) {
@@ -315,7 +314,7 @@ class SellerController extends Controller
             $link = $link . '-' . $num . $string;
         }
 
-        $price = (int) ($request->price * 100);
+        $price = (int)$request->value;
         $total = $price * $request->quantity;
 
         if ($request->file('banner')) {
@@ -330,7 +329,7 @@ class SellerController extends Controller
 
         DB::beginTransaction();
         try {
-
+            //dd($price);
             $raffle->title = $request->title;
             $raffle->subtitle = $request->subtitle;
             $raffle->pix_expired = $request->pix_expired;
@@ -342,13 +341,12 @@ class SellerController extends Controller
             $raffle->highlight = $request->highlight;
             $raffle->minimum_purchase = $request->minimum_purchase;
             $raffle->maximum_purchase = $request->maximum_purchase;
-            $raffle->visible = !empty($request->visible) ? true : false;
+            //$raffle->visible = !empty($request->visible) ? true : false;
             $raffle->user_id = $user_id;
             $raffle->partial = $request->partial;
             $raffle->description = $request->description;
             $raffle->total = $total;
             $raffle->banner = !empty($image) ? $path : null;
-            $raffle->expected_date = $request->expected_date;
 
             $raffle->save();
 
