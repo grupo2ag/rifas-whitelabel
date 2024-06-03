@@ -300,12 +300,12 @@ class SellerController extends Controller
 
         $user = auth()->user();
 
-        $raffle = $user->raffles()->ofId($id)->first();
+        $raffle = $user->raffles()->ofId($request->id)->first();
 
-        $user_id = auth()->user()->id;
+        $user_id = $user->id;
         $link = $request->link;
 
-        $exitsSlug = Raffle::Slug($link)->UserID($user_id)->where('id', '<>', $id)->first();
+        $exitsSlug = Raffle::Slug($link)->UserID($user_id)->where('id', '<>', $raffle->id)->first();
         if ($exitsSlug) {
             $num = rand(100, 999);
             $string = Str::random(4);
