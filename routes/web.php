@@ -15,6 +15,7 @@ use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
     Route::get('/testee', [TesteController::class, 'index']);
+    Route::get('/compra', [TesteController::class, 'simulacao_compra']);
 }
 
 Route::middleware(LevelMiddleware::class)->group(function (){
@@ -37,6 +38,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/created', [SellerController::class, 'created'])->name('raffleCreated');
             Route::get('/edit/{id}', [SellerController::class, 'edit'])->name('raffleEdit');
             Route::post('/store', [SellerController::class, 'store'])->name('raffleStore');
+            Route::post('/update', [SellerController::class, 'update'])->name('raffleUpdate');
             Route::post('/updated/{id}',[SellerController::class, 'updated'])->name('raffleUpdated');
             Route::get('/participants',[SellerController::class, 'getParticipants'])->name('raffleParticipants');
             Route::get('/reserved_canceled/{participant}/{raffle}',[SellerController::class, 'reservedCanceled'])->name('raffleRemoveReserve');
@@ -44,8 +46,8 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             Route::get('/export/{id}',[SellerController::class, 'export'])->name('raffleExport');
             //Route::get('/sale/{id}/{condition}', [SellerController::class, 'sale'])->name('raffleSale');
             Route::get('/awards/{id}', [SellerController::class, 'awards'])->name('raffleAwards');
-            Route::get('/award/{number}', [SellerController::class, 'award'])->name('raffleAward');
-
+            Route::get('/award/{raffle}/{number}', [SellerController::class, 'award'])->name('raffleAward');
+            Route::get('/awardPart/{raffle}/{award}/{part}/{number}', [SellerController::class, 'awardPart'])->name('raffleAwardPart');
             Route::get('/affiliates/{id}', [SellerController::class, 'affiliates'])->name('raffleAffiliates');
         });
 

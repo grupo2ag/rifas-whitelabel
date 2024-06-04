@@ -16,14 +16,16 @@ class Pixcred
     function __construct($params)
     {
         if(empty($params['token']) || empty($params['authlogin']) || empty($params['authtoken']) || empty($params['endpoint'])) {
-            setLogErros('Libraries->Pixcred', 'Raffle_id not found code 0', $params);
+            if($params['isTransaction']) DB::rollback();
+            setLogErros('Libraries->Pixcred', 'Parametros do Gateway invalidos', $params);
             return false;
         }
 
         $this->authtoken = $params['authtoken'];
         $this->authlogin = $params['authlogin'];
         $this->endpoint  = $params['endpoint'];
-        $this->webhook_notify = (string)config('app.url').'/webhook_pixcred';
+        $this->webhook_notify = config('app.url').'/webhook_pixcred';
+        //dd($this->webhook_notify);
     }
 
     public function pix_generate($data, $isTransaction = false)

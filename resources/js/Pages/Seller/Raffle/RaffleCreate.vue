@@ -3,8 +3,6 @@ import * as func from '@/Helpers/functions.js';
 </script>
 
 <script>
-import * as func from '@/Helpers/functions.js'
-
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {useForm} from "@inertiajs/inertia-vue3";
 import Error from "@/Components/Error/Error.vue";
@@ -53,6 +51,7 @@ import {Base64UploadAdapter} from '@ckeditor/ckeditor5-upload';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format';
 
 import { ref } from 'vue';
+import {dateFormatInvert} from "@/Helpers/functions";
 
 const componentKey = ref(0);
 
@@ -86,19 +85,19 @@ export default {
         Error,
     },
     props: {
-        raffle: Object,
+        raffle: Array,
         quantity_numbers: Array
     },
     data() {
         return {
             form: {
-                id: '',
+                id: this.raffle ? this.raffle.id : '',
                 title: this.raffle ? this.raffle.title : '',
                 link: this.raffle ? this.raffle.link : '',
                 subtitle: this.raffle ? this.raffle.subtitle : '',
-                total: null,
+               // total: null,
                 quantity: this.raffle ? this.raffle.quantity : 100,
-                price: this.raffle ? this.raffle : 0,
+                value: this.raffle ? this.raffle.price : 0,
                 type: this.raffle ? this.raffle.type : 'automatico',
                 pix_expired: this.raffle ? this.raffle.pix_expired : '',
                 minimum_purchase: this.raffle ? this.raffle.minimum_purchase : 1,
@@ -107,26 +106,17 @@ export default {
 
                 buyer_ranking: this.raffle ? this.raffle.buyer_ranking : 5,
                 partial: this.raffle ? this.raffle.partial : 1,
-                expected_date: this.raffle ? func.dateFormat(this.raffle.expected_date) : '',
+                expected_date: this.raffle ? func.dateFormatInvert(this.raffle.expected_date) : '',
                 status: this.raffle ? this.raffle.status : 'Ativo',
-                banner: this.raffle ? this.raffle.banner : '',
+                banner: this.raffle ? this.raffle.new_banner : '',
                 highlight: this.raffle ? this.raffle.highlight : 0,
 
-                gallery: this.raffle ? this.raffle.gallery : [],
-
-                quotas: this.raffle ? this.raffle.gallery : [],
-
-                awards: [{description: ''}],
-                // awards: [],
+                gallery: this.raffle ? this.raffle.galery : [],
+                quotas: [],
+                awards: this.raffle ? this.raffle.raffle_awards : [{description: ''}],
+                promotions: this.raffle ? this.raffle.promotions : [{quantity_numbers: '', discount: '' }],
                 processing: false
             },
-           /* validator: {
-                id: '',
-                title: '',
-                image: '',
-                description: '',
-                galleries: ''
-            },*/
             editorType: ClassicEditor,
             editorConfig: {
                 plugins: [
@@ -171,13 +161,15 @@ export default {
             validator: {
                 title: '',
                 subtitle: '',
-                price: 0,
+                price: '',
                 pix_expired: '',
                 description: '',
                 expected_date: '',
                 'awards[0].description': '',
+                gallery: '',
             },
-            today: new Date()
+            today: new Date(),
+            numbers_manual: this.quantity_numbers
         }
     },
     methods: {
@@ -192,7 +184,8 @@ export default {
                 .validate(this.form, {abortEarly: false}).then(() => {
                     this.form.processing = true;
 
-                form.post(route('raffles.raffleStore'), {
+                let endPoint = this.raffle.id ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
+                form.post(route(endPoint), {
                     onSuccess: () => {
                         this.disabled = false
                         this.loading = false
@@ -206,12 +199,7 @@ export default {
             }).catch((err) => {
                 this.form.processing = false;
 
-                console.log(err)
-                // console.log(err.inner)
-                // document.getElementById(err.inner[0].path).scrollIntoView();
-
                 err.inner.forEach((error) => {
-                    console.log(error )
                     this.validator = {...this.validator, [error.path]: error.message};
                 });
             });
@@ -228,13 +216,18 @@ export default {
         removeAwards(index) {
             this.form.awards.splice(index, 1);
         },
+        addPromotions() {
+            this.form.promotions.push({quantity_numbers: '', discount: '' })
+        },
+        removePromotions(index) {
+            this.form.promotions.splice(index, 1);
+        },
         addQuota() {
             let num = this.number_quota
             this.form.quotas.push(num)
             this.number_quota = ''
         },
         removeQuota(item){
-            console.log(item)
             for (let i = this.form.quotas.length; i--;) {
                 if (this.form.quotas[i] === item) {
                     this.form.quotas.splice(i, 1);
@@ -247,12 +240,12 @@ export default {
             const reader = new FileReader();
 
             const imageCurrentAdd = {
-                image: reader.result
+                img: reader.result
             }
 
             reader.onload = () => {
                 imageReader = reader.result
-                imageCurrentAdd.image = imageReader
+                imageCurrentAdd.img = imageReader
                 gallery.push(imageCurrentAdd)
                 this.imageGallery = '';
             };
@@ -272,13 +265,20 @@ export default {
             const text = func.clieanString(this.form.title)
             this.form.link = text.toLowerCase().split(' ').filter(item => item !== ' ' && item !== '').join('-');
         },
+        "form.type"() {
+            if (this.form.type === 'manual'){
+                this.numbers_manual = this.quantity_numbers.filter(element => element.value !== 1000000 && element.value !== 10000000);
+            } else {
+                this.numbers_manual = this.quantity_numbers;
+            }
+        }
     },
     mounted() {
         yup.setLocale(pt);
         this.schema = yup.object().shape({
             title: yup.string().min(10, 'Digite ao menos 10 caracteres').max(80, 'Digite ao máximo 80 caracteres').required('Obrigatório'),
             subtitle: yup.string().min(5, 'Digite ao menos 5 caracteres').max(160, 'Digite ao máximo 160 caracteres').required('Obrigatório'),
-            price: yup.number().positive().nullable(true).required('Obrigatório'),
+            value: yup.number().positive().nullable(true).required('Obrigatório'),
             pix_expired: yup.string().required('Obrigatório'),
             description: yup.string().required('Obrigatório'),
             expected_date: yup.string().required('Obrigatório'),
@@ -286,8 +286,12 @@ export default {
                 yup.object().shape({
                     description: yup.string().required('Obrigatório')
                 })
-            ).min(1, '1 no minimo').required('Obrigatório')
-
+            ).min(1, '1 no minimo').required('Obrigatório'),
+            gallery: yup.array().of(
+                yup.object().shape({
+                    image: yup.string().required('Obrigatório')
+                })
+            ).min(1, 'Imagem obrigatória').required('Obrigatório')
         })
     }
 }
@@ -296,8 +300,9 @@ export default {
 <template>
     <AuthenticatedLayout title="Dashboard">
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Rifa
+            <h2 class="flex items-center font-semibold text-primary-bw lg:text-xl">
+                <TicketIcon class="w-5 h-5 mr-2 text-primary-bw lg:w-6 lg:h-6" />
+                Rifas
             </h2>
         </template>
 
@@ -358,21 +363,20 @@ export default {
                                 caracteres</p>
                         </div>
 
-                        <div class="flex flex-col md:flex-row md:gap-4">
-                            <div class="w-full md:w-6/12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+                            <div v-if="!raffle" class="w-full">
                                 <Select label="Quantidade de Números:" v-model="form.quantity" name="quantity" :error="validator.total || $page.props.errors.total">
-                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value"
-                                    >{{ item.texto }}</option>
+                                    <option v-for="(item, index) in numbers_manual" :key="index" :value="item.value">{{ item.texto }}</option>
                                 </Select>
                             </div>
 
-                            <div class="w-full md:w-6/12">
-                                <CurrencyInput label="Valor" v-model="form.price" name="price"
-                                               :error="validator.price || $page.props.errors.price"/>
+                            <div class="w-full">
+                                <CurrencyInput label="Valor" v-model="form.value" name="price" :value="form.value / 100"
+                                               :error="validator.value || $page.props.errors.value"/>
                             </div>
                         </div>
 
-                        <div class="flex flex-col md:flex-row md:gap-4">
+                        <div v-if="!raffle" class="flex flex-col md:flex-row md:gap-4">
                             <div class="w-full md:w-6/12">
                                 <Select label="Tipo de Reserva:" v-model="form.type" name="type">
                                     <option value="automatico">
@@ -450,15 +454,15 @@ export default {
                     </div>
 
                     <div class="pt-3">
-                        <div class="flex flex-col gap-4 md:flex-row">
-                            <div class="w-full md:w-6/12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 md:gap-4">
+                            <div class="w-full">
                                 <Input label="Data prevista do Sorteio" type="date" :min="func.dateFormatInvert(today)"
                                        name="expected_date" class="appearance-none"
                                        :error="validator.expected_date || $page.props.errors.date"
                                        placeholder="dd/mm/aaaa" v-model="form.expected_date"/>
                             </div>
 
-                            <div class="w-full md:w-6/12">
+                            <div class="w-full md:w-6/12 hidden">
                                 <Select label="Status:" v-model="form.status" :name="form.status"
                                         :error="validator.status || $page.props.errors.status">
                                     <option value="Ativo">
@@ -524,24 +528,24 @@ export default {
                     </div>
                 </div>
 
-                <div class="mb-4 c-content" ref="ajustes">
+                <div class="mb-4 c-content">
                     <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
                             <TrophyIcon class="h-5 mr-1 stroke-neutral"/>
 
-                            <h3 class="text-base font-semibold text-neutral">
-                                {{ form.status === 'Ativo' ? 'Prêmios' : 'Ganhadores' }} </h3>
+                            <h3 class="text-base font-semibold text-neutral">Prêmios</h3>
                         </div>
                     </div>
 
                     <div class="w-full pt-3">
-                        <div v-if="form.status === 'Ativo'" class="flex flex-col items-end gap-4 md:flex-row">
+                        <div class="flex flex-col items-end gap-4 md:flex-row">
                             <div class="grid w-full grid-cols-1">
                                 <div v-for="(item, index) in form.awards" :key="index" class="flex items-center gap-3">
                                     <span class="w-6 text-lg text-right text-neutral">{{ index + 1 }}˚</span>
 
                                     <Input label="Prêmio:" v-model="item.description"
                                            type="text" :name="item.description" class="flex-1"
+                                           :error="index === 0 ? validator['awards[0].description'] : ''"
                                            :placeholder="'Preencha o ' + (index + 1) + '˚ prêmio'"/>
 
                                     <div class="w-12">
@@ -551,9 +555,6 @@ export default {
                                         </Button>
                                     </div>
                                 </div>
-
-                                <Error :message="validator['awards[0].description']"/>
-
 
                                 <div class="flex items-center w-full gap-3">
                                     <div class="w-6"></div>
@@ -566,32 +567,10 @@ export default {
                                 </div>
                             </div>
                         </div>
-
-                        <template v-if="form.status === 'Finalizado'">
-                            <template v-for="(item, index) in form.awards" :key="index">
-                                <div class="flex flex-col items-center gap-4 md:flex-row">
-                                    <p class="text-right text-neutral">{{ index + 1 }}˚ Prêmio</p>
-
-                                    <div class="flex-1">
-                                        <Input label="Ganhador:" v-model="item.description"
-                                               type="text" :name="item.description"
-                                               :error="validator.awards || $page.props.errors.awards"
-                                               placeholder="Digite o nome do ganhador"/>
-                                    </div>
-
-                                    <div class=" md:w-3/12">
-                                        <Input label="Número do Ganhador:" v-model="item.number"
-                                               type="text" :name="item.number"
-                                               :error="validator.awards || $page.props.errors.awards"
-                                               placeholder="Digite o número"/>
-                                    </div>
-                                </div>
-                            </template>
-                        </template>
                     </div>
                 </div>
 
-                <div class="hidden mb-4 c-content">
+                <div class="mb-4 c-content">
                     <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 mr-1 stroke-neutral"/>
@@ -600,25 +579,38 @@ export default {
                         </div>
                     </div>
 
-                    <div class="w-full pt-3">
+                    <div class="w-full pt-3 ">
 
-                        <div class="flex flex-col md:flex-row md:gap-4">
-                            <div class="w-full md:w-6/12">
-                                <Input label="Qtd de números:" v-model="form.minimum_purchase"
-                                       type="number" :name="form.minimum_purchase"
-                                       :error="validator.minimum_purchase || $page.props.errors.minimum_purchase"
-                                       placeholder="0"/>
+                        <div v-for="(item, index) in form.promotions" :key="index" class="flex items-center gap-3">
+
+                            <div class="flex-1">
+                                <Input label="Qtd de números:" v-model="item.quantity_numbers"
+                                       type="number" :name="item.quantity_numbers" min="1" placeholder="0"/>
                             </div>
 
-                            <div class="w-full md:w-6/12">
-                                <CurrencyInput label="Valor de Desconto"
-                                               v-model="form.price"/>
+                            <div class="flex-1">
+                                <CurrencyInput label="Valor de Desconto por cota" v-model="item.discount" :value="item.discount / 100"/>
                             </div>
+
+                            <div class="w-12">
+                                <Button v-if="index !== 0" type="button" @click="removePromotions(index)"
+                                        color="outline-red">
+                                    <TrashIcon class="h-5"/>
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center w-full gap-3">
+                            <Button type="button" color="primary" class="flex-1" @click="addPromotions">
+                                Adicionar Promoção
+                            </Button>
+
+                            <div class="w-12"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="hidden mb-4 c-content">
+                <div class="mb-4 c-content hidden">
                     <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 mr-1 stroke-neutral"/>
@@ -628,7 +620,7 @@ export default {
                     </div>
 
                     <div class="w-full pt-3">
-                        <div class="flex flex-col items-start md:flex-row md:gap-4">
+                        <div class="flex flex-col items-start md:gap-4">
                             <div class="flex items-center w-full gap-2 md:w-6/12">
                                 <Input label="Número da Cota Prêmiada:" v-model="number_quota"
                                        type="number" :name="number_quota"
@@ -639,7 +631,7 @@ export default {
                                 </Button>
                             </div>
 
-                            <div class="relative w-full md:w-6/12">
+                            <div class="relative w-full">
                                 <div class="w-full">
                                     <div class="box-url">
                                         <label
@@ -651,13 +643,13 @@ export default {
                                             class="box-url__content min-h-[46px] flex flex-wrap items-center gap-2">
                                             <template v-for="(item, index) in form.quotas" :key="index">
                                                 <div
-                                                    class="w-20  border border-primary px-3 py-1.5 flex items-center justify-between rounded-md gap-1">
-                                                    <p class="text-xs uppercase text-primary">
+                                                    class="w-20 bg-neutral px-3 py-1.5 flex items-center justify-between rounded-md gap-1">
+                                                    <p class="text-xs uppercase text-neutral-bw">
                                                         {{ item }}
                                                     </p>
                                                     <button type="" @click="removeQuota(item)"
                                                             aria-label="Excluir Número">
-                                                        <TrashIcon class="stroke-primary h-[14px]"/>
+                                                        <TrashIcon class="stroke-neutral-bw h-[14px]"/>
                                                     </button>
                                                 </div>
                                             </template>
@@ -682,7 +674,7 @@ export default {
                         <div class="flex flex-col gap-4 md:flex-row">
                             <div class="w-full">
                                 <div class="flex flex-col md:flex-row md:gap-4">
-                                    <div class="relative flex flex-col items-center w-3/12">
+                                    <div class="relative flex flex-col w-3/12">
                                         <UploadImage imgCurrent=""
                                                      label="Imagem"
                                                      size="aspect-1"
@@ -692,6 +684,8 @@ export default {
                                                      :key="componentKey"
                                                      filesize="2MB" name="image-galery"/>
 
+                                        <Error :message="validator.gallery"/>
+
                                         <Button type="button" @click="addImage(form.gallery)"
                                                 class="w-full mt-2"
                                                 size="sm" color="primary">Adicionar Imagem
@@ -699,19 +693,20 @@ export default {
                                     </div>
                                     <div class="flex-1">
                                         <p class="w-full text-sm font-medium rounded-md text-neutral">
-                                            Galeria:</p>
-                                        <div
-                                            class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
+                                            Galeria:
+                                        </p>
+
+                                        <div class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
                                             <div v-for="(item, index) in form.gallery" :key="index"
                                                  class="relative">
                                                 <div class="absolute w-full h-full transition-all opacity-0 cursor-pointer cover-remove hover:opacity-100">
                                                     <button type="button"
-                                                            @click="removeImage(item.image)"
+                                                            @click="removeImage(item.img)"
                                                             class="block p-1 m-2 ml-auto rounded-full bg-red hover:bg-red-dark">
                                                         <TrashIcon class="w-4 h-4 stroke-white"/>
                                                     </button>
                                                 </div>
-                                                <img class="object-cover w-full h-full" :src="item.image" alt="">
+                                                <img class="object-cover aspect-square w-full h-full" :src="item.img" alt="">
                                             </div>
                                         </div>
                                     </div>

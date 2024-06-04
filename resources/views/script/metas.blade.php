@@ -1,5 +1,5 @@
 @if(\Illuminate\Support\Facades\Route::currentRouteNamed('index'))
-    <link rel="preload" as="image" href="{{ $page['props']['raffles'][0]['new_banner'] }}" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="image" href="{{ !empty($page['props']['raffles'][0]['new_banner']) ? $page['props']['raffles'][0]['new_banner'] : '' }}" type="image/webp" fetchpriority="high">
 @endif
 
 @if(\Illuminate\Support\Facades\Route::currentRouteNamed('raffle'))

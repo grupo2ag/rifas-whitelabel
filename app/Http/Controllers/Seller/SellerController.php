@@ -20,6 +20,7 @@ use Inertia\Inertia;
 use Intervention\Image\Facades\Image;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 
+
 class SellerController extends Controller
 {
 
@@ -122,7 +123,7 @@ class SellerController extends Controller
             'pix_expired' => 'required',
             'buyer_ranking' => 'required',
             'link' => 'required',
-            'price' => 'required|numeric|gt:0',
+            'value' => 'required|numeric|gt:0',
             'status' => 'required',
             'quantity' => 'required',
             'type' => 'required',
@@ -152,7 +153,7 @@ class SellerController extends Controller
         }
 
         $numbers = numbers_generate($request->quantity);
-        $price = (int) ($request->price * 100);
+        $price = (int) ($request->value * 100);
         $total = $price * $request->quantity;
 
         if ($request->file('banner')) {
@@ -271,12 +272,145 @@ class SellerController extends Controller
             return redirect()->back()->with('error', 'Rifa não encontrada!.');
         }
 
-        $arrayUpdate = ['updated_at' => now()];
-        if(!empty($request->status)) {$arrayUpdate['status'] = $request->status;}
-        if(!empty($request->visible) || $request->visible == '0') {$arrayUpdate['visible'] = $request->visible;}
+        $raffle->update([
+            'status' => 'Encerrado',
+            'updated_at' => now(),
+            'visible' => 0
+        ]);
+        return redirect()->back()->with('success', 'Rifa encerrada com sucesso.');
+    }
 
-        $raffle->update($arrayUpdate);
-        return redirect()->back()->with('success', 'Rifa alterada com sucesso.');
+    public function update(Request $request)
+    {
+        //dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:raffles,id',
+            'title' => 'required|string|min:10|max:255',
+            'subtitle' => 'required|string|min:5|max:255',
+            'pix_expired' => 'required',
+            'buyer_ranking' => 'required',
+            'link' => 'required',
+            'value' => 'required|numeric|gt:0',
+            'status' => 'required',
+            'quantity' => 'required',
+            //'type' => 'required',
+            'highlight' => 'required',
+            'minimum_purchase' => 'required',
+            'maximum_purchase' => 'required',
+            //'visible' => 'required',
+            'description' => 'required',
+            //'gateway_id' => 'required',
+            'banner' => 'required_if:highlight,true|image|nullable|max:2048', //|dimensions:max_width=768,max_height=560',
+            'partial' => 'required',
+            'awards' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()], 403);
+        }
+
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->ofId($request->id)->first();
+
+        $user_id = $user->id;
+        $link = $request->link;
+
+        $exitsSlug = Raffle::Slug($link)->UserID($user_id)->where('id', '<>', $raffle->id)->first();
+        if ($exitsSlug) {
+            $num = rand(100, 999);
+            $string = Str::random(4);
+            $link = $link . '-' . $num . $string;
+        }
+
+        $price = (int)$request->value;
+        $total = $price * $request->quantity;
+
+        if ($request->file('banner')) {
+            $name = (string) Str::uuid();
+            $webp = (string) Image::make($request->file('banner'))->fit(768, 560, function ($constraint) {
+                $constraint->upsize();
+            })->encode('webp', 95);
+            $path = config('filesystems.disks.s3.path') . '/images/' . $user_id . '/banner/' . $name . '.webp';
+
+            $image = Storage::disk(config('filesystems.default'))->put($path, $webp);
+        }
+
+        DB::beginTransaction();
+        try {
+            //dd($price);
+            $raffle->title = $request->title;
+            $raffle->subtitle = $request->subtitle;
+            $raffle->pix_expired = $request->pix_expired;
+            $raffle->buyer_ranking = $request->buyer_ranking;
+            $raffle->link = $link;
+            $raffle->price = $price;
+            $raffle->status = $request->status;
+            $raffle->quantity = $request->quantity;
+            $raffle->highlight = $request->highlight;
+            $raffle->minimum_purchase = $request->minimum_purchase;
+            $raffle->maximum_purchase = $request->maximum_purchase;
+            //$raffle->visible = !empty($request->visible) ? true : false;
+            $raffle->user_id = $user_id;
+            $raffle->partial = $request->partial;
+            $raffle->description = $request->description;
+            $raffle->total = $total;
+            $raffle->banner = !empty($image) ? $path : null;
+
+            $raffle->save();
+
+                if (!empty($request->awards)) {
+                    RaffleAward::where('raffle_id', $raffle->id)->delete();
+                    $raffleAwards = [];
+                    foreach ($request->awards as $key => $item) {
+                        $order = $key + 1;
+                        $raffleAwards[] = [
+                            'order' => $order,
+                            'description' => $item['description'],
+                            'raffle_id' => $raffle->id
+                        ];
+                    }
+                    if (!empty($raffleAwards))
+                        RaffleAward::insert($raffleAwards);
+                } else {
+                    DB::rollBack();
+                    setLogErros('SellerController', 'Erro Rifa Update Awards', [$request->all(), $raffle]);
+                    return response()->json(['message' => 'Problema ao atualizar a rifa, verifique os campos!'], 403);
+                }
+
+                if (!empty($request->gallery)) {
+                    RaffleImage::where('raffle_id', $raffle->id)->delete();
+                    $raffleImages = [];
+                    foreach ($request->gallery as $key => $item) {
+                        $glr = explode(';base64,', $item['image']);
+
+                        $name = (string) Str::uuid();
+                        $webp = (string) Image::make(base64_decode($glr[1]))->fit(500, 500, function ($constraint) {
+                            $constraint->upsize();
+                        })->encode('webp', 95);
+                        $path = config('filesystems.disks.s3.path') . '/images/' . $user_id . '/gallery/' . $raffle->id . '/' . $name . '.webp';
+
+                        $image = Storage::disk(config('filesystems.default'))->put($path, $webp);
+
+                        if ($image) {
+                            $highlight = $key == 0 ? 1 : 0;
+                            $raffleImages[] = [
+                                'highlight' => $highlight,
+                                'path' => $path,
+                                'raffle_id' => $raffle->id
+                            ];
+                        }
+                    }
+                    if (!empty($raffleImages)) RaffleImage::insert($raffleImages);
+                }
+
+            DB::commit();
+
+            return $this->index();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            setLogErros('SellerController->Update', $e->getMessage(), $request->all());
+            return response()->json(['message' => 'Problema ao alterar a rifa, verifique os campos!'], 403);
+        }
     }
 
     public function getParticipants(Request $request)
@@ -349,33 +483,43 @@ class SellerController extends Controller
             ->first();
 
         $data['quantity_numbers'] = [
-            ['value' => 100, 'texto' => '100 cotas - (0 à 99)'],
-            ['value' => 1000, 'texto' => '1.000 cotas - (0 à 999)'],
-            ['value' => 10000, 'texto' => '10.000 cotas - (0 à 9.999)'],
-            ['value' => 100000, 'texto' => '100.000 cotas - (0 à 99.999)'],
-            ['value' => 1000000, 'texto' => '1.000.000 cotas - (0 à 999.999)'],
-            ['value' => 10000000, 'texto' => '10.000.000 cotas - (0 à 9.999.999)']
+            ['value' => 100, '100' => '100 cotas - (0 à 99)'],
+            ['value' => 1000, '1.000' => '1.000 cotas - (0 à 999)'],
+            ['value' => 10000, '10.000' => '10.000 cotas - (0 à 9.999)'],
+            ['value' => 100000, '100.000' => '100.000 cotas - (0 à 99.999)'],
+            ['value' => 1000000, '1.000.000' => '1.000.000 cotas - (0 à 999.999)'],
+            ['value' => 10000000, '10.000.000' => '10.000.000 cotas - (0 à 9.999.999)']
         ];
 
         $galery = [];
-        if (!empty($raffle->raffle_images)) {
-            foreach ($raffle->raffle_images as $image) {
-                //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$this->user_id.'/gallery/'.$raffle->id.'/'.$image->path;
-
+        if(!empty($raffle->raffle_images)){
+            foreach($raffle->raffle_images as $image){
                 $s3TmpLink = new \stdClass();
                 $s3TmpLink->img = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
                 array_push($galery, $s3TmpLink);
             }
         }
 
-        if ($raffle->highlight == 1 && !empty($raffle->banner)) {
+        $promotions = [];
+        if(!empty($raffle->raffle_promotions)){
+            foreach($raffle->raffle_promotions as $promotion){
+                $promo = new \stdClass();
+                $promo->quantity_numbers = $promotion->quantity_numbers;
+                $promo->discount = $promotion->discount;
+                array_push($promotions, $promo);
+
+                $raffle->promotions = $promotion;
+            }
+        }
+
+        if ($raffle->highlight == 1 && !empty($raffle->banner)){
             $s3TmpLink = Storage::disk(config('filesystems.default'))->temporaryUrl($raffle->banner, now()->addMinutes(30));
             $raffle->new_banner = $s3TmpLink;
         }
 
         $data['raffle'] = $raffle;
         $data['raffle']['galery'] = $galery;
-
+        $data['raffle']['promotions'] = $promotions;
 
         return Inertia::render('Seller/Raffle/RaffleCreate', $data);
     }
@@ -503,25 +647,58 @@ class SellerController extends Controller
         return Inertia::render('Seller/Raffle/View/RaffleAwards', ['awards' => $awards]);
     }
 
-    public function affiliates($id)
+    public function award($raffleId, $number)
     {
         $user = auth()->user();
-        try {
-            $raffle = $user->raffles()->ofId($id)->first();
 
-            if(!$raffle) {
-                setLogErros('SellerController', 'Rifa não encontrada!');
-                return response()->json(['message' => 'Problema ao buscar rifa!'], 403);
+        $raffle = $user->raffles()->ofId($raffleId)->first();
+
+        if($number >= $raffle->quantity) return response()->json(['msg' => 'Esse numero não pertence a rifa!']);
+
+        $disponiveis = explode(",", $raffle->numbers); //pega os numeros disponiveis da rifa
+
+        foreach ($disponiveis as $resultNumber) { //retira os numeros do array da rifa
+            if($resultNumber === $number){
+                return response()->json(['msg' => 'Esse numero não foi vendido!']);
             }
-
-            $affiliates = $raffle->affiliates()->get();
-
-            return response()->json($affiliates);
-        } catch (QueryException $e) {
-            setLogErros('SellerController', $e->getMessage());
-            return response()->json(['message' => 'Problema ao buscar afiliados!'], 403);
         }
 
+        $participants = $raffle->participants()->where('participants.paid', '>', 0)->get();
+        foreach ($participants as $participant){
+            $numbersPart = explode(',', $participant->numbers);
+            foreach ($numbersPart as $np){
+                if($np === $number){
+                    return response()->json($participant);
+                }
+            }
+        }
 
+        return response()->json(['msg' => 'Esse numero está reservado!']);
+    }
+
+    public function awardPart($raffleId, $awardId, $partId, $number)
+    {
+        $user = auth()->user();
+
+        DB::beginTransaction(); //inicia a transaction no banco
+        try {
+            $raffle = $user->raffles()->ofId($raffleId)->first();
+            $participant = $raffle->participants()->where('participants.id', $partId)->first();
+
+            $up = $raffle->raffle_awards()->where('raffle_awards.id', $awardId)->first();
+
+            $up->winner_name = $participant->name;
+            $up->winner_phone = $participant->phone;
+            $up->number_award = $number;
+            $up->customer_id = $participant->customer_id;
+            $up->save();
+
+            DB::commit();
+            return response()->json(true);
+        }catch (QueryException $e){
+            DB::rollBack();
+            setLogErros('Awards->save', $e->getMessage(), [$raffleId, $awardId, $partId, $number], 'catch', $raffleId);
+            return response()->json(false);
+        }
     }
 }
