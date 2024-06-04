@@ -109,9 +109,11 @@ export default {
         search() {
             if (this.searchQuery.length) {
                 var buscaRaffle = this.array_raffle.filter((item) => {
-                    return item.startsWith(this.searchQuery);
+                    return (item === this.searchQuery || (parseInt(item) === parseInt(this.searchQuery)));
+                    //return item.startsWith(this.searchQuery);
                 })
-                if (buscaRaffle.length) {
+
+                if (buscaRaffle.length > 0) {
                     this.$swal(
                         'Disponível!',
                         `O número ${this.searchQuery} está disponível.`,
@@ -120,9 +122,10 @@ export default {
                 }
 
                 var buscaReserved = this.array_reserved.filter((item) => {
-                    return item.startsWith(this.searchQuery);
+                    return (item === this.searchQuery || (parseInt(item) === parseInt(this.searchQuery)));
+                    //return item.startsWith(this.searchQuery);
                 })
-                if (buscaReserved.length) {
+                if (buscaReserved.length > 0) {
                     this.$swal(
                         'Reservado!',
                         `O número ${this.searchQuery} está reservado!`,
@@ -131,9 +134,11 @@ export default {
                 }
 
                 var buscaPaid = this.array_paid.filter((item) => {
-                    return item.startsWith(this.searchQuery);
+                    return (item === this.searchQuery || (parseInt(item) === parseInt(this.searchQuery)));
+                    //return item.startsWith(this.searchQuery);
                 })
-                if (buscaPaid.length) {
+
+                if (buscaPaid.length > 0) {
                     this.$swal(
                         'Pago!',
                         `O número ${this.searchQuery} está pago!`,
@@ -155,7 +160,8 @@ export default {
         // },
         translateToArray(numbers) {
             if (numbers && typeof numbers == 'string') {
-                return numbers?.split(',');
+                let array = numbers?.split(',');
+                return array.sort();
             }
             return [];
         },
