@@ -30,7 +30,8 @@ import {
     AdjustmentsHorizontalIcon,
     ReceiptPercentIcon,
     ArrowsRightLeftIcon,
-    PlusIcon
+    PlusIcon,
+    UsersIcon
 } from '@heroicons/vue/24/outline';
 import InputPercentVue from '@/Components/FormElements/InputPercent.vue';
 
@@ -80,8 +81,6 @@ export default {
                 updated_at: raffle?.updated_at
             }));
         }
-        console.log(this.raffles);
-        console.log(this.affiliate);
     },
     props: {
         affiliate: Object,
@@ -148,10 +147,8 @@ export default {
                     link: ''
                 })
             }
-            console.log(this.form, this.affiliate);
         },
         removeRaffle(index, nameRaffle) {
-            console.log(this?.affiliate?.vinculations[index], this?.form?.raffles[index])
             if(this.areObjectsEqual(this?.affiliate?.vinculations[index] ?? {}, this?.form?.raffles[index])) //verifica se vinculacao ja existe no banco, se sim, deleta, se nao, apenas exclui do array
             {
                 this.$swal({
@@ -302,9 +299,9 @@ export default {
     <Head title="Afiliados"></Head>
     <AuthenticatedLayout :user="$page.props.auth.user">
         <template #header>
-            <h2 class="flex items-center font-semibold text-content lg:text-xl">
-                <UsersIcon class="w-5 h-5 mr-2 text-content lg:w-6 lg:h-6" />
-                Criar Afiliado
+            <h2 class="flex items-center font-semibold text-primary-bw lg:text-xl">
+                <UsersIcon class="w-5 h-5 mr-2 text-primary-bw lg:w-6 lg:h-6" />
+                Afiliado
             </h2>
         </template>
         <div class="container w-full py-5 lg:w-6/12">
@@ -312,7 +309,7 @@ export default {
                 <div class="mb-4 rounded-lg c-content" ref="geral">
                     <div class="flex items-center justify-between w-full pb-2 border-b border-base-100">
                         <div class="flex items-center animate-fade-right">
-                            <TicketIcon class="h-5 mr-1 stroke-neutral" />
+                            <UsersIcon class="h-5 mr-1 stroke-neutral" />
 
                             <h3 class="text-base font-semibold text-neutral ">Informações de Afiliado</h3>
                         </div>
@@ -387,7 +384,7 @@ export default {
                                 <h3 class="text-base font-semibold text-neutral">Vincular Rifas</h3>
                             </div>
                             <div class="flex justify-end w-6/12 animate-fade-left">
-                                <button class="btn btn-sm bg-primary text-primary-bw" @click="addRaffle">
+                                <button class="border-none btn btn-sm bg-primary text-primary-bw" @click="addRaffle">
                                     <PlusIcon class="w-4" />
                                 </button>
                             </div>

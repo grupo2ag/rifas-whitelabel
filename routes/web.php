@@ -45,6 +45,8 @@ Route::middleware(LevelMiddleware::class)->group(function (){
             //Route::get('/sale/{id}/{condition}', [SellerController::class, 'sale'])->name('raffleSale');
             Route::get('/awards/{id}', [SellerController::class, 'awards'])->name('raffleAwards');
             Route::get('/award/{number}', [SellerController::class, 'award'])->name('raffleAward');
+
+            Route::get('/affiliates/{id}', [SellerController::class, 'affiliates'])->name('raffleAffiliates');
         });
 
         Route::prefix('/affiliate')->name('affiliate.')->group(function () {

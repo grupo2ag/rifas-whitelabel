@@ -1,54 +1,91 @@
+
+
 <script setup>
-import { Head } from '@inertiajs/inertia-vue3';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/inertia-vue3';
-import Pagination from '@/Components/Pagination.vue';
+import debounce from 'lodash/debounce';
 import {
+    CreditCardIcon,
+    UserIcon,
+    CurrencyDollarIcon,
+    PhoneIcon,
+    EnvelopeIcon,
+    CalendarDaysIcon,
     TicketIcon,
-PlusCircleIcon,
-PencilSquareIcon,
-UserIcon,
-PhoneIcon,
-EnvelopeIcon,
-DocumentTextIcon,
-BanknotesIcon,
-LinkIcon,
-UsersIcon
+    MagnifyingGlassIcon,
+    PencilSquareIcon,
+    PlusCircleIcon,
+    LinkIcon,
+    DocumentTextIcon,
+    BanknotesIcon
 } from '@heroicons/vue/24/outline';
-import IconsSvg from "@/Components/IconsSvg/IconsSvg.vue";
 </script>
 
 <script>
+
 export default {
-    name: "AffiliateIndex",
     props: {
-        data: Object
+        id: Number | String
     },
     data() {
         return {
-            showModal: false
-        }
+            collapse: [],
+            searchQuery: '',
+            results: {
+                data: [],
+                current_page: 1,
+                last_page: 1
+            },
+            currentPage: 1,
+            loading: false,
+        };
     },
     methods: {
         redirectToEdit(id){
-            window.location.href = route('affiliate.affiliateEdit', id);s
+            window.location.href = route('affiliate.affiliateEdit', id);
+        },
+        getAffiliates() {
+            this.loading = true;
+            axios.get(route('raffles.raffleAffiliates', {
+                id: this.id
+            }))
+                .then(response => {
+                    this.results.data = response?.data;
+                    this.loading = false;
+                })
+                .catch(error => {
+                    console.log(error);
+                    this.loading = false;
+                });
+        },
+        handleSearch() {
+            this.currentPage = 1;
+            this.search();
+        },
+        changePage(page) {
+            if (page >= 1 && page <= this.results.last_page) {
+                this.currentPage = page;
+                this.search();
+            }
+        },
+        handleAccordion(index) {
+            this.collapse.forEach((val, i) => {
+                if (val.id === index) {
+                    this.collapse[i].value = !val.value
+                } else this.collapse[i].value = false
+            })
         }
-    }
+    },
+    created() {
+        this.getAffiliates();
+        this.debouncedSearch = debounce(this.handleSearch, 500); // 300ms debounce
+    },
+    // mounted() {
+    //     console.log(this.data);
+    // }
 }
 </script>
-
 <template>
-
-    <Head title="Afiliados"></Head>
-    <AuthenticatedLayout :user="$page.props.auth.user">
-        <template #header>
-            <h2 class="flex items-center font-semibold text-primary-bw lg:text-xl">
-                <UsersIcon class="w-5 h-5 mr-2 text-primary-bw lg:w-6 lg:h-6" />
-                Afiliados
-            </h2>
-        </template>
-        <div class="container sm:max-w-full !w-full">
-            <div class="card bg-content animate-fade-up">
+    <div class="card bg-content animate-fade-up">
                 <div class="flex flex-row">
                     <div class="flex justify-start w-full">
                         <div class="px-4 text-neutral/70 card-title">
@@ -64,7 +101,7 @@ export default {
                         </Link>
                     </div>
                 </div>
-                <div v-if="!data || data?.length == 0" class="flex items-center justify-center w-full h-full py-40">
+                <div v-if="(!results?.data || results?.data?.length == 0) && loading == false" class="flex items-center justify-center w-full h-full py-40">
                     <span class="text-base text-xl font-medium title-font">Ainda não há afiliados</span>
                 </div>
                 <div v-else class="flex flex-row flex-wrap px-2 mb-4">
@@ -79,7 +116,7 @@ export default {
                             <div class="flex justify-center w-1/12 text-neutral/70"></div>
                         </div>
                     </div>
-                    <div v-for="affiliate in data?.data"
+                    <div v-for="affiliate in results?.data"
                         @click="redirectToEdit(affiliate.id)"
                         :key="affiliate?.id"
                         role="button"
@@ -128,13 +165,31 @@ export default {
                             </div>
                         </div>
                     </div>
-                    <div class="flex flex-row w-full px-2" :class='{ "hidden": data?.last_page == 1 }'>
+                    <div class="flex flex-row w-full px-2" :class='{ "hidden": results?.data?.last_page == 1 }'>
                         <div class="flex justify-end w-full">
-                            <Pagination :data="data" />
+                            <Pagination :data="results?.data" />
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </AuthenticatedLayout>
+
 </template>
+
+<style scoped>
+.custom-grid-20 {
+    @apply grid;
+    grid-template-columns: repeat(20, minmax(0, 1fr));
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-20 {
+        grid-template-columns: repeat(20, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .lg\:grid-cols-20 {
+        grid-template-columns: repeat(20, minmax(0, 1fr));
+    }
+}
+</style>
