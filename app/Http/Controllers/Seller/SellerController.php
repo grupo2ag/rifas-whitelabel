@@ -701,4 +701,25 @@ class SellerController extends Controller
             return response()->json(false);
         }
     }
+    public function affiliates($id)
+    {
+        $user = auth()->user();
+        try {
+            $raffle = $user->raffles()->ofId($id)->first();
+
+            if(!$raffle) {
+                setLogErros('SellerController', 'Rifa não encontrada!');
+                return response()->json(['message' => 'Problema ao buscar rifa!'], 403);
+            }
+
+            $affiliates = $raffle->affiliates()->get();
+
+            return response()->json($affiliates);
+        } catch (QueryException $e) {
+            setLogErros('SellerController', $e->getMessage());
+            return response()->json(['message' => 'Problema ao buscar afiliados!'], 403);
+        }
+
+
+    }
 }
