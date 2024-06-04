@@ -91,7 +91,7 @@ export default {
     data() {
         return {
             form: {
-                id: '',
+                id: this.raffle.id ? this.raffle.id : '',
                 title: this.raffle ? this.raffle.title : '',
                 link: this.raffle ? this.raffle.link : '',
                 subtitle: this.raffle ? this.raffle.subtitle : '',
@@ -184,7 +184,8 @@ export default {
                 .validate(this.form, {abortEarly: false}).then(() => {
                     this.form.processing = true;
 
-                form.post(route('raffles.raffleStore'), {
+                let endPoint = this.raffle.id ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
+                form.post(route(endPoint), {
                     onSuccess: () => {
                         this.disabled = false
                         this.loading = false
