@@ -169,7 +169,7 @@ export default {
                 gallery: '',
             },
             today: new Date(),
-
+            numbers_manual: this.quantity_numbers
         }
     },
     methods: {
@@ -233,12 +233,12 @@ export default {
             const reader = new FileReader();
 
             const imageCurrentAdd = {
-                image: reader.result
+                img: reader.result
             }
 
             reader.onload = () => {
                 imageReader = reader.result
-                imageCurrentAdd.image = imageReader
+                imageCurrentAdd.img = imageReader
                 gallery.push(imageCurrentAdd)
                 this.imageGallery = '';
             };
@@ -258,14 +258,15 @@ export default {
             const text = func.clieanString(this.form.title)
             this.form.link = text.toLowerCase().split(' ').filter(item => item !== ' ' && item !== '').join('-');
         },
+        "form.type"() {
+            if (this.form.type === 'manual'){
+                this.numbers_manual = this.quantity_numbers.filter(element => element.value !== 1000000 && element.value !== 10000000);
+            } else {
+                this.numbers_manual = this.quantity_numbers;
+            }
+        }
     },
     mounted() {
-        console.log(this.raffle)
-
-        let greaterThanTen = this.quantity_numbers.filter(element => element.texto !== '1.000.000' && element.texto !== '10.000.000');
-        console.log(greaterThanTen)
-
-
         yup.setLocale(pt);
         this.schema = yup.object().shape({
             title: yup.string().min(10, 'Digite ao menos 10 caracteres').max(80, 'Digite ao máximo 80 caracteres').required('Obrigatório'),
@@ -355,10 +356,10 @@ export default {
                                 caracteres</p>
                         </div>
 
-                        <div v-if="!raffle" class="flex flex-col md:flex-row md:gap-4">
-                            <div class="w-full md:w-6/12">
+                        <div class="flex flex-col md:flex-row md:gap-4">
+                            <div v-if="raffle" class="w-full md:w-6/12">
                                 <Select label="Quantidade de Números:" v-model="form.quantity" name="quantity" :error="validator.total || $page.props.errors.total">
-                                    <option v-for="(item, index) in quantity_numbers" :key="index" :value="item.value"
+                                    <option v-for="(item, index) in numbers_manual" :key="index" :value="item.value"
                                     >{{ item.texto }}</option>
                                 </Select>
                             </div>
@@ -704,12 +705,12 @@ export default {
                                                  class="relative">
                                                 <div class="absolute w-full h-full transition-all opacity-0 cursor-pointer cover-remove hover:opacity-100">
                                                     <button type="button"
-                                                            @click="removeImage(item.image)"
+                                                            @click="removeImage(item.img)"
                                                             class="block p-1 m-2 ml-auto rounded-full bg-red hover:bg-red-dark">
                                                         <TrashIcon class="w-4 h-4 stroke-white"/>
                                                     </button>
                                                 </div>
-                                                <img class="object-cover aspect-square w-full h-full" :src="item.image" alt="">
+                                                <img class="object-cover aspect-square w-full h-full" :src="item.img" alt="">
                                             </div>
                                         </div>
                                     </div>
