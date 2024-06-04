@@ -155,8 +155,6 @@ class SellerController extends Controller
         $price = (int) ($request->value * 100);
         $total = $price * $request->quantity;
 
-//        dd($price);
-
         if ($request->file('banner')) {
             $name = (string) Str::uuid();
             $webp = (string) Image::make($request->file('banner'))->fit(768, 560, function ($constraint) {
@@ -476,11 +474,21 @@ class SellerController extends Controller
         $galery = [];
         if(!empty($raffle->raffle_images)){
             foreach($raffle->raffle_images as $image){
-                //$mountUrl = config('filesystems.disks.s3.path').'/images/'.$this->user_id.'/gallery/'.$raffle->id.'/'.$image->path;
-
                 $s3TmpLink = new \stdClass();
                 $s3TmpLink->img = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
                 array_push($galery, $s3TmpLink);
+            }
+        }
+
+        $promotions = [];
+        if(!empty($raffle->raffle_promotions)){
+            foreach($raffle->raffle_promotions as $promotion){
+                $promo = new \stdClass();
+                $promo->quantity_numbers = $promotion->quantity_numbers;
+                $promo->discount = $promotion->discount;
+                array_push($promotions, $promo);
+
+                $raffle->promotions = $promotion;
             }
         }
 
@@ -491,6 +499,7 @@ class SellerController extends Controller
 
         $data['raffle'] = $raffle;
         $data['raffle']['galery'] = $galery;
+        $data['raffle']['promotions'] = $promotions;
 
         return Inertia::render('Seller/Raffle/RaffleCreate', $data);
     }
