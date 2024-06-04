@@ -165,9 +165,9 @@ export default {
             }
             return [];
         },
-        handleSearch() {
+        /*handleSearch() {
             this.search();
-        },
+        },*/
         // encontrarDuplicados(array) {
         //     var elementosDuplicados = [];
         //     var contador = {};
@@ -196,7 +196,7 @@ export default {
     created() {
         this.getNumbers();
         this.search()
-        this.debouncedSearch = debounce(this.handleSearch, 1000); // 1000ms debounce
+        //this.debouncedSearch = debounce(this.handleSearch, 1000); // 1000ms debounce
     },
     // mounted() {
     // }
@@ -210,10 +210,10 @@ export default {
             </div>
             <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 card-title">
                 <div class="w-full join">
-                    <input v-model="searchQuery" @input="debouncedSearch"
+                    <input v-model="searchQuery"
                         class="w-full input input-sm input-bordered join-item xl:btn-md bg-content"
                         placeholder="Buscar..." />
-                    <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw">
+                    <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw" @click="search">
                         <MagnifyingGlassIcon class="w-6" />
                     </button>
                 </div>
