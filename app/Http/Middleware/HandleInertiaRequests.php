@@ -39,9 +39,16 @@ class HandleInertiaRequests extends Middleware
     {
         $host = preg_replace('/^www\./', '', $request->getHost());
 
-        $configDataByURL = User::leftJoin('user_configurations', 'user_configurations.user_id', '=', 'users.id')
-                               ->where(['users.domain' => $host])
-                               ->firstOrFail(['user_configurations.*', 'users.domain', 'users.email', 'users.phone']);
+        if(auth()->user()){
+            $configDataByURL = User::leftJoin('user_configurations', 'user_configurations.user_id', '=', 'users.id')
+                ->where(['users.id' => auth()->user()->id])
+                ->firstOrFail(['user_configurations.*', 'users.domain', 'users.email', 'users.phone']);
+        }else{
+            $configDataByURL = User::leftJoin('user_configurations', 'user_configurations.user_id', '=', 'users.id')
+                ->where(['users.domain' => $host])
+                ->firstOrFail(['user_configurations.*', 'users.domain', 'users.email', 'users.phone']);
+        }
+
         //session(['site_config' => $configDataByURL]);
         return array_merge(parent::share($request), [
             'siteconfig' => $configDataByURL,

@@ -15,6 +15,7 @@ use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
     Route::get('/testee', [TesteController::class, 'index']);
+    Route::get('/compra', [TesteController::class, 'simulacao_compra']);
 }
 
 Route::middleware(LevelMiddleware::class)->group(function (){
