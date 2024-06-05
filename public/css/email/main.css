@@ -687,11 +687,9 @@ table.table-basic tr {
 table.table-access {
     background: #f5f6f7;
     border-radius: 10px;
-    /*padding: 40px;*/
 }
 table.table-access td {
     width: 49%;
-    padding: 20px;
 }
 table.table-access td.line {
     width: 1px;

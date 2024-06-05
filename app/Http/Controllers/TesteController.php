@@ -28,17 +28,21 @@ class TesteController extends Controller
             dd($this->simulacao_compra($request));
         }*/
 
+
+        $logo = inertia()->getShared('siteconfig')->logo;
+
         $emailSend = [
-            'assunto' => 'Seus numeros da sorte',
+            'assunto' => 'Seus números da sorte',
             'title' => !empty($participant->raffle_title) ? $participant->raffle_title : '',
             'email' => !empty($participant->customer_email) ? $participant->customer_email : '',
+            'thumb' => !empty($participant->thumb) ? $participant->thumb : '',
             'nome' => !empty($participant->customer_name)  ? $participant->customer_name : '',
             'phone' => !empty($participant->customer_phone)  ? $participant->customer_phone : '',
             'documento' => !empty($participant->customer_cpf)  ? $participant->customer_cpf : '',
-            'numbers' => !empty($participant->numbers)  ? $participant->numbers : '2132,312,31231,312312,3123',
+            'numbers' => '00001,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002',
             'mail' => 'numbers'];
 
-        return view('emails.numbers', compact('emailSend'));
+        return view('emails.numbers', compact('emailSend', 'logo'));
 
     }
 

@@ -56,7 +56,7 @@
 
                                 <tr>
                                     <td>
-                                        <p class="u-color-black u-fs-12 u-tc u-mb-2">Feito com <span style="color: red">❤</span> por <span class="u-fw-600">Rifas8</span></p>
+                                        <p class="u-color-black u-fs-12 u-tc u-mb-2">Feito com <span style="color: red">❤</span> por <span class="u-fw-600">8Rifas</span></p>
                                      </td>
                                 </tr>
                             </table>
