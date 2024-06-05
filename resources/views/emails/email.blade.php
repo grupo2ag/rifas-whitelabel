@@ -30,7 +30,7 @@
                         <table>
                             <tr>
                                 <td class="u-tc">
-                                    <img class="logo " src="{{config('constants.LOGO_PNG')}}" width="90" alt="Logo {{config('NOME_SISTEMA') }}">
+                                    <img class="logo" src="{{ !empty($params['logo']) ? $params['logo'] : '' }}" width="80" alt="Logo {{config('NOME_SISTEMA') }}">
                                 </td>
                             </tr>
                         </table>
