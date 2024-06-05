@@ -32,6 +32,6 @@ class SendMail extends Mailable
         $this->subject($this->dados['assunto']);
         $this->to($this->dados['email'], $this->dados['nome']);
 
-        return $this->markdown('email.'.$this->dados['mail'], ['params' => $this->dados]);
+        return $this->markdown('emails.'.$this->dados['mail'], ['params' => $this->dados]);
     }
 }
