@@ -272,11 +272,11 @@ export default {
                                 <li class="bg-neutral/5 rounded-xl border border-primary/10 md:hover:bg-neutral/10">
                                     <div class="flex flex-col bg-primary px-4 py-3 rounded-xl">
                                         <p class="text-lg text-primary-bw font-semibold">
-                                            {{item.order}}˚ Prêmio:
+                                            {{item?.order}}˚ Prêmio:
                                         </p>
 
                                         <p class="text-lg flex-1 text-primary-bw font-bold">
-                                            {{ item.description }}
+                                            {{ item?.description }}
                                         </p>
                                     </div>
 
@@ -368,7 +368,7 @@ export default {
             </div>
         </section>
 
-        <section v-if="raffle.raffle_promotions.length > 0" class="md:py-2">
+        <section v-if="status === 'Ativo' && raffle.raffle_promotions.length > 0" class="md:py-2">
             <div class="md:container">
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Promoções</p>
@@ -382,7 +382,7 @@ export default {
             </div>
         </section>
 
-        <section v-if="raffle.raffle_premium_numbers.length > 0" class="md:py-2">
+        <section v-if="status === 'Ativo' && raffle.raffle_premium_numbers.length > 0" class="md:py-2">
             <div class="md:container">
                 <div class="c-content flex flex-col">
                     <p class="text-lg font-bold text-neutral mb-2">Cotas Premiadas</p>
