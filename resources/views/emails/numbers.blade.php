@@ -1,4 +1,3 @@
-
 @extends('.emails.email')
 
 @section('content')

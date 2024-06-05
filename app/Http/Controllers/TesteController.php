@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PixManual;
 use App\Events\PixPayment;
 use App\Jobs\ResultFederal;
+use App\Jobs\SendMail;
 use App\Libraries\Pixcred;
 use App\Models\Customer;
 use App\Models\Participant;
@@ -24,6 +25,7 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
+        //raffle_finaliza(1);
         /*for($i=0;$i<1000;$i++){
             dd($this->simulacao_compra($request));
         }*/
@@ -32,18 +34,16 @@ class TesteController extends Controller
         $logo = inertia()->getShared('siteconfig')->logo;
 
         $emailSend = [
-            'assunto' => 'Seus números da sorte',
-            'title' => !empty($participant->raffle_title) ? $participant->raffle_title : '',
-            'email' => !empty($participant->customer_email) ? $participant->customer_email : '',
-            'thumb' => !empty($participant->thumb) ? $participant->thumb : '',
-            'nome' => !empty($participant->customer_name)  ? $participant->customer_name : '',
-            'phone' => !empty($participant->customer_phone)  ? $participant->customer_phone : '',
-            'documento' => !empty($participant->customer_cpf)  ? $participant->customer_cpf : '',
-            'numbers' => '00001,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002,00002',
+            'assunto' => 'Seus numeros da sorte',
+            'conteudo' => 'Rifa do Joao',
+            'email' => 'rafael@l8.vc',
+            'nome' => 'Rafael',
+            'phone' => '12312312312312312',
+            'documento' => '132123123123',
+            'numbers' => '123,321,333,222,111',
             'mail' => 'numbers'];
-
-        return view('emails.numbers', compact('emailSend', 'logo'));
-
+        return view('emails.numbers', ['params' => $emailSend]);
+        //SendMail::dispatch($emailSend)->onQueue('emails');
     }
 
     public function simulacao_compra(Request $request)
