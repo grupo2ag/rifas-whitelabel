@@ -272,12 +272,13 @@ class SellerController extends Controller
             return redirect()->back()->with('error', 'Rifa não encontrada!.');
         }
 
-        $raffle->update([
-            'status' => 'Encerrado',
-            'updated_at' => now(),
-            'visible' => 0
-        ]);
-        return redirect()->back()->with('success', 'Rifa encerrada com sucesso.');
+        $arrayUpdate = ['updated_at' => now()];
+
+        if(!empty($request->status)) {$arrayUpdate['status'] = $request->status;}
+        if(!empty($request->visible) || $request->visible == '0') {$arrayUpdate['visible'] = $request->visible;}
+
+        $raffle->update($arrayUpdate);
+        return redirect()->back()->with('success', 'Rifa alterada com sucesso.');
     }
 
     public function update(Request $request)
