@@ -42,8 +42,8 @@ class TesteController extends Controller
             'expected_date' => '28/06/2024',
             'mail' => 'numbers'];
         //return view('emails.numbers', ['params' => $emailSend]);
-        $rand = (string)rand(1, 1000000);
-        SendMail::dispatch($emailSend)->onQueue('rifa.fifo')->onMessageGroup($rand);
+        //$rand = (string)rand(1, 1000000);
+        SendMail::dispatch($emailSend)->onQueue('rifa.fifo');//->onMessageGroup($rand);
 
         return view('emails.numbers', ['params' => $emailSend]);
     }
