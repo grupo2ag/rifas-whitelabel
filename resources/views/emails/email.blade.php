@@ -30,7 +30,7 @@
                         <table>
                             <tr>
                                 <td class="u-tc">
-                                    <img class="logo " src="{{config('constants.LOGO_PNG')}}" width="90" alt="Logo {{config('NOME_SISTEMA') }}">
+                                    <img class="logo" src="{{ !empty($params['logo']) ? $params['logo'] : '' }}" width="80" alt="Logo {{config('NOME_SISTEMA') }}">
                                 </td>
                             </tr>
                         </table>
@@ -56,7 +56,7 @@
 
                                 <tr>
                                     <td>
-                                        <p class="u-color-black u-fs-12 u-tc u-mb-2">Feito com <span style="color: red">❤</span> por <span class="u-fw-600">Rifas8</span></p>
+                                        <p class="u-color-black u-fs-12 u-tc u-mb-2">Feito com <span style="color: red">❤</span> por <span class="u-fw-600">8Rifas</span></p>
                                      </td>
                                 </tr>
                             </table>

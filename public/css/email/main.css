@@ -558,7 +558,7 @@ body {
 .header-wrap {
     width: 600px;
     margin-top: 40px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 @media (max-width: 640px) {
     .header-wrap {
@@ -611,7 +611,7 @@ body {
 }
 
 .logo {
-    width: 120px;
+    width: 100px;
 }
 .logo--light {
     display: none;
@@ -687,11 +687,9 @@ table.table-basic tr {
 table.table-access {
     background: #f5f6f7;
     border-radius: 10px;
-    /*padding: 40px;*/
 }
 table.table-access td {
     width: 49%;
-    padding: 20px;
 }
 table.table-access td.line {
     width: 1px;

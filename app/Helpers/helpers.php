@@ -333,6 +333,23 @@ if(!function_exists('numbers_available')) {
     }
 }
 
+if(!function_exists('raffle_finaliza')) {
+    function raffle_finaliza(int $raffleId)
+    {
+        $raffle = Raffle::where('raffles.id', $raffleId)->first();
+
+        if(empty($raffle->numbers)){
+            $countParticipants = Participant::where('raffle_id', $raffleId)->sum('paid');
+            if($countParticipants === $raffle->quantity){
+                $raffle->status = 'Finalizado';
+                $raffle->save();
+            }
+        }
+
+        return true;
+    }
+}
+
 if(!function_exists('raffle_promotion')) {
     function raffle_promotion(int $raffleId, int $qttNumbers)
     {

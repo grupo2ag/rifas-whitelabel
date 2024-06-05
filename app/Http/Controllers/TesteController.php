@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PixManual;
 use App\Events\PixPayment;
 use App\Jobs\ResultFederal;
+use App\Jobs\SendMail;
 use App\Libraries\Pixcred;
 use App\Models\Customer;
 use App\Models\Participant;
@@ -24,22 +25,27 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        /*for($i=0;$i<1000;$i++){
-            dd($this->simulacao_compra($request));
-        }*/
+
+        $logo = inertia()->getShared('siteconfig')->logo;
 
         $emailSend = [
             'assunto' => 'Seus numeros da sorte',
-            'title' => !empty($participant->raffle_title) ? $participant->raffle_title : '',
-            'email' => !empty($participant->customer_email) ? $participant->customer_email : '',
-            'nome' => !empty($participant->customer_name)  ? $participant->customer_name : '',
-            'phone' => !empty($participant->customer_phone)  ? $participant->customer_phone : '',
-            'documento' => !empty($participant->customer_cpf)  ? $participant->customer_cpf : '',
-            'numbers' => !empty($participant->numbers)  ? $participant->numbers : '2132,312,31231,312312,3123',
+            'logo' => config('constants.LOGO_PNG'),
+            'conteudo' => 'Rifa do Joao',
+            'email' => 'rafael@l8.vc',
+            'nome' => 'Rafael',
+            'phone' => '12312312312312312',
+            'documento' => '132123123123',
+            'numbers' => '123,321,333,222,111',
+            'thumb' => 'https://s3.amazonaws.com/xas-sorteios-public/raffles/images/2/gallery/4/e28be13e-1e12-43d1-ba00-9a5e2c1a2acb.webp?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASMXPRJKLI6HZ2HWZ%2F20240605%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240605T162256Z&X-Amz-SignedHeaders=host&X-Amz-Expires=1800&X-Amz-Signature=7d445edc0ea57874539032e1093e285bd3a006a8764dcf33bdb646a4df59cffd',
+            'title' => 'CHEVROLET CRUZE 1.4 TURBO',
+            'expected_date' => '28/06/2024',
             'mail' => 'numbers'];
+        //return view('emails.numbers', ['params' => $emailSend]);
+        //$rand = (string)rand(1, 1000000);
+        SendMail::dispatch($emailSend)->onQueue('rifa.fifo');//->onMessageGroup($rand);
 
-        return view('emails.numbers', compact('emailSend'));
-
+        return view('emails.numbers', ['params' => $emailSend]);
     }
 
     public function simulacao_compra(Request $request)

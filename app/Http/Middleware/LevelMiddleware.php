@@ -17,7 +17,7 @@ class LevelMiddleware
     {
 
         if(!empty(auth()->user())){
-            if(auth()->user()->level === 0) return \response()->redirectTo('super/dashboard');
+            if(auth()->user()->level === 0) return response()->redirectTo('super/dashboard');
         }
 
         return $next($request);

@@ -18,6 +18,8 @@ if(config('app.env') === 'local'){
     Route::get('/compra', [TesteController::class, 'simulacao_compra']);
 }
 
+require 'admin/admin_web.php';
+
 Route::middleware(LevelMiddleware::class)->group(function (){
 
     /* ROTAS AUTENTICADAS AQUI */
@@ -81,7 +83,3 @@ Route::get('/account/{cpf}', [RaffleController::class, 'mybillets'])->name('acco
 
 Route::get('/email', [RaffleController::class, 'email'])->name('email');
 Route::get('/{url}/{affiliate?}', [RaffleController::class, 'index'])->name('raffle');
-
-
-require 'admin/admin_web.php';
-

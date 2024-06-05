@@ -15,9 +15,8 @@ class LevelAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-
         if(!empty(auth()->user())){
-            if(auth()->user()->level === 1) return \response()->redirectTo('dashboard');
+            if(auth()->user()->level === 1) return response()->redirectTo('dashboard');
         }
 
         return $next($request);
