@@ -161,7 +161,7 @@ export default {
             validator: {
                 title: '',
                 subtitle: '',
-                price: '',
+                value: '',
                 pix_expired: '',
                 description: '',
                 expected_date: '',
@@ -200,6 +200,7 @@ export default {
                 this.form.processing = false;
 
                 err.inner.forEach((error) => {
+                    console.log(error.path);
                     this.validator = {...this.validator, [error.path]: error.message};
                 });
             });
@@ -254,7 +255,7 @@ export default {
         },
         removeImage(item) {
             for (let i = this.form.gallery.length; i--;) {
-                if (this.form.gallery[i].image === item) {
+                if (this.form.gallery[i].img === item) {
                     this.form.gallery.splice(i, 1);
                 }
             }
@@ -289,7 +290,7 @@ export default {
             ).min(1, '1 no minimo').required('Obrigatório'),
             gallery: yup.array().of(
                 yup.object().shape({
-                    image: yup.string().required('Obrigatório')
+                    img: yup.string().required('Obrigatório')
                 })
             ).min(1, 'Imagem obrigatória').required('Obrigatório')
         })
@@ -724,7 +725,7 @@ export default {
                         <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
                             Cancelar
                         </Button>
-                        <Button type="button" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">
+                        <Button type="submit" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">
                             Salvar
                         </Button>
                     </div>

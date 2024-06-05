@@ -27,6 +27,19 @@ class TesteController extends Controller
         /*for($i=0;$i<1000;$i++){
             dd($this->simulacao_compra($request));
         }*/
+
+        $emailSend = [
+            'assunto' => 'Seus numeros da sorte',
+            'title' => !empty($participant->raffle_title) ? $participant->raffle_title : '',
+            'email' => !empty($participant->customer_email) ? $participant->customer_email : '',
+            'nome' => !empty($participant->customer_name)  ? $participant->customer_name : '',
+            'phone' => !empty($participant->customer_phone)  ? $participant->customer_phone : '',
+            'documento' => !empty($participant->customer_cpf)  ? $participant->customer_cpf : '',
+            'numbers' => !empty($participant->numbers)  ? $participant->numbers : '2132,312,31231,312312,3123',
+            'mail' => 'numbers'];
+
+        return view('emails.numbers', compact('emailSend'));
+
     }
 
     public function simulacao_compra(Request $request)
