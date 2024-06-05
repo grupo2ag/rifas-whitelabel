@@ -11,10 +11,11 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 
 class ResultFederal implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SqsFifoQueueable, SerializesModels;
 
     /**
      * Create a new job instance.
@@ -67,7 +68,7 @@ class ResultFederal implements ShouldQueue
                 //}
             }
 
-            return true;
+            return;
             //return $responseBody;
         }
     }
