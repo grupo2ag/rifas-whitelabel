@@ -25,7 +25,6 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-
         $logo = inertia()->getShared('siteconfig')->logo;
 
         $emailSend = [
