@@ -645,7 +645,27 @@ class SellerController extends Controller
             ->leftJoin('customers', 'customers.id', 'raffle_awards.customer_id')
             ->get(['raffle_awards.*', 'customers.name', 'customers.phone', 'customers.cpf']);
         //dd($awards);
-        return Inertia::render('Seller/Raffle/View/RaffleAwards', ['awards' => $awards]);
+        return response()->json($awards);
+        //return Inertia::render('Seller/Raffle/View/RaffleAwards', ['awards' => $awards]);
+    }
+
+    public function checkAwards($id)
+    {
+        $user = auth()->user();
+
+        $raffle = $user->raffles()->ofId($id)->first();
+
+        $awards = $raffle->raffle_awards()->get();
+
+        $check = true;
+      foreach ($awards as $award) {
+           if(!$award->number_award){
+            $check = false;
+            return response()->json(['check' => $check]);
+           }
+        }
+
+        return response()->json(['check' => $check]);
     }
 
     public function award($raffleId, $number)

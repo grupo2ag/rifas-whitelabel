@@ -16,7 +16,9 @@ import {
     EyeIcon,
     MagnifyingGlassCircleIcon,
     ArrowUpOnSquareIcon,
-    PowerIcon
+    PowerIcon,
+    TrophyIcon,
+    UserIcon
 } from '@heroicons/vue/24/outline';
 import moment from 'moment';
 import * as func from '@/Helpers/functions';
@@ -28,11 +30,12 @@ export default {
     name: "RaffleLayout",
     props: {
         openTab: Number,
-        data: Object
+        data: Object,
+        awardCheck: Boolean
     },
     data() {
         return {
-            visible: this.data?.visible
+            visible: this.data?.visible,
         }
     },
     methods: {
@@ -41,7 +44,7 @@ export default {
         },
         onExclude(status) {
             this.$swal({
-                title: `Deseja realmente ${status == 'Ativo' ? 'reativar' : 'encerrar' } a rifa #${this?.data?.title}?`,
+                title: `Deseja realmente ${status == 'Ativo' ? 'reativar' : 'encerrar'} a rifa #${this?.data?.title}?`,
                 text: `${status == 'Ativo' ? 'A rifa estará novamente ativa!' : 'A rifa será encerrada!'}`,
                 confirmButtonText: `${status == 'Ativo' ? 'Reativar' : 'Encerrar'}`,
                 showCancelButton: true,
@@ -57,7 +60,7 @@ export default {
                 }
             }).then((res) => {
                 if (res?.isConfirmed) {
-                    axios.post(route('raffles.raffleUpdated', this.data?.id), {status: status})
+                    axios.post(route('raffles.raffleUpdated', this.data?.id), { status: status })
                         .then(response => {
                             this.$swal(
                                 'Pronto!',
@@ -65,6 +68,11 @@ export default {
                                 'success'
                             )
                             this.data.status = (status == 'Finalizado' ? 'Finalizado' : 'Ativo');
+                            this.setToggleTabs(status == 'Finalizado' ? 6 : 1); //envia usuario para tela de ganhadores caso finalize a rifa, se nao, ira para pagina inicial da rifa
+
+                            if(status == 'Finalizado') { //verifica se o ja foi cadastrado ganhador para todos os premios da rifa, se sim, atualiza o indicator do botao de adicionar ganhador
+                                this.$emit('verifyAwardsCheck');
+                            }
                         })
                         .catch(error => {
                             this.$swal(
@@ -80,7 +88,7 @@ export default {
         visibleOrInvisibleRaffle(visible) {
             this.$swal({
                 title: `Deseja realmente deixar a rifa #${this?.data?.title} ${visible == 0 ? 'não visível' : 'visível'}?`,
-                text: `Caso confirme, a rifa ficará ${visible == 0  ? 'não visível' : 'visível'}`,
+                text: `Caso confirme, a rifa ficará ${visible == 0 ? 'não visível' : 'visível'}`,
                 confirmButtonText: "Sim",
                 showCancelButton: true,
                 cancelButtonText: "Não",
@@ -95,7 +103,7 @@ export default {
                 }
             }).then((res) => {
                 if (res?.isConfirmed) {
-                    axios.post(route('raffles.raffleUpdated', this.data?.id), {visible: visible})
+                    axios.post(route('raffles.raffleUpdated', this.data?.id), { visible: visible })
                         .then(response => {
                             this.$swal(
                                 'Pronto!',
@@ -116,11 +124,11 @@ export default {
             })
         }
     },
-    /*mounted() {
-        console.log(this.data);
-        var n = this.data.numbers.split(',');
-        console.log(n.length, n)
-    }*/
+    mounted() {
+        // console.log(this.data);
+        // var n = this.data.numbers.split(',');
+        // console.log(n.length, n)
+    }
 }
 </script>
 
@@ -181,6 +189,19 @@ export default {
                                 <p class="text-neutral/70">{{ data?.paid }}/{{ data?.quantity }}</p>
                             </div>
                         </div>
+                        <div class="flex items-center w-full lg:hidden">
+                            <div role="button" class="flex flex-row items-center"
+                                @click="visibleOrInvisibleRaffle(visible == 0 ? '1' : '0')">
+                                <div class="flex flex-row items-center" v-if="visible == 0">
+                                    <EyeSlashIcon class="w-6 mr-2 text-neutral/70" />
+                                    <p class="text-neutral/70">Não Visível</p>
+                                </div>
+                                <div class="flex flex-row items-center" v-else>
+                                    <EyeIcon class="w-6 mr-2 text-neutral/70" />
+                                    <p class="text-neutral/70">Visível</p>
+                                </div>
+                            </div>
+                        </div>
                         <div class="w-full mb-2">
                             <div class="flex flex-row ">
                                 <LinkIcon class="hidden w-6 mr-2 lg:grid text-neutral/70" />
@@ -206,7 +227,7 @@ export default {
                         </div> -->
                     </div>
                 </div>
-                <div class="flex hidden w-4/12 mb-2 lg:grid animate-fade-right">
+                <div class="hidden w-4/12 mb-2 lg:flex lg:grid animate-fade-right">
                     <div class="flex flex-row flex-wrap px-2">
                         <div class="flex items-center w-full">
                             <div class="flex flex-row">
@@ -228,7 +249,8 @@ export default {
                             </div>
                         </div>
                         <div class="flex items-center w-full">
-                            <div role="button" class="flex flex-row items-center" @click="visibleOrInvisibleRaffle(visible == 0 ? '1' : '0')">
+                            <div role="button" class="flex flex-row items-center"
+                                @click="visibleOrInvisibleRaffle(visible == 0 ? '1' : '0')">
                                 <div class="flex flex-row items-center" v-if="visible == 0">
                                     <EyeSlashIcon class="w-6 mr-2 text-neutral/70" />
                                     <p class="text-neutral/70">Não Visível</p>
@@ -250,6 +272,18 @@ export default {
                 </div>
                 <div class="flex flex-wrap justify-center w-full mt-2 lg:w-2/12 animate-fade-left">
                     <div class="flex flex-row-reverse flex-wrap w-full">
+                        <div v-if="data?.status.toLowerCase() != 'ativo'" class="flex justify-start w-3/12 px-1 tooltip"
+                            data-tip="Adicionar Ganhador">
+                            <div class="flex w-full">
+                                <button class="border-none bg-content btn btn-sm lg:btn-md btn-block text-neutral hover:bg-base-300"
+                                @click="setToggleTabs(6)">
+                                    <TrophyIcon class="w-5 lg:w-6 text-neutral " />
+                                    <!-- Exportar participantes -->
+                                </button>
+                                <span v-if="!awardCheck" class="absolute indicator-item badge badge-xs badge-primary animate-ping -top-1 right-1"></span>
+                                <span v-if="!awardCheck" class="absolute indicator-item badge badge-xs badge-primary -top-1 right-1"></span>
+                            </div>
+                        </div>
                         <div v-if="data?.status.toLowerCase() == 'ativo'" class="flex w-3/12 px-1 mb-2 tooltip"
                             data-tip="Encerrar Rifa">
                             <button @click="onExclude(data?.status.toLowerCase() == 'ativo' ? 'Finalizado' : 'Ativo')"
@@ -258,8 +292,7 @@ export default {
                                 <!-- Encerrar -->
                             </button>
                         </div>
-                        <div v-else class="flex w-3/12 px-1 mb-2 tooltip"
-                            data-tip="Reativar Rifa">
+                        <div v-else class="flex w-3/12 px-1 mb-2 tooltip" data-tip="Reativar Rifa">
                             <button @click="onExclude(data?.status.toLowerCase() == 'ativo' ? 'Finalizado' : 'Ativo')"
                                 class="text-white border-none btn bg-content btn-block btn-sm lg:btn-md hover:bg-base-300">
                                 <PowerIcon class="w-5 lg:w-6 text-neutral" />
@@ -269,7 +302,7 @@ export default {
                         <div class="flex justify-start w-3/12 px-1 tooltip" data-tip="Exportar Participantes">
                             <button
                                 class="border-none bg-content btn btn-sm lg:btn-md btn-block text-neutral hover:bg-base-300"
-                                @click="setToggleTabs(5)">
+                                >
                                 <a target="_blank" :href="route('raffles.raffleExport', data?.id)">
                                     <ArrowUpOnSquareIcon class="w-5 lg:w-6 text-neutral" />
                                     <!-- Exportar participantes -->
