@@ -6,6 +6,7 @@ import RaffleDashboard from '@/Pages/Seller/Raffle/View/RaffleDashboard.vue';
 import RaffleSale from '@/Pages/Seller/Raffle/View/RaffleSale.vue';
 import RaffleReserve from '@/Pages/Seller/Raffle/View/RaffleReserve.vue';
 import RaffleLive from './View/RaffleLive.vue';
+import RaffleAffiliate from './View/RaffleAffiliate.vue';
 import {
     TicketIcon,
     DocumentTextIcon,
@@ -14,6 +15,7 @@ import {
 </script>
 <script>
 import axios from 'axios';
+import RaffleAffiliateVue from './View/RaffleAffiliate.vue';
 
 export default {
     name: "RaffleView",
@@ -67,6 +69,9 @@ export default {
                     </div>
                     <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 3, '': openTab === 3}">
                         <RaffleReserve :data="results"/>
+                    </div>
+                    <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 4, '': openTab === 4}">
+                        <RaffleAffiliate :id="data?.raffle?.id"/>
                     </div>
                     <div class="animate-fade-left" v-bind:class="{'hidden': openTab !== 5, '': openTab === 5}">
                         <RaffleLive :id="data?.raffle?.id"/>

@@ -30,14 +30,14 @@ class SellerController extends Controller
 
         $gateway = $user->gatewayConfigurations()->first();
 
-        if(empty($gateway->token) || empty($gateway->login)){
+        if (empty($gateway->token) || empty($gateway->login)) {
             return redirect()->route('paymentMethods')->with('message', 'Primeiro passo configure o Gateway')->send();
         }
 
         $data = $user->raffles()->orderBy('id')->paginate()->toArray();
 
         $data['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
-        $data['total_raffles_finished'] = $user->raffles()->where('status', 'Encerrado')->count();
+        $data['total_raffles_finished'] = $user->raffles()->where('status', 'Finalizado')->count();
         $data['total_raffles'] = $user->raffles()->count();
 
         foreach ($data['data'] as $key => $value) {
@@ -46,7 +46,8 @@ class SellerController extends Controller
             $data['data'][$key]['paid'] = $raffle->participants()->sum('paid');
             $image = $raffle->raffle_images()->first();
 
-            if(!empty($image)) $data['data'][$key]['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
+            if (!empty($image))
+                $data['data'][$key]['image'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
         }
 
         return Inertia::render('Seller/Raffle/RaffleIndex', ['data' => $data]);
@@ -73,7 +74,7 @@ class SellerController extends Controller
 
         $data['participants']['data'] = $raffle->participants()->orderBy('id')->where('paid', '>', 0)->paginate();
 
-        if($data['raffle']['type'] === 'manual'){
+        if ($data['raffle']['type'] === 'manual') {
             $data['participants']['reserved'] = $raffle->participants()->orderBy('id')->where('reserved', '>', 0)->paginate();
         }
 
@@ -255,6 +256,15 @@ class SellerController extends Controller
 
     public function updated(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'status' => 'string',
+            'visible' => 'string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()], 403);
+        }
+
         $user = auth()->user();
         $raffle = $user->raffles()->findOrFail($id);
 
@@ -443,24 +453,34 @@ class SellerController extends Controller
     {
         $user = auth()->user();
 
-        $raffle = Raffle::with(['raffle_premium_numbers' => function ($query) {
-                                $query->orderBy('raffle_premium_numbers.number_premium', 'ASC');
-                            }])
-                            ->with(['raffle_images' => function ($query) {
-                                $query->orderBy('raffle_images.highlight', 'DESC');
-                            }])
-                            ->with(['raffle_awards' => function ($query) {
-                                $query->orderBy('raffle_awards.order', 'ASC');
-                            }])
-                            ->with(['raffle_popular_numbers' => function ($query) {
-                                $query->orderBy('raffle_popular_numbers.quantity_numbers', 'ASC');
-                            }])
-                            ->with(['raffle_promotions' => function ($query) {
-                                $query->orderBy('raffle_promotions.order', 'ASC');
-                            }])
-                            ->where('raffles.id', $id)
-                            ->Exclude(['numbers', 'video'])
-                            ->first();
+        $raffle = Raffle::with([
+            'raffle_premium_numbers' => function ($query) {
+                $query->orderBy('raffle_premium_numbers.number_premium', 'ASC');
+            }
+        ])
+            ->with([
+                'raffle_images' => function ($query) {
+                    $query->orderBy('raffle_images.highlight', 'DESC');
+                }
+            ])
+            ->with([
+                'raffle_awards' => function ($query) {
+                    $query->orderBy('raffle_awards.order', 'ASC');
+                }
+            ])
+            ->with([
+                'raffle_popular_numbers' => function ($query) {
+                    $query->orderBy('raffle_popular_numbers.quantity_numbers', 'ASC');
+                }
+            ])
+            ->with([
+                'raffle_promotions' => function ($query) {
+                    $query->orderBy('raffle_promotions.order', 'ASC');
+                }
+            ])
+            ->where('raffles.id', $id)
+            ->Exclude(['numbers', 'video'])
+            ->first();
 
         $data['quantity_numbers'] = [
             ['value' => 100, '100' => '100 cotas - (0 à 99)'],
@@ -521,9 +541,10 @@ class SellerController extends Controller
                 'charge_paids.id as pago'
             ]);
 
-        if(empty($charge)){ //se tiver PIX gerado e dentro da expiracao nao deleta reserva
+        if (empty($charge)) { //se tiver PIX gerado e dentro da expiracao nao deleta reserva
             $delete = numbers_devolution($raffleId, $participantId);
-            if($delete) return response()->json(true);
+            if ($delete)
+                return response()->json(true);
         }
         return response()->json(false);
 
@@ -577,12 +598,12 @@ class SellerController extends Controller
 
         //$reserved = Participant::where('raffle_id', $id)->where('reserved', '>', 0)->groupBy('raffle_id')->get(DB::raw("string_agg(numbers, ',') as numbers"), 'id');
 
-        if($paid->isNotEmpty()){
+        if ($paid->isNotEmpty()) {
             $part = [];
-            foreach ($paid as $item){
+            foreach ($paid as $item) {
                 $array_numbers = explode(',', $item->numbers);
-                foreach ($array_numbers as $number){
-                    $part[(int)$number] = [
+                foreach ($array_numbers as $number) {
+                    $part[(int) $number] = [
                         'Numero' => $number,
                         'Nome' => $item->name,
                         'Telefone' => hideString($item->phone, 10, 3),
@@ -592,15 +613,14 @@ class SellerController extends Controller
             }
             sort($part);
 
-            $arqName = Str::slug($raffle->title).'.csv';
+            $arqName = Str::slug($raffle->title) . '.csv';
 
             $writer = SimpleExcelWriter::streamDownload($arqName);
 
             $lazy = collect($part);
 
             $i = 0;
-            foreach ($lazy->lazy() as $item)
-            {
+            foreach ($lazy->lazy() as $item) {
                 $writer->addRow($item);
 
                 if ($i % 1000 === 0) {
@@ -680,5 +700,26 @@ class SellerController extends Controller
             setLogErros('Awards->save', $e->getMessage(), [$raffleId, $awardId, $partId, $number], 'catch', $raffleId);
             return response()->json(false);
         }
+    }
+    public function affiliates($id)
+    {
+        $user = auth()->user();
+        try {
+            $raffle = $user->raffles()->ofId($id)->first();
+
+            if(!$raffle) {
+                setLogErros('SellerController', 'Rifa não encontrada!');
+                return response()->json(['message' => 'Problema ao buscar rifa!'], 403);
+            }
+
+            $affiliates = $raffle->affiliates()->get();
+
+            return response()->json($affiliates);
+        } catch (QueryException $e) {
+            setLogErros('SellerController', $e->getMessage());
+            return response()->json(['message' => 'Problema ao buscar afiliados!'], 403);
+        }
+
+
     }
 }

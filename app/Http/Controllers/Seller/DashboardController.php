@@ -41,7 +41,7 @@ class DashboardController extends Controller
         }
 
         $data['raffles']['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
-        $data['raffles']['total_raffles_finished'] = $user->raffles()->where('status', 'Encerrado')->count();
+        $data['raffles']['total_raffles_finished'] = $user->raffles()->where('status', 'Finalizado')->count();
         $data['raffles']['total_raffles'] = $user->raffles()->count();
         $data['raffles']['data'] = $user->raffles()->orderByDesc('id')->take(4)->get()->toArray();
 

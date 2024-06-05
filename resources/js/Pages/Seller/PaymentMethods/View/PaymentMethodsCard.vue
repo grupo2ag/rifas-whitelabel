@@ -28,7 +28,6 @@ export default {
 
                 form.post(route('paymentMethods.store'), {
                     onSuccess: () => {
-                        console.log('aqui');
                         this.disabled = false
                         this.loading = false
                     },
@@ -72,16 +71,16 @@ export default {
                                 </figure>
                             </div>
                         </div>
-                        <div class="flex flex-row items-center">
+                        <div class="flex flex-row items-center mb-2">
                             <div class="w-6/12">
                                 <div class="py-3 badge text-neutral/70" :class="data?.config ? 'badge-success' : 'badge-error'">
                                     {{ data?.config ? 'Ativo' : 'Inativo' }}
                                 </div>
                             </div>
-                            <div class="flex justify-end w-6/12">
+                            <!-- <div class="flex justify-end w-6/12">
                                 <label :for="'my-drawer' + (index ?? randomId)"
                                     class="border-none btn-sm btn bg-primary text-primary-bw drawer-button">Taxas</label>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="flex flex-row flex-wrap mb-2">
                             <div class="w-full">
