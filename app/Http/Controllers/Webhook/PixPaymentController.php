@@ -92,6 +92,9 @@ class PixPaymentController extends Controller
                         }
                     }
 
+                    //AUTO FINALIZAR
+                    raffle_finaliza($participant->raffle_id);
+
                     DB::commit();
                 }catch (QueryException $e){
                     DB::rollBack();

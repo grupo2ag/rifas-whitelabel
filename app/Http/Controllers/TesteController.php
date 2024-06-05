@@ -24,9 +24,7 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        /*for($i=0;$i<1000;$i++){
-            dd($this->simulacao_compra($request));
-        }*/
+        raffle_finaliza(1);
     }
 
     public function simulacao_compra(Request $request)

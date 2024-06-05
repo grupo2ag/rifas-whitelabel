@@ -91,7 +91,7 @@ export default {
     data() {
         return {
             form: {
-                id: this.raffle ? this.raffle.id : '',
+                id: this.raffle?.id ? this.raffle.id : '',
                 title: this.raffle ? this.raffle.title : '',
                 link: this.raffle ? this.raffle.link : '',
                 subtitle: this.raffle ? this.raffle.subtitle : '',
@@ -198,7 +198,7 @@ export default {
 
             }).catch((err) => {
                 this.form.processing = false;
-
+                //console.log(err)
                 err.inner.forEach((error) => {
                     this.validator = {...this.validator, [error.path]: error.message};
                 });
