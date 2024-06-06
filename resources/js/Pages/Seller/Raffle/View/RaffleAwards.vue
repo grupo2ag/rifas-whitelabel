@@ -1,18 +1,31 @@
-<script>
+<script setup>
+import { CreditCardIcon, PhoneIcon, TicketIcon, TrophyIcon, UserIcon } from "@heroicons/vue/24/outline";
 import Button from "@/Components/Button/Button.vue";
-import {Inertia} from "@inertiajs/inertia";
+</script>
 
+<script>
 export default {
     components: {Button},
     props: {
-        awards: Object
+        id: String | Number
     },
     data() {
         return {
             loading: false,
+            awards: {}
         };
     },
+    created() {
+        this.getAwards();
+    },
     methods: {
+        getAwards() {
+            axios.get(route('raffles.raffleAwards', {id: this.id})).then(res => {
+                this.awards = res?.data;
+            }).catch(err => {
+                console.log(err);
+            })
+        },
         onAwarded(raffle, id) {
             this.$swal.fire({
                 title: "Informe o numero sorteado",
@@ -68,7 +81,11 @@ export default {
                                                 this.$swal.fire({
                                                     title: "Ganhador definido",
                                                     icon: "success"
-                                                }).then(()=>{Inertia.reload()})
+                                                }).then(()=>{
+                                                    // Inertia.reload()
+                                                    this.getAwards();
+                                                })
+                                                this.$emit('updateAwardCheck', true);
                                             }else{
                                                 this.$swal.fire({
                                                     title: "Problema ao registrar ganhador",
@@ -108,32 +125,38 @@ export default {
             </div>
         </div>
         <div class="flex-row items-center hidden w-full py-2 m-2 rounded-lg lg:flex bg-base-200">
-            <div class="flex justify-center w-1/12 text-neutral/70">Premio</div>
-            <div class="flex justify-center w-2/12 text-neutral/70">Numero Premiado</div>
-            <div class="flex justify-center w-2/12 text-neutral/70">Ganhador</div>
-            <div class="flex justify-center w-2/12 text-neutral/70">G.Telefone</div>
-            <div class="flex justify-center w-2/12 text-neutral/70">G.CPF</div>
-            <div class="flex justify-center w-2/12 text-neutral/70">DEFINIR GANHADOR</div>
+            <div class="flex justify-start w-4/12 px-4 text-neutral/70">Premio</div>
+            <div class="flex justify-center w-1/12 text-neutral/70">Numero Premiado</div>
+            <div class="flex justify-center w-3/12 text-neutral/70">Ganhador</div>
+            <div class="flex justify-center w-1/12 text-neutral/70">G.Telefone</div>
+            <div class="flex justify-center w-1/12 text-neutral/70">G.CPF</div>
+            <div class="flex justify-center w-2/12 text-neutral/70"></div>
         </div>
         <div v-if="awards && awards?.length > 0" class="w-full pr-3">
             <div v-for="award in awards" :key="award.id"
                 class="flex flex-row flex-wrap w-full py-2 m-2 rounded-lg lg:items-center bg-content animate-fade-down animate-duration-1000 ">
-                <div class="flex justify-center w-full p-2 px-2 mx-2 mb-2 break-all rounded-lg lg:m-0 lg:w-1/12">
-                    {{ award?.description }}</div>
-                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
-                   {{ award?.number_award }}
+                <div class="flex justify-start w-full px-2 mb-2 break-all rounded-lg text-neutral/70 lg:px-4 lg:m-0 lg:w-4/12">
+                    <TrophyIcon class="flex w-5 mr-1 lg:m-0 lg:hidden text-neutral/70"/>
+                    {{ award?.description  ?? '----'}}</div>
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-1/12">
+                    <TicketIcon class="flex w-5 mr-1 lg:m-0 lg:hidden text-neutral/70" />
+                   {{ award?.number_award  ?? '----'}}
                 </div>
-                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
-                    {{ award?.name }}
+                <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-3/12">
+                    <UserIcon class="flex w-5 mr-1 lg:m-0 lg:hidden text-neutral/70"/>
+                    {{ award?.name  ?? '----'}}
                 </div>
-                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center text-neutral/70 lg:w-2/12">
-                    {{ award?.winner_phone }}
+                <div class="flex w-full px-2 mb-1 lg:mb-0 lg:justify-center text-neutral/70 lg:w-1/12">
+                    <PhoneIcon class="flex w-5 mr-1 lg:m-0 lg:hidden text-neutral/70"/>
+                    {{ award?.winner_phone  ?? '----'}}
                 </div>
                 <div class="flex w-full px-2 mb-1 break-all lg:mb-0 lg:justify-center text-neutral/70 lg:w-1/12">
-                    {{ award?.cpf }}
+                    <CreditCardIcon class="flex w-6 lg:m-0 lg:hidden text-neutral/70" />
+                    <UserIcon class="relative w-2 right-3 top-[2px] lg:m-0 lg:hidden text-neutral" />
+                    {{ award?.cpf  ?? '----'}}
                 </div>
-                <div>
-                    <Button type="button" @click="onAwarded(award?.raffle_id, award?.id)" color="primary" class="mt-2"></Button>
+                <div class="flex w-full px-2 lg:justify-end lg:w-2/12 lg:px-4">
+                    <button @click="onAwarded(award?.raffle_id, award?.id)" class="mt-2 border-none rounded-lg btn btn-sm bg-primary text-primary-bw btn-block lg:btn-md">Definir Ganhador</button>
                 </div>
             </div>
         </div>

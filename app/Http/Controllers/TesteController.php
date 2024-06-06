@@ -25,12 +25,6 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        //raffle_finaliza(1);
-        /*for($i=0;$i<1000;$i++){
-            dd($this->simulacao_compra($request));
-        }*/
-
-
         $logo = inertia()->getShared('siteconfig')->logo;
 
         $emailSend = [
@@ -46,8 +40,11 @@ class TesteController extends Controller
             'title' => 'CHEVROLET CRUZE 1.4 TURBO',
             'expected_date' => '28/06/2024',
             'mail' => 'numbers'];
+        //return view('emails.numbers', ['params' => $emailSend]);
+        //$rand = (string)rand(1, 1000000);
+        SendMail::dispatch($emailSend)->onQueue('rifa.fifo');//->onMessageGroup($rand);
+
         return view('emails.numbers', ['params' => $emailSend]);
-        //SendMail::dispatch($emailSend)->onQueue('emails');
     }
 
     public function simulacao_compra(Request $request)

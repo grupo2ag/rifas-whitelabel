@@ -26,6 +26,7 @@ class ResultFederalCommand extends Command
      */
     public function handle()
     {
-        ResultFederal::dispatch();
+        $rand = (string)rand(1, 1000000);
+        ResultFederal::dispatch()->onQueue('rifa.fifo')->onMessageGroup($rand);
     }
 }

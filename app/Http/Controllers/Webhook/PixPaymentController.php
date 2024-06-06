@@ -80,7 +80,9 @@ class PixPaymentController extends Controller
                             'documento' => !empty($participant->customer_cpf)  ? $participant->customer_cpf : '',
                             'numbers' => $participant->numbers,
                             'mail' => 'numbers'];
-                        //SendMail::dispatch($emailSend)->onQueue('emails');
+
+                        $rand = (string)$participant->raffle_id;
+                        SendMail::dispatch($emailSend)->onQueue('rifa.fifo')->onMessageGroup($rand);
                     }
 
                     Event::dispatch(new PixPayment($order_id));
