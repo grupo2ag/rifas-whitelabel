@@ -254,10 +254,12 @@ export default {
                 this.gallerys.push(imageCurrentAdd)
                 this.imageGallery = '';
             };*/
-            console.log(URL.createObjectURL(file))
-            this.gallerys.push({img: URL.createObjectURL(file)})
 
-            this.form.gallery.push({img: file})
+            this.gallerys.push({img: URL.createObjectURL(file)})
+            //  this.form.gallery.push({img: file})
+
+            console.log('form.gallery',this.form.gallery)
+            console.log('gallery',this.gallerys)
             // reader.readAsDataURL(this.imageGallery)
             // reader.onload = () => {
             //     imageReader = reader.result
