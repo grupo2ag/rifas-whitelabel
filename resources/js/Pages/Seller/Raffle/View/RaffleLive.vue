@@ -109,9 +109,11 @@ export default {
         search() {
             if (this.searchQuery.length) {
                 var buscaRaffle = this.array_raffle.filter((item) => {
-                    return item.startsWith(this.searchQuery);
+                    return (item === this.searchQuery || (parseInt(item) === parseInt(this.searchQuery)));
+                    //return item.startsWith(this.searchQuery);
                 })
-                if (buscaRaffle.length) {
+
+                if (buscaRaffle.length > 0) {
                     this.$swal(
                         'Disponível!',
                         `O número ${this.searchQuery} está disponível.`,
@@ -120,9 +122,10 @@ export default {
                 }
 
                 var buscaReserved = this.array_reserved.filter((item) => {
-                    return item.startsWith(this.searchQuery);
+                    return (item === this.searchQuery || (parseInt(item) === parseInt(this.searchQuery)));
+                    //return item.startsWith(this.searchQuery);
                 })
-                if (buscaReserved.length) {
+                if (buscaReserved.length > 0) {
                     this.$swal(
                         'Reservado!',
                         `O número ${this.searchQuery} está reservado!`,
@@ -131,9 +134,11 @@ export default {
                 }
 
                 var buscaPaid = this.array_paid.filter((item) => {
-                    return item.startsWith(this.searchQuery);
+                    return (item === this.searchQuery || (parseInt(item) === parseInt(this.searchQuery)));
+                    //return item.startsWith(this.searchQuery);
                 })
-                if (buscaPaid.length) {
+
+                if (buscaPaid.length > 0) {
                     this.$swal(
                         'Pago!',
                         `O número ${this.searchQuery} está pago!`,
@@ -155,13 +160,14 @@ export default {
         // },
         translateToArray(numbers) {
             if (numbers && typeof numbers == 'string') {
-                return numbers?.split(',');
+                let array = numbers?.split(',');
+                return array.sort();
             }
             return [];
         },
-        handleSearch() {
+        /*handleSearch() {
             this.search();
-        },
+        },*/
         // encontrarDuplicados(array) {
         //     var elementosDuplicados = [];
         //     var contador = {};
@@ -190,7 +196,7 @@ export default {
     created() {
         this.getNumbers();
         this.search()
-        this.debouncedSearch = debounce(this.handleSearch, 1000); // 1000ms debounce
+        //this.debouncedSearch = debounce(this.handleSearch, 1000); // 1000ms debounce
     },
     // mounted() {
     // }
@@ -204,10 +210,10 @@ export default {
             </div>
             <div class="flex justify-end w-full px-4 mb-2 xl:w-4/12 card-title">
                 <div class="w-full join">
-                    <input v-model="searchQuery" @input="debouncedSearch"
+                    <input v-model="searchQuery"
                         class="w-full input input-sm input-bordered join-item xl:btn-md bg-content"
                         placeholder="Buscar..." />
-                    <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw">
+                    <button class="border-none rounded-r-lg join-item btn btn-sm xl:btn-md bg-primary text-primary-bw" @click="search">
                         <MagnifyingGlassIcon class="w-6" />
                     </button>
                 </div>
@@ -216,7 +222,7 @@ export default {
 
         <div class="flex flex-row flex-wrap w-full px-4 mb-4">
             <div
-                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 top-[1px] border-neutral/50">
+                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 top-[1px] border-neutral/50 text-neutral-70">
                 Números
                 Disponíveis</div>
             <div class="z-0 w-full p-2 border rounded-b-lg rounded-r-lg border-neutral/50">
@@ -228,7 +234,7 @@ export default {
                 </ul>
                 <div v-if="allNumbersLoaded" class="flex flex-row justify-end mt-2 text-sm">
                     <div class="w-auto">
-                        <button class="btn btn-sm btn-success text-primary-bw " @click="loadMore">
+                        <button class="btn btn-xs btn-success text-primary-bw " @click="loadMore">
                             Ver Mais ...
                         </button>
                     </div>
@@ -237,7 +243,7 @@ export default {
         </div>
         <div class="flex flex-row flex-wrap w-full px-4 mb-4">
             <div
-                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 border-neutral/50 top-[1px]">
+                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 border-neutral/50 top-[1px] text-neutral/70">
                 Números
                 Vendidos</div>
             <div class="z-0 w-full p-2 border rounded-b-lg rounded-r-lg border-neutral/50">
@@ -249,12 +255,12 @@ export default {
                             {{ number }}</li>
                     </ul>
                 </div>
-                <div v-else class="flex justify-center w-full py-4">
+                <div v-else class="flex justify-center w-full py-4 text-neutral/70">
                     <h2>Não há nenhum número pago.</h2>
                 </div>
                 <div v-if="allNumbersPaidLoaded" class="flex flex-row justify-end mt-2 text-sm">
                     <div class="w-auto">
-                        <button class="btn btn-sm btn-success text-primary-bw " @click="loadMorePaid">
+                        <button class="btn btn-xs btn-success text-primary-bw " @click="loadMorePaid">
                             Ver Mais ...
                         </button>
                     </div>
@@ -263,7 +269,7 @@ export default {
         </div>
         <div class="flex flex-row flex-wrap w-full px-4">
             <div
-                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 border-neutral/50 top-[1px]">
+                class="relative z-20 w-auto p-2 border-t border-l border-r rounded-t-lg bg-base-100 border-neutral/50 top-[1px] text-neutral/70">
                 Números
                 Reservados</div>
             <div class="z-0 w-full p-2 border rounded-b-lg rounded-r-lg border-neutral/50">
@@ -275,12 +281,12 @@ export default {
                             {{ number }}</li>
                     </ul>
                 </div>
-                <div v-else class="flex justify-center w-full py-4">
+                <div v-else class="flex justify-center w-full py-4 text-neutral/70">
                     <h2>Não há nenhum número reservado.</h2>
                 </div>
                 <div v-if="allNumbersReservedLoaded" class="flex flex-row justify-end mt-2 text-sm">
                     <div class="w-auto">
-                        <button class="btn btn-sm btn-success text-primary-bw " @click="loadMoreReserved">
+                        <button class="btn btn-xs btn-success text-primary-bw " @click="loadMoreReserved">
                             Ver Mais ...
                         </button>
                     </div>

@@ -5,7 +5,7 @@ import SidebarSeller from "./SidebarSeller.vue";
 
 
 <template>
-    <nav class="hidden px-3 py-4 sidebar bg-primary rounded-xl md:block lg:block ">
+    <nav class="hidden px-3 py-4 sidebar bg-primary rounded-xl md:block lg:block">
         <div class="flex flex-col justify-between h-full">
             <div class="flex flex-col h-full">
                 <!-- <SidebarAdmin  /> -->

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PixManual;
 use App\Events\PixPayment;
 use App\Jobs\ResultFederal;
+use App\Jobs\SendMail;
 use App\Libraries\Pixcred;
 use App\Models\Customer;
 use App\Models\Participant;
@@ -24,92 +25,31 @@ class TesteController extends Controller
 {
     public function index(Request $request)
     {
-        //ResultFederal::dispatch();
-        //Event::dispatch(new PixPayment('5bf76e86-4361-4bd1-8b2b-997798eb6a28'));
-        //dd(numbers_premium(25, 1, ['00001', '00002']));
-        //$resp = numbers_devolution(1, 5);
-        //dd($resp);
-        //Event::dispatch(new PixPayment('1234'));
-        //dd('ok');
-        //dd(numbers_generate(100000));
-        //$request = new Request();
-        //$request->merge(["raffle_id"=>1]);
-        //dd($this->simulacao_compra($request));
-        //dd($request->session());
+        $logo = inertia()->getShared('siteconfig')->logo;
 
-        /*$pix_data = [
-            "value" => 2565,
-            "payer_name" => "John Doe",
-            "payer_doc" => "62799354505",
-            "expiration_time" => 86400,
-            "description" => "deposit",
-            "url_notify" => "https://webhook.site/61e7d93f-c2a4-4f8f-aa25-25466cdb8a14",
-            "order_id" => UUID::uuid4()
-        ];
-        $esse = pixcred_generate(1, $pix_data);
-        dd($esse);
-        $teste = new Pixcred(['raffle_id' => 1]);
-        //dd($teste);
-        $result = $teste->pix_generate();
-        $aqui = QrCode::size(250)->generate($result['pix_link']);*/
+        $emailSend = [
+            'assunto' => 'Seus numeros da sorte',
+            'logo' => config('constants.LOGO_PNG'),
+            'conteudo' => 'Rifa do Joao',
+            'email' => 'rafael@l8.vc',
+            'nome' => 'Rafael',
+            'phone' => '12312312312312312',
+            'documento' => '132123123123',
+            'numbers' => '123,321,333,222,111',
+            'thumb' => 'https://s3.amazonaws.com/xas-sorteios-public/raffles/images/2/gallery/4/e28be13e-1e12-43d1-ba00-9a5e2c1a2acb.webp?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIASMXPRJKLI6HZ2HWZ%2F20240605%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240605T162256Z&X-Amz-SignedHeaders=host&X-Amz-Expires=1800&X-Amz-Signature=7d445edc0ea57874539032e1093e285bd3a006a8764dcf33bdb646a4df59cffd',
+            'title' => 'CHEVROLET CRUZE 1.4 TURBO',
+            'expected_date' => '28/06/2024',
+            'mail' => 'numbers'];
+        //return view('emails.numbers', ['params' => $emailSend]);
+        //$rand = (string)rand(1, 1000000);
+        SendMail::dispatch($emailSend)->onQueue('rifa.fifo');//->onMessageGroup($rand);
 
-       /* $registration_data = [
-            'name' => 'Sebastião Barbosa Silva',
-            'phone' => '55 (53) 91831-8081'
-        ];
-        dd(numbers_reserve(1, 2, 1, $registration_data, false));*/
-        //dd(numbers_available(1));
-    }
-
-    public function numbers($id)
-    {
-        $user = auth()->user();
-
-        $raffle = $user->raffles()->ofId($id)->first();
-
-        $paid = $raffle->participants()->where('participants.raffle_id', $id)
-            ->where('participants.paid', '>', 0)
-            ->groupBy('participants.raffle_id', 'participants.id')
-            ->get([DB::raw("string_agg(participants.numbers, ',') as numbers"), 'participants.name', 'participants.phone']);
-
-        //$reserved = Participant::where('raffle_id', $id)->where('reserved', '>', 0)->groupBy('raffle_id')->get(DB::raw("string_agg(numbers, ',') as numbers"), 'id');
-
-        $part = [];
-        foreach ($paid as $item){
-            $array_numbers = explode(',', $item->numbers);
-            foreach ($array_numbers as $number){
-                $part[(int)$number] = [
-                    'Numero' => $number,
-                    'Nome' => $item->name,
-                    'Telefone' => hideString($item->phone, 10, 3),
-                    'Estado' => getDDDState($item->phone)
-                ];
-            }
-        }
-        sort($part);
-
-        $arqName = Str::slug($raffle->title).'.csv';
-
-        $writer = SimpleExcelWriter::streamDownload($arqName);
-
-        $lazy = collect($part);
-
-        $i = 0;
-        foreach ($lazy->lazy() as $item)
-        {
-            $writer->addRow($item);
-
-            if ($i % 1000 === 0) {
-                flush(); // Flush the buffer every 1000 rows
-            }
-            $i++;
-        }
-        $writer->toBrowser();
+        return view('emails.numbers', ['params' => $emailSend]);
     }
 
     public function simulacao_compra(Request $request)
     {
-
+        //dd($request);
         $rifa = Raffle::join('users', 'users.id', 'raffles.user_id')
                         ->join('user_configurations', 'users.id', 'user_configurations.user_id')
                         ->where('raffles.id', $request->raffle_id)
@@ -134,11 +74,26 @@ class TesteController extends Controller
         if(empty($customer)){
             $customer = Customer::create([
                 'name' => Str::upper($request->name),
-                'phone' => $request->phone
+                'phone' => $request->phone,
+                'email' => $request->email,
+                'cpf' => $request->cpf,
             ]);
         }
 
-        return response()->json(['']);
+        $rand = rand(1, 100);
+        $randA = rand(0, 1);
+
+        $registration_data = [
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'email' => $customer->email,
+            'cpf' => $customer->cpf,
+            'affiliate_id' => $randA > 0 ? $randA : null
+        ];
+
+        numbers_reserve($request->raffle_id, $rand, $customer->id, $registration_data, true);
+
+        return 1;
 
     }
 }

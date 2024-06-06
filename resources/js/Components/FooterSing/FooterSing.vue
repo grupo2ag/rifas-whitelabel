@@ -65,13 +65,12 @@ export default defineComponent( {
 
                     <p class="text-xs text-neutral/70 mt-3">© {{ new Date().getFullYear()}} Todos os direitos reservados </p>
                 </div>
-
             </aside>
         </div>
 
         <div class="container py-5 flex justify-center">
-            <a href="https://rifas8.com" target="_blank" class="text-xs text-neutral/70 flex">
-                desenvolvido por <img src="/images/logo.svg" class="h-3 ml-1"/>
+            <a href="https://8rifas.com" target="_blank" class="flex items-end text-xs text-neutral/70 flex">
+                desenvolvido por<span class="text-base font-bold -mb-1 ml-1"> 8Rifas</span>
             </a>
         </div>
     </footer>

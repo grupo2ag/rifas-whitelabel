@@ -169,7 +169,7 @@ export default {
                             :when="this.collapse[index].value">
                             <div class="w-full border-t border-neutral/50 animate-fade-up"></div>
                             <div class="flex flex-row w-full mt-2 mb-2 font-bold animate-fade-right">
-                                <h2>Cotas Adquiridas</h2>
+                                <h2 class="text-neutral/70">Cotas Adquiridas</h2>
                             </div>
                             <p class="CollapseContent">
                             <ul class="grid grid-cols-6 gap-2 md:grid-cols-10 lg:grid-cols-20">

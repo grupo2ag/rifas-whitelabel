@@ -25,6 +25,7 @@ class UserConfigurationsController extends Controller
         try {
             $user = auth()->user();
             $userConfigurations = $user->userConfigurations()->update($request->all());
+            //dd($userConfigurations, $user);
             // foreach ($request->all() as $key => $value) {
             //     $user->userConfigurations()->update([$key => $value]);
             // }

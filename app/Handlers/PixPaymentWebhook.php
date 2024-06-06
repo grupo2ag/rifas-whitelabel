@@ -3,11 +3,14 @@
 namespace App\Handlers;
 
 use App\Http\Controllers\Webhook\PixPaymentController;
+use ShiftOneLabs\LaravelSqsFifoQueue\Bus\SqsFifoQueueable;
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob;
 use Spatie\WebhookClient\Models\WebhookCall;
 
 class PixPaymentWebhook extends ProcessWebhookJob
 {
+    use SqsFifoQueueable;
+
     public function __construct(WebhookCall $webhookCall)
     {
         parent::__construct($webhookCall);

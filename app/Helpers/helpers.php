@@ -26,6 +26,7 @@ if(!function_exists('pixcred_generate')) {
             ->first(['gateway_configurations.*','gateways.*', 'raffles.type', 'raffles.pix_expired']);
 
         if(empty($rifa->token) || empty($rifa->login)) {
+            if($isTransaction) DB::rollback();
             setLogErros('Libraries->Pixcred', 'Rifa faltando gateway', $rifa, 'algum dado do gateway vazio', $raffleId );
             return false;
         }
@@ -33,7 +34,7 @@ if(!function_exists('pixcred_generate')) {
         if(config('app.env') === 'production') $endpoint = $rifa->endpoint_prod;
         else $endpoint = $rifa->endpoint_sandbox;
 
-        $pix = new Pixcred(['token' => $rifa->token, 'endpoint' => $endpoint, 'authtoken' => $rifa->token, 'authlogin' => $rifa->login]);
+        $pix = new Pixcred(['token' => $rifa->token, 'endpoint' => $endpoint, 'authtoken' => $rifa->token, 'authlogin' => $rifa->login, 'isTransaction' => $isTransaction]);
 
         $params['value'] = (float)($pix_data['value']/100);
         $params['payer_name'] = $pix_data['payer_name'];
@@ -213,6 +214,7 @@ if(!function_exists('numbers_reserve')) {
                 return ['errors' => true, 'message' => 'Problema ao efetuar reserva, tente novamente. code 20'];
             }
 
+            //RETURN OK
             return ['errors' => false, 'numbers' => $resutlNumbers, 'participant' => $participant->id, 'amount' => $amount, 'totalNotDiscount' => $totalNotDiscount, 'discount' => $discount, 'pix' => $generate];
         }
 
@@ -328,6 +330,23 @@ if(!function_exists('numbers_available')) {
         $numbersRifa = explode(",", $rifa->numbers);
 
         return $numbersRifa;
+    }
+}
+
+if(!function_exists('raffle_finaliza')) {
+    function raffle_finaliza(int $raffleId)
+    {
+        $raffle = Raffle::where('raffles.id', $raffleId)->first();
+
+        if(empty($raffle->numbers)){
+            $countParticipants = Participant::where('raffle_id', $raffleId)->sum('paid');
+            if($countParticipants === $raffle->quantity){
+                $raffle->status = 'Finalizado';
+                $raffle->save();
+            }
+        }
+
+        return true;
     }
 }
 
