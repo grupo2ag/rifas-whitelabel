@@ -247,7 +247,8 @@ class SellerController extends Controller
 
             DB::commit();
 
-            return $this->index();
+            // return $this->index();
+            return Redirect::route('raffles.raffleIndex')->with(['type' => 'success', 'message' => 'Salvo com sucesso.']);
         } catch (QueryException $e) {
             DB::rollBack();
             setLogErros('SellerController', $e->getMessage(), $request->all());
@@ -373,10 +374,10 @@ class SellerController extends Controller
                     RaffleImage::where('raffle_id', $raffle->id)->delete();
                     $raffleImages = [];
                     foreach ($request->gallery as $key => $item) {
-                        $glr = explode(';base64,', $item['image']);
+                        // $glr = explode(';base64,', $item['image']);
 
                         $name = (string) Str::uuid();
-                        $webp = (string) Image::make(base64_decode($glr[1]))->fit(500, 500, function ($constraint) {
+                        $webp = (string) Image::make($item['img'])->fit(500, 500, function ($constraint) {
                             $constraint->upsize();
                         })->encode('webp', 95);
                         $path = config('filesystems.disks.s3.path') . '/images/' . $user_id . '/gallery/' . $raffle->id . '/' . $name . '.webp';

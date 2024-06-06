@@ -91,7 +91,7 @@ export default {
     data() {
         return {
             form: {
-                id: this.raffle.id ? this.raffle.id : '',
+                id: this.raffle ? this.raffle.id : '',
                 title: this.raffle ? this.raffle.title : '',
                 link: this.raffle ? this.raffle.link : '',
                 subtitle: this.raffle ? this.raffle.subtitle : '',
@@ -117,6 +117,7 @@ export default {
 
                 processing: false
             },
+            gallery: this.raffle ? [...this.raffle.galery] : [],
             editorType: ClassicEditor,
             editorConfig: {
                 plugins: [
@@ -184,7 +185,7 @@ export default {
                 .validate(this.form, {abortEarly: false}).then(() => {
                     this.form.processing = true;
 
-                let endPoint = this.raffle.id ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
+                let endPoint = this.raffle?.id ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
                 form.post(route(endPoint), {
                     onSuccess: () => {
                         this.disabled = false
@@ -198,10 +199,13 @@ export default {
 
             }).catch((err) => {
                 this.form.processing = false;
+                console.log(err.errors)
+                if(err.errors){
+                    err.errors.forEach((error) => {
+                        this.validator = {...this.validator, [error.path]: error.message};
+                    });
+                }
 
-                err.inner.forEach((error) => {
-                    this.validator = {...this.validator, [error.path]: error.message};
-                });
             });
         },
         countdown() {
@@ -230,28 +234,37 @@ export default {
         },
         addImage(gallery) {
             let imageReader = '';
+            console.log(gallery)
+            // const reader = new FileReader();
 
-            const reader = new FileReader();
+            // const imageCurrentAdd = {
+            //     image: reader.result
+            // }
 
-            const imageCurrentAdd = {
-                image: reader.result
-            }
+            // reader.onload = () => {
+            //     imageReader = reader.result
+            //     imageCurrentAdd.image = imageReader
+            //     gallery.push(imageCurrentAdd)
+            //     this.imageGallery = '';
+            // };
+            // reader.readAsDataURL(this.imageGallery)
+            this.gallery.push({img: URL.createObjectURL(gallery)})
+            this.form.gallery.push({img: gallery})
 
-            reader.onload = () => {
-                imageReader = reader.result
-                imageCurrentAdd.image = imageReader
-                gallery.push(imageCurrentAdd)
-                this.imageGallery = '';
-            };
-            reader.readAsDataURL(this.imageGallery)
             forceRender()
         },
         removeImage(item) {
-            for (let i = this.form.gallery.length; i--;) {
-                if (this.form.gallery[i].image === item) {
-                    this.form.gallery.splice(i, 1);
-                }
-            }
+            this.form.gallery = this.form.gallery.filter((image) => {
+                return image.img != item
+            })
+            this.gallery = this.gallery.filter((image) => {
+                return image.img != item
+            })
+            // for (let i = this.form.gallery.length; i--;) {
+            //     if (this.form.gallery[i].image === item) {
+            //         this.form.gallery.splice(i, 1);
+            //     }
+            // }
         },
     },
     watch: {
@@ -261,7 +274,7 @@ export default {
         },
     },
     mounted() {
-        console.log(this.raffle)
+        console.log(this.form)
 
         let greaterThanTen = this.quantity_numbers.filter(element => element.texto !== '1.000.000' && element.texto !== '10.000.000');
         console.log(greaterThanTen)
@@ -690,7 +703,7 @@ export default {
 
                                         <Error :message="validator.gallery"/>
 
-                                        <Button type="button" @click="addImage(form.gallery)"
+                                        <Button type="button" @click="addImage(imageGallery)"
                                                 class="w-full mt-2"
                                                 size="sm" color="primary">Adicionar Imagem
                                         </Button>
@@ -701,16 +714,16 @@ export default {
                                         </p>
 
                                         <div class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
-                                            <div v-for="(item, index) in form.gallery" :key="index"
+                                            <div v-for="(item, index) in gallery" :key="index"
                                                  class="relative">
                                                 <div class="absolute w-full h-full transition-all opacity-0 cursor-pointer cover-remove hover:opacity-100">
                                                     <button type="button"
-                                                            @click="removeImage(item.image)"
+                                                            @click="removeImage(item.img)"
                                                             class="block p-1 m-2 ml-auto rounded-full bg-red hover:bg-red-dark">
                                                         <TrashIcon class="w-4 h-4 stroke-white"/>
                                                     </button>
                                                 </div>
-                                                <img class="object-cover aspect-square w-full h-full" :src="item.image" alt="">
+                                                <img class="object-cover w-full h-full aspect-square" :src="item.img" alt="">
                                             </div>
                                         </div>
                                     </div>
