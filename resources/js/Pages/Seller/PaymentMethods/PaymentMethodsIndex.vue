@@ -33,7 +33,7 @@ export default {
                 Métodos de Pagamento
             </h2>
         </template>
-        <div class="container">
+        <div class="container pt-16 md:pt-0">
             <div class="flex flex-row flex-wrap w-full px-2 py-2 rounded-lg bg-content">
                 <div class="flex w-full px-4 py-2">
                     <h1 class="w-full text-base text-xl font-medium title-font text-neutral/70">{{ (!!this.$page.props.flash.message) ? this.$page.props.flash.message : 'Escolha um método de pagamento'  }}</h1>

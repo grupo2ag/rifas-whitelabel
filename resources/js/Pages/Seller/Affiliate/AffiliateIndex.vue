@@ -47,7 +47,7 @@ export default {
                 Afiliados
             </h2>
         </template>
-        <div class="container sm:max-w-full !w-full">
+        <div class="container pt-16 md:pt-0 sm:max-w-full !w-full">
             <div class="card bg-content animate-fade-up">
                 <div class="flex flex-row">
                     <div class="flex justify-start w-full">

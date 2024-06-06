@@ -304,7 +304,7 @@ export default {
                 Afiliado
             </h2>
         </template>
-        <div class="container w-full py-5 lg:w-6/12">
+        <div class="container w-full pt-16 md:pt-0 pb-5 lg:w-6/12">
             <form @submit.prevent="onSubmit">
                 <div class="mb-4 rounded-lg c-content" ref="geral">
                     <div class="flex items-center justify-between w-full pb-2 border-b border-base-100">

@@ -314,7 +314,7 @@ export default {
             </h2>
         </template>
 
-        <div class="w-full py-5 md:container lg:w-6/12">
+        <div class="w-full pt-16 md:pt-0 pb-5 md:container lg:w-6/12">
             <form @submit.prevent="onSubmit">
                 <div class="mb-4 c-content" ref="geral">
                     <div class="flex items-center justify-between w-full pb-2 border-b border-base-100">

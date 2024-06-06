@@ -21,7 +21,7 @@ defineProps({
                 Profile
             </h2>
         </template>
-        <div class="w-full">
+        <div class="w-full pt-16 md:pt-0">
             <div class="flex flex-row flex-wrap xl:flex-nowrap">
                 <div class="w-full px-2 mb-4 lg:w-6/12">
                     <div class="items-center h-full rounded-lg bg-content">
