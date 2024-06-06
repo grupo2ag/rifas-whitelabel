@@ -52,8 +52,13 @@ class HandleInertiaRequests extends Middleware
         //session(['site_config' => $configDataByURL]);
         return array_merge(parent::share($request), [
             'siteconfig' => $configDataByURL,
+            /*'flash' => [
+                'message' => fn () => $request->session()->get('message'),
+                'type' => fn () => $request->session()->get('type')
+            ],*/
             'flash' => [
-                'message' => fn () => $request->session()->get('message')
+                'message' => session('message'),
+                'type' => session('type'),
             ],
         ]);
     }

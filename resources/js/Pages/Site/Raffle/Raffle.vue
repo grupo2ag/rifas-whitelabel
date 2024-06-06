@@ -38,7 +38,7 @@ export default {
         Swiper, SwiperSlide
     },
     props: {
-      raffle: Array
+      raffle: Object
     },
     data() {
         return {

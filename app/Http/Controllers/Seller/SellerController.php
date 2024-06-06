@@ -153,7 +153,7 @@ class SellerController extends Controller
         }
 
         $numbers = numbers_generate($request->quantity);
-        $price = (int) ($request->value * 100);
+        $price = (int)$request->value;
         $total = $price * $request->quantity;
 
         if ($request->file('banner')) {
@@ -216,10 +216,10 @@ class SellerController extends Controller
                 if (!empty($request->gallery)) {
                     $raffleImages = [];
                     foreach ($request->gallery as $key => $item) {
-                        $glr = explode(';base64,', $item['image']);
+//                        $glr = explode(';base64,', $item['img']);
 
                         $name = (string) Str::uuid();
-                        $webp = (string) Image::make(base64_decode($glr[1]))->fit(500, 500, function ($constraint) {
+                        $webp = (string) Image::make($item['img'])->fit(500, 500, function ($constraint) {
                             $constraint->upsize();
                         })->encode('webp', 95);
                         $path = config('filesystems.disks.s3.path') . '/images/' . $user_id . '/gallery/' . $rifa->id . '/' . $name . '.webp';
@@ -241,16 +241,18 @@ class SellerController extends Controller
             } else {
                 DB::rollBack();
                 setLogErros('SellerController', 'Erro Rifa Insert', $request->all());
-                return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
+                return response()->json(['type' => 'success', 'message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
             }
 
             DB::commit();
 
-            return $this->index();
+            return Redirect::route('raffles.raffleIndex')
+                ->with(['type' => 'success', 'message' => 'Rifa criada com sucesso!']);
+//            return $this->index();
         } catch (QueryException $e) {
             DB::rollBack();
             setLogErros('SellerController', $e->getMessage(), $request->all());
-            return response()->json(['message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
+            return response()->json(['type' => 'success', 'message' => 'Problema ao inserir a rifa, verifique os campos!'], 403);
         }
     }
 
@@ -306,7 +308,7 @@ class SellerController extends Controller
             'awards' => 'required'
         ]);
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->messages()], 403);
+            return response()->json(['type' => 'success', 'message' => $validator->messages()], 403);
         }
 
         $user = auth()->user();
@@ -375,17 +377,18 @@ class SellerController extends Controller
                 } else {
                     DB::rollBack();
                     setLogErros('SellerController', 'Erro Rifa Update Awards', [$request->all(), $raffle]);
-                    return response()->json(['message' => 'Problema ao atualizar a rifa, verifique os campos!'], 403);
+                    return response()->json(['type' => 'success', 'message' => 'Problema ao atualizar a rifa, verifique os campos!'], 403);
                 }
 
                 if (!empty($request->gallery)) {
+
                     RaffleImage::where('raffle_id', $raffle->id)->delete();
                     $raffleImages = [];
-                    foreach ($request->gallery as $key => $item) {
-                        $glr = explode(';base64,', $item['image']);
 
+                    foreach ($request->gallery as $key => $item) {
+//                        $glr = explode(';base64,', $item['img']);
                         $name = (string) Str::uuid();
-                        $webp = (string) Image::make(base64_decode($glr[1]))->fit(500, 500, function ($constraint) {
+                        $webp = (string) Image::make($item['img'])->fit(500, 500, function ($constraint) {
                             $constraint->upsize();
                         })->encode('webp', 95);
                         $path = config('filesystems.disks.s3.path') . '/images/' . $user_id . '/gallery/' . $raffle->id . '/' . $name . '.webp';
@@ -406,11 +409,14 @@ class SellerController extends Controller
 
             DB::commit();
 
-            return $this->index();
+            return Redirect::route('raffles.raffleIndex')
+                ->with(['type' => 'success', 'message' => 'Rifa alterada com sucesso!']);
+
+//            return $this->index();
         } catch (QueryException $e) {
             DB::rollBack();
             setLogErros('SellerController->Update', $e->getMessage(), $request->all());
-            return response()->json(['message' => 'Problema ao alterar a rifa, verifique os campos!'], 403);
+            return response()->json(['type' => 'error', 'message' => 'Problema ao alterar a rifa, verifique os campos!'], 403);
         }
     }
 
@@ -710,7 +716,7 @@ class SellerController extends Controller
 
             if(!$raffle) {
                 setLogErros('SellerController', 'Rifa não encontrada!');
-                return response()->json(['message' => 'Problema ao buscar rifa!'], 403);
+                return response()->json(['type' => 'success', 'message' => 'Problema ao buscar rifa!'], 403);
             }
 
             $affiliates = $raffle->affiliates()->get();
@@ -718,7 +724,7 @@ class SellerController extends Controller
             return response()->json($affiliates);
         } catch (QueryException $e) {
             setLogErros('SellerController', $e->getMessage());
-            return response()->json(['message' => 'Problema ao buscar afiliados!'], 403);
+            return response()->json(['type' => 'success', 'message' => 'Problema ao buscar afiliados!'], 403);
         }
 
 

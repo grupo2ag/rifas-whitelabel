@@ -86,7 +86,8 @@ export default {
     },
     props: {
         raffle: Array,
-        quantity_numbers: Array
+        quantity_numbers: Array,
+        flash: Object,
     },
     data() {
         return {
@@ -112,7 +113,6 @@ export default {
                 highlight: this.raffle ? this.raffle.highlight : 0,
 
                 gallery: this.raffle ? this.raffle.galery : [],
-                quotas: [],
                 awards: this.raffle ? this.raffle.raffle_awards : [{description: ''}],
                 promotions: this.raffle ? this.raffle.promotions : [{quantity_numbers: '', discount: '' }],
                 processing: false
@@ -156,8 +156,7 @@ export default {
             },
             characterLenght: 0,
             characterLenght2: 0,
-            number_quota: null,
-            imageGallery: this.raffle ? this.raffle.galery : '',
+            imageGallery: '',
             validator: {
                 title: '',
                 subtitle: '',
@@ -166,8 +165,9 @@ export default {
                 description: '',
                 expected_date: '',
                 'awards[0].description': '',
-                gallery: '',
+                // gallery: '',
             },
+            gallerys: this.raffle ? this.raffle.galery : [],
             today: new Date(),
             numbers_manual: this.quantity_numbers
         }
@@ -184,21 +184,22 @@ export default {
                 .validate(this.form, {abortEarly: false}).then(() => {
                     this.form.processing = true;
 
-                let endPoint = this.raffle.id ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
+                let endPoint = this.raffle ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
                 form.post(route(endPoint), {
                     onSuccess: () => {
-                        this.disabled = false
-                        this.loading = false
+                        this.processing = false
+                        this.processing = false
                     },
                     onError: () => {
-                        this.disabled = false
-                        this.loading = false
+                        this.processing = false
+                        this.processing = false
+                        console.log('errooo')
                     }
                 })
 
             }).catch((err) => {
                 this.form.processing = false;
-                //console.log(err)
+                console.log(err.inner)
                 err.inner.forEach((error) => {
                     console.log(error.path);
                     this.validator = {...this.validator, [error.path]: error.message};
@@ -235,22 +236,26 @@ export default {
                 }
             }
         },
-        addImage(gallery) {
+        addImage(file) {
             let imageReader = '';
 
             const reader = new FileReader();
-
+            // console.log(file)
             const imageCurrentAdd = {
                 img: reader.result
             }
 
-            reader.onload = () => {
+           /* reader.onload = () => {
                 imageReader = reader.result
                 imageCurrentAdd.img = imageReader
-                gallery.push(imageCurrentAdd)
+                this.gallerys.push(imageCurrentAdd)
                 this.imageGallery = '';
-            };
-            reader.readAsDataURL(this.imageGallery)
+            };*/
+            console.log(URL.createObjectURL(file))
+            this.gallerys.push({img: URL.createObjectURL(file)})
+
+            this.form.gallery.push({img: file})
+            // reader.readAsDataURL(this.imageGallery)
             forceRender()
         },
         removeImage(item) {
@@ -281,8 +286,8 @@ export default {
             subtitle: yup.string().min(5, 'Digite ao menos 5 caracteres').max(160, 'Digite ao máximo 160 caracteres').required('Obrigatório'),
             value: yup.number().positive().nullable(true).required('Obrigatório'),
             pix_expired: yup.string().required('Obrigatório'),
-            description: yup.string().required('Obrigatório'),
-            expected_date: yup.string().required('Obrigatório'),
+           description: yup.string().required('Obrigatório'),
+           expected_date: yup.string().required('Obrigatório'),
             awards: yup.array().of(
                 yup.object().shape({
                     description: yup.string().required('Obrigatório')
@@ -294,6 +299,8 @@ export default {
                 })
             ).min(1, 'Imagem obrigatória').required('Obrigatório')
         })
+        /*  */
+        /**/
     }
 }
 </script>
@@ -687,7 +694,7 @@ export default {
 
                                         <Error :message="validator.gallery"/>
 
-                                        <Button type="button" @click="addImage(form.gallery)"
+                                        <Button type="button" @click="addImage(imageGallery)"
                                                 class="w-full mt-2"
                                                 size="sm" color="primary">Adicionar Imagem
                                         </Button>
@@ -698,7 +705,7 @@ export default {
                                         </p>
 
                                         <div class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
-                                            <div v-for="(item, index) in form.gallery" :key="index"
+                                            <div v-for="(item, index) in gallerys" :key="index"
                                                  class="relative">
                                                 <div class="absolute w-full h-full transition-all opacity-0 cursor-pointer cover-remove hover:opacity-100">
                                                     <button type="button"
@@ -725,7 +732,7 @@ export default {
                         <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
                             Cancelar
                         </Button>
-                        <Button type="submit" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">
+                        <Button type="button" @click="onSubmit" color="success" :loading="form.processing" :disabled="form.processing">
                             Salvar
                         </Button>
                     </div>

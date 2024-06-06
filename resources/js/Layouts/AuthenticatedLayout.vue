@@ -1,5 +1,6 @@
 <script setup>
 import Sidebar from '@/Components/Sidebar/Sidebar.vue';
+import SidebarMobile from '@/Components/Sidebar/SidebarMobile.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import Navbar from '@/Components/Navbar/Navbar.vue';
 // import DropdownLink from '@/Components/DropdownLink.vue';
@@ -43,37 +44,46 @@ export default {
         },
     },
     updated() {
-        if (usePage()?.props?.value?.flash?.type) {
-            notify({
-                title: usePage().props.value.flash.type == 'success' ? 'Sucesso' : 'Erro',
-                text: usePage().props.value.flash.message,
-                type: usePage().props.value.flash.type,
-                duration: 10000,
+        // console.log(this.$inertia.page.props)
+        if (this.$inertia?.page?.props.flash?.type) {
+            this.$swal({
+                icon: this.$inertia.page.props.flash.type,
+                title: this.$inertia.page.props.flash.message,
+                toast: true,
+                position: 'bottom-right',
+                showConfirmButton: false,
+                timer: 4500,
+                timerProgressBar: true,
             });
-            usePage().props.value.flash.type = false;
+            this.$inertia.page.props.flash.type = false;
         }
     },
     mounted() {
-        if (usePage()?.props?.value?.flash?.type) {
-            notify({
-                title: usePage().props.value.flash.type == 'success' ? 'Sucesso' : 'Erro',
-                text: usePage().props.value.flash.message,
-                type: usePage().props.value.flash.type,
-                duration: 10000,
+        // console.log(this.$inertia.page.props)
+        if (this.$inertia?.page?.props?.flash?.type) {
+            this.$swal({
+                icon: this.$inertia.page.props.flash.type,
+                title: this.$inertia.page.props.flash.message,
+                toast: true,
+                position: 'bottom-right',
+                showConfirmButton: false,
+                timer: 4500,
+                timerProgressBar: true,
             });
-            usePage().props.value.flash.type = false;
+            this.$inertia.page.props.flash.type = false;
         }
     }
 }
 </script>
 
-
 <template>
     <div>
         <div class="min-h-screen pt-0 md:pt-0 bg-root">
-            <Sidebar></Sidebar>
+            <Sidebar/>
 
-            <header class="px-2 md:pl-28 md:pr-8">
+            <SidebarMobile :user="user" class="md:hidden"/>
+
+            <header class="px-2 md:pl-28 md:pr-8 hidden md:block">
                 <div class="flex items-center justify-between pt-4 md:pt-6">
                     <div class="flex items-center justify-between w-full px-4 py-3 shadow-sm bg-primary rounded-xl">
                         <div class="hidden sm:block ">
