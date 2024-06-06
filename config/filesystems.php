@@ -51,11 +51,11 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
             'path' => env('AWS_BUCKET_PATH'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
+            'url' => env('APP_ENV') !== 'local' ? '' : env('AWS_URL'),
+            'endpoint' => env('APP_ENV') === 'local' ? '' : env('AWS_ENDPOINT'),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
-            'bucket_endpoint' => false,  //add this
+            'bucket_endpoint' => !(env('APP_ENV') === 'local'),  //add this
         ],
 
     ],

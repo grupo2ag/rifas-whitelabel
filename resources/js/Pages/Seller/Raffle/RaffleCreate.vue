@@ -86,12 +86,13 @@ export default {
     },
     props: {
         raffle: Array,
-        quantity_numbers: Array
+        quantity_numbers: Array,
+        flash: Object,
     },
     data() {
         return {
             form: {
-                id: this.raffle?.id ? this.raffle.id : '',
+                id: this.raffle ? this.raffle.id : '',
                 title: this.raffle ? this.raffle.title : '',
                 link: this.raffle ? this.raffle.link : '',
                 subtitle: this.raffle ? this.raffle.subtitle : '',
@@ -112,11 +113,11 @@ export default {
                 highlight: this.raffle ? this.raffle.highlight : 0,
 
                 gallery: this.raffle ? this.raffle.galery : [],
-                quotas: [],
                 awards: this.raffle ? this.raffle.raffle_awards : [{description: ''}],
                 promotions: this.raffle ? this.raffle.promotions : [{quantity_numbers: '', discount: '' }],
                 processing: false
             },
+            gallery: this.raffle ? [...this.raffle.galery] : [],
             editorType: ClassicEditor,
             editorConfig: {
                 plugins: [
@@ -156,8 +157,7 @@ export default {
             },
             characterLenght: 0,
             characterLenght2: 0,
-            number_quota: null,
-            imageGallery: this.raffle ? this.raffle.galery : '',
+            imageGallery: '',
             validator: {
                 title: '',
                 subtitle: '',
@@ -166,8 +166,9 @@ export default {
                 description: '',
                 expected_date: '',
                 'awards[0].description': '',
-                gallery: '',
+                // gallery: '',
             },
+            gallerys: this.raffle ? this.raffle.galery : [],
             today: new Date(),
             numbers_manual: this.quantity_numbers
         }
@@ -184,25 +185,28 @@ export default {
                 .validate(this.form, {abortEarly: false}).then(() => {
                     this.form.processing = true;
 
-                let endPoint = this.raffle.id ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
+                let endPoint = this.raffle ? 'raffles.raffleUpdate' : 'raffles.raffleStore';
                 form.post(route(endPoint), {
                     onSuccess: () => {
-                        this.disabled = false
-                        this.loading = false
+                        this.processing = false
+                        this.processing = false
                     },
                     onError: () => {
-                        this.disabled = false
-                        this.loading = false
+                        this.processing = false
+                        this.processing = false
+                        console.log('errooo')
                     }
                 })
 
             }).catch((err) => {
                 this.form.processing = false;
-                //console.log(err)
-                err.inner.forEach((error) => {
-                    console.log(error.path);
-                    this.validator = {...this.validator, [error.path]: error.message};
-                });
+                console.log(err.errors)
+                if(err.errors){
+                    err.errors.forEach((error) => {
+                        this.validator = {...this.validator, [error.path]: error.message};
+                    });
+                }
+
             });
         },
         countdown() {
@@ -235,30 +239,25 @@ export default {
                 }
             }
         },
-        addImage(gallery) {
-            let imageReader = '';
+        addImage(file) {
 
-            const reader = new FileReader();
+            this.gallery.push({img: URL.createObjectURL(file)})
+            this.form.gallery.push({img: file})
 
-            const imageCurrentAdd = {
-                img: reader.result
-            }
-
-            reader.onload = () => {
-                imageReader = reader.result
-                imageCurrentAdd.img = imageReader
-                gallery.push(imageCurrentAdd)
-                this.imageGallery = '';
-            };
-            reader.readAsDataURL(this.imageGallery)
             forceRender()
         },
         removeImage(item) {
-            for (let i = this.form.gallery.length; i--;) {
-                if (this.form.gallery[i].img === item) {
-                    this.form.gallery.splice(i, 1);
-                }
-            }
+            this.form.gallery = this.form.gallery.filter((image) => {
+                return image.img != item
+            })
+            this.gallery = this.gallery.filter((image) => {
+                return image.img != item
+            })
+            // for (let i = this.form.gallery.length; i--;) {
+            //     if (this.form.gallery[i].image === item) {
+            //         this.form.gallery.splice(i, 1);
+            //     }
+            // }
         },
     },
     watch: {
@@ -275,14 +274,20 @@ export default {
         }
     },
     mounted() {
+        console.log(this.form)
+
+        let greaterThanTen = this.quantity_numbers.filter(element => element.texto !== '1.000.000' && element.texto !== '10.000.000');
+        console.log(greaterThanTen)
+
+
         yup.setLocale(pt);
         this.schema = yup.object().shape({
             title: yup.string().min(10, 'Digite ao menos 10 caracteres').max(80, 'Digite ao máximo 80 caracteres').required('Obrigatório'),
             subtitle: yup.string().min(5, 'Digite ao menos 5 caracteres').max(160, 'Digite ao máximo 160 caracteres').required('Obrigatório'),
             value: yup.number().positive().nullable(true).required('Obrigatório'),
             pix_expired: yup.string().required('Obrigatório'),
-            description: yup.string().required('Obrigatório'),
-            expected_date: yup.string().required('Obrigatório'),
+           description: yup.string().required('Obrigatório'),
+           expected_date: yup.string().required('Obrigatório'),
             awards: yup.array().of(
                 yup.object().shape({
                     description: yup.string().required('Obrigatório')
@@ -294,6 +299,8 @@ export default {
                 })
             ).min(1, 'Imagem obrigatória').required('Obrigatório')
         })
+        /*  */
+        /**/
     }
 }
 </script>
@@ -463,7 +470,7 @@ export default {
                                        placeholder="dd/mm/aaaa" v-model="form.expected_date"/>
                             </div>
 
-                            <div class="w-full md:w-6/12 hidden">
+                            <div class="hidden w-full md:w-6/12">
                                 <Select label="Status:" v-model="form.status" :name="form.status"
                                         :error="validator.status || $page.props.errors.status">
                                     <option value="Ativo">
@@ -611,7 +618,7 @@ export default {
                     </div>
                 </div>
 
-                <div class="mb-4 c-content hidden">
+                <div class="hidden mb-4 c-content">
                     <div class="flex items-center pb-2 border-b border-base-100">
                         <div class="flex items-center">
                             <ReceiptPercentIcon class="h-5 mr-1 stroke-neutral"/>
@@ -687,7 +694,7 @@ export default {
 
                                         <Error :message="validator.gallery"/>
 
-                                        <Button type="button" @click="addImage(form.gallery)"
+                                        <Button type="button" @click="addImage(imageGallery)"
                                                 class="w-full mt-2"
                                                 size="sm" color="primary">Adicionar Imagem
                                         </Button>
@@ -698,7 +705,7 @@ export default {
                                         </p>
 
                                         <div class="grid flex-wrap grid-cols-5 gap-2 pt-3 border-t border-gray-light dark:border-bgadm-light">
-                                            <div v-for="(item, index) in form.gallery" :key="index"
+                                            <div v-for="(item, index) in gallery" :key="index"
                                                  class="relative">
                                                 <div class="absolute w-full h-full transition-all opacity-0 cursor-pointer cover-remove hover:opacity-100">
                                                     <button type="button"
@@ -707,7 +714,7 @@ export default {
                                                         <TrashIcon class="w-4 h-4 stroke-white"/>
                                                     </button>
                                                 </div>
-                                                <img class="object-cover aspect-square w-full h-full" :src="item.img" alt="">
+                                                <img class="object-cover w-full h-full aspect-square" :src="item.img" alt="">
                                             </div>
                                         </div>
                                     </div>
@@ -725,7 +732,7 @@ export default {
                         <Button :href="route('raffles.raffleIndex')" size="sm" color="outline-light">
                             Cancelar
                         </Button>
-                        <Button type="submit" @click="onSubmit" color="success" :loading="loading" :disabled="disabled">
+                        <Button type="button" @click="onSubmit" color="success" :loading="form.processing" :disabled="form.processing">
                             Salvar
                         </Button>
                     </div>
