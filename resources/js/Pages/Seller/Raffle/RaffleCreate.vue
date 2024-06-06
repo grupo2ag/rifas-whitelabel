@@ -240,36 +240,9 @@ export default {
             }
         },
         addImage(file) {
-            let imageReader = '';
 
-            const reader = new FileReader();
-            // console.log(file)
-            const imageCurrentAdd = {
-                img: reader.result
-            }
-
-           /* reader.onload = () => {
-                imageReader = reader.result
-                imageCurrentAdd.img = imageReader
-                this.gallerys.push(imageCurrentAdd)
-                this.imageGallery = '';
-            };*/
-
-            this.gallerys.push({img: URL.createObjectURL(file)})
-            //  this.form.gallery.push({img: file})
-
-            console.log('form.gallery',this.form.gallery)
-            console.log('gallery',this.gallerys)
-            // reader.readAsDataURL(this.imageGallery)
-            // reader.onload = () => {
-            //     imageReader = reader.result
-            //     imageCurrentAdd.image = imageReader
-            //     gallery.push(imageCurrentAdd)
-            //     this.imageGallery = '';
-            // };
-            // reader.readAsDataURL(this.imageGallery)
-            this.gallery.push({img: URL.createObjectURL(gallery)})
-            this.form.gallery.push({img: gallery})
+            this.gallery.push({img: URL.createObjectURL(file)})
+            this.form.gallery.push({img: file})
 
             forceRender()
         },
@@ -741,7 +714,7 @@ export default {
                                                         <TrashIcon class="w-4 h-4 stroke-white"/>
                                                     </button>
                                                 </div>
-                                                <img class="object-cover w-full h-full aspect-square" :src="item.image" alt="">
+                                                <img class="object-cover w-full h-full aspect-square" :src="item.img" alt="">
                                             </div>
                                         </div>
                                     </div>
