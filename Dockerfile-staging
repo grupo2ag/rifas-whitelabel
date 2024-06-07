@@ -59,7 +59,7 @@ COPY env-staging .env
 EXPOSE 80
 EXPOSE 8000
 
-#ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --optimize-autoloader --no-dev
 
 RUN touch .env \
