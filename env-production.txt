@@ -65,6 +65,7 @@ AWS_SECRET_ACCESS_KEY=b5Dn4BMfwivCUZIuyWpv02s+/hp9WiMCZtZ9bLcG
 AWS_DEFAULT_REGION=us-east-1
 AWS_BUCKET=8rifas
 AWS_BUCKET_PATH="raffles_${APP_ENV}"
+AWS_ENDPOINT=https://cdn.8rifas.com
 AWS_USE_PATH_STYLE_ENDPOINT=false
 
 SQS_FIFO_PREFIX=https://sqs.us-east-1.amazonaws.com/533267415749
