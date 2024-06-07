@@ -17,7 +17,7 @@ import {
 <script>
 export default {
     props: {
-        data: Object
+        data: Object,
     },
     methods: {
         goToPaymentMethods() {
@@ -40,7 +40,7 @@ export default {
                 Dashboard
             </h2>
         </template>
-        <div class="!w-full container-none px-2">
+        <div class="!w-full pt-16 md:pt-0 container-none px-2">
             <!-- <CarouselDashboard /> -->
             <div class="flex flex-row gap-4 lg:min-h-[35rem] mb-6 md:flex-wrap flex-wrap lg:flex-nowrap">
                 <div class="w-full py-2 rounded-lg lg:w-6/12 bg-content md:w-full animate-fade-down">
@@ -77,7 +77,7 @@ export default {
                                     </div>
                                     <div v-else class="w-full">
                                         <div v-for="(participant, index) in data?.raffles?.ranking" :key="index"
-                                            class="w-full mb-2">
+                                            class="w-full px-4 mb-2">
                                             <StatsRaffleSale :userName="participant?.name"
                                                 :value="func.translateMoney(participant?.total_amount)"
                                                 :textBottom="participant?.email"

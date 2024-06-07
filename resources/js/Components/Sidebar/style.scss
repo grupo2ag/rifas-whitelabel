@@ -191,9 +191,9 @@
 }
 
 .c-backdrop{
-    @apply fixed top-0 left-0 inset-0 bg-content/70 z-[98] h-full;
-    background: rgba(0, 0, 0, 0.6);
+    @apply fixed top-0 left-0 inset-0 bg-content/10 z-[98] h-full;
+   // background: rgba(0, 0, 0, 0.1);
     background-blend-mode: overlay;
     mix-blend-mode: normal;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(6px);
 }

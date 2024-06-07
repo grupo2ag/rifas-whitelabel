@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -85,7 +86,14 @@ class DashboardController extends Controller
         foreach ($data['raffles']['data'] as $key => $value) {
             $raffle = $user->raffles()->ofId($value['id'])->first();
             $data['raffles']['data'][$key]['paid'] = $raffle->participants()->sum('paid');
+
+            $image = $raffle->raffle_images()->first();
+
+            if (!empty($image))
+                $data['raffles']['data'][$key]['gallery']['img'] = Storage::disk(config('filesystems.default'))->temporaryUrl($image->path, now()->addMinutes(30));
         }
+
+//        dd($data);
 
         $data['configurations'] = $user->userConfigurations()->first();
         return Inertia::render('Panel/User/Dashboard', ['data' => $data]);

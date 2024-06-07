@@ -37,7 +37,7 @@ defineProps({
                 </div>
             </div>
             <div class="flex flex-row items-center w-full px-1">
-                <EnvelopeIcon class="w-3 mr-1"/>
+                <EnvelopeIcon class="w-3 mr-1 text-primary-bw"/>
                 <div v-if="textBottom" class="stat-desc text-primary-bw">{{ textBottom }}</div>
             </div>
         </div>

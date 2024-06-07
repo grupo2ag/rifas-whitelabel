@@ -35,7 +35,7 @@ class SellerController extends Controller
             return redirect()->route('paymentMethods')->with('message', 'Primeiro passo configure o Gateway')->send();
         }
 
-        $data = $user->raffles()->orderBy('id')->paginate()->toArray();
+        $data = $user->raffles()->orderByDesc('id')->paginate()->toArray();
 
         $data['total_raffles_active'] = $user->raffles()->where('status', 'Ativo')->count();
         $data['total_raffles_finished'] = $user->raffles()->where('status', 'Finalizado')->count();

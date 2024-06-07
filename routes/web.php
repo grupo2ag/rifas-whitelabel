@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\Fortify\CreateNewUser;
 use App\Http\Controllers\Seller\AffiliateController;
 use App\Http\Controllers\TesteController;
 use App\Http\Middleware\LevelMiddleware;
@@ -11,9 +12,10 @@ use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\GatewayController;
 use App\Http\Controllers\Seller\UserConfigurationsController;
+use App\Http\Controllers\Seller\UserController;
 use Inertia\Inertia;
 
-if(config('app.env') === 'local'){
+if(config('app.env') === 'local' || config('app.env') === 'staging'){
     Route::get('/testee', [TesteController::class, 'index']);
     Route::get('/compra', [TesteController::class, 'simulacao_compra']);
 }
@@ -66,6 +68,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
         Route::post('/paymentMethodsStore', [GatewayController::class, 'store'])->name('paymentMethods.store');
+
     });
 });
 
@@ -82,4 +85,7 @@ Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase'
 Route::get('/account/{cpf}', [RaffleController::class, 'mybillets'])->name('account');
 
 Route::get('/email', [RaffleController::class, 'email'])->name('email');
+
+Route::post('/registerUser', [UserController::class, 'create'])->name('registerUser');
+
 Route::get('/{url}/{affiliate?}', [RaffleController::class, 'index'])->name('raffle');

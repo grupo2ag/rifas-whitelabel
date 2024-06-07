@@ -19,12 +19,12 @@ export default {
 
 <template>
     <!-- <Link :href="route('raffles.raffleView', { id: data?.id })"> -->
-    <div class="card bg-base-100 hover:bg-base-200" role="button" @click="redirect()">
+    <div class="card bg-base-100 hover:bg-base-200 overflow-hidden" role="button" @click="redirect()">
         <div class="flex flex-row mb-2">
             <div class="w-full">
                 <!-- adicionar imagem dinamica -->
                 <!-- <figure> -->
-                <img src="https://mundoemrevista.com.br/wp-content/uploads/2024/01/trevo-de-quatro-folhas.webp"
+                <img :src="data.gallery.img" class="aspect-square w-full"
                     alt="" />
                 <!-- </figure> -->
             </div>

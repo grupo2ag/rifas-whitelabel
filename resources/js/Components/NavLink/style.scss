@@ -9,13 +9,13 @@
     bg-transparent
     md:hover:bg-white-dark
     transition duration-150 ease-in-out
-    border border-transparent;
+    border-b border-primary-bw/40;
 
     &__icon {
         @apply w-6 h-6 stroke-primary-bw;
     }
 
     &.active{
-        @apply bg-white-dark border-primary
+        @apply bg-primary-bw/30 border-primary
     }
 }

@@ -36,6 +36,10 @@ const props = defineProps({
     user: Object
 })
 
+const myAccount = () => {
+    window.location.href = "/user/profile"
+}
+
 </script>
 
 <script>
@@ -52,6 +56,8 @@ export default {
     methods: {
         toggleHumburger() {
             this.isActive = !this.isActive;
+            document.body.classList.toggle('active');
+
         },
         toggleDropdown(element) {
             this.$refs[element].classList.toggle('active')
@@ -72,7 +78,7 @@ export default {
 
             <div class="w-6/12 flex justify-center">
                 <Link :href="route('dashboard')">
-                    <IconsSvg name="logo-pay8" class="h-7 md:h-10 fill-white"/>
+                    <IconsSvg name="logo-8rifas" class="h-7 md:h-10 fill-primary-bw"/>
                 </Link>
             </div>
 
@@ -98,12 +104,12 @@ export default {
                         </div>
                         <div class="flex flex-row">
                             <div class="w-full p-2">
-                                <a href="profile">
+                                <button type="button" @click="myAccount()">
                                     <div class="flex flex-row">
                                         <UserCircleIcon class="w-5 h-5 mr-2 stroke-primary" />
                                         Minha Conta
                                     </div>
-                                </a>
+                                </button>
                             </div>
                         </div>
                         <div class="flex flex-row">
@@ -130,33 +136,26 @@ export default {
         <div class="flex-1 h-full flex justify-between flex-col overflow-auto">
             <div class="flex-1 flex flex-col ">
                 <div class="flex flex-col" id="Admin">
-                    <div class="border-b border-primary-bw/40">
-                        <NavLink :href="route('dashboard')">
-                            <Squares2X2Icon class="w-6 h-6 text-primary-bw" />
-                            Dashboard
-                        </NavLink>
-                    </div>
 
-                    <div class="border-b border-primary-bw/40">
-                        <NavLink :href="route('raffles.raffleIndex')" :active="false" >
-                            <TicketIcon class="w-6 h-6 text-primary-bw" />
-                            Rifas
-                        </NavLink>
-                    </div>
+                    <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                        <Squares2X2Icon class="w-6 h-6 text-primary-bw" />
+                        Dashboard
+                    </NavLink>
 
-                    <div class="border-b border-primary-bw/40">
-                        <NavLink :href="route('paymentMethods')" :active="false">
-                            <CurrencyDollarIcon class="w-6 h-6 text-primary-bw" />
-                            Meios de Pagamento
-                        </NavLink>
-                    </div>
+                    <NavLink :href="route('raffles.raffleIndex')" :active="route().current('raffles.*')">
+                        <TicketIcon class="w-6 h-6 text-primary-bw" />
+                        Rifas
+                    </NavLink>
 
-                    <div class="border-b border-primary-bw/40">
-                        <NavLink :href="route('affiliate.affiliateIndex')" :active="false">
-                            <UsersIcon class="w-6 h-6 text-primary-bw" />
-                            Afiliados
-                        </NavLink>
-                    </div>
+                    <NavLink :href="route('paymentMethods')" :active="route().current('paymentMethods')">
+                        <CurrencyDollarIcon class="w-6 h-6 text-primary-bw" />
+                        Meios de Pagamento
+                    </NavLink>
+
+                    <NavLink :href="route('affiliate.affiliateIndex')" :active="route().current('affiliate.*')">
+                        <UsersIcon class="w-6 h-6 text-primary-bw" />
+                        Afiliados
+                    </NavLink>
                 </div>
             </div>
         </div>
