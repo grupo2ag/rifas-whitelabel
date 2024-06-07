@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "601e4d3653470008dc5e53ce71c9964f",
+    "content-hash": "50b42ee07957568d3368394d97eced9c",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2862,6 +2862,71 @@
                 }
             ],
             "time": "2024-01-28T23:22:08+00:00"
+        },
+        {
+            "name": "meema/laravel-cloudfront",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/meemalabs/laravel-cloudfront.git",
+                "reference": "b074662e6a733127be533a724ea83097eacc8017"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/meemalabs/laravel-cloudfront/zipball/b074662e6a733127be533a724ea83097eacc8017",
+                "reference": "b074662e6a733127be533a724ea83097eacc8017",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "^3.163",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.5.0|^3.6.0|^4.0|^5.0|^6.0",
+                "pestphp/pest": "^1.0",
+                "phpunit/phpunit": "^5.0|^6.0|^8.0|^9.3",
+                "vlucas/phpdotenv": "^4.2|^5.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Meema\\CloudFront\\Providers\\CloudFrontServiceProvider"
+                    ],
+                    "aliases": {
+                        "CloudFront": "Meema\\CloudFront\\Facades\\CloudFrontFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Meema\\CloudFront\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Breuer",
+                    "email": "chris@meema.io"
+                }
+            ],
+            "description": "Easily & quickly integrate your application with AWS CloudFront.",
+            "homepage": "https://github.com/meemalabs/laravel-cloudfront",
+            "keywords": [
+                "Meema",
+                "aws",
+                "cdn",
+                "cloudfront",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/meemalabs/laravel-cloudfront/issues",
+                "source": "https://github.com/meemalabs/laravel-cloudfront/tree/1.0.0"
+            },
+            "time": "2021-03-21T01:20:59+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",

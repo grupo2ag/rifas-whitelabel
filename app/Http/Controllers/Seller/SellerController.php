@@ -19,7 +19,8 @@ use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Intervention\Image\Facades\Image;
 use Spatie\SimpleExcel\SimpleExcelWriter;
-
+use Meema\CloudFront\Facades\CloudFront;
+use Throwable;
 
 class SellerController extends Controller
 {
@@ -340,7 +341,7 @@ class SellerController extends Controller
 
         DB::beginTransaction();
         try {
-            //dd($price);
+            // dd($request->all());
             $raffle->title = $request->title;
             $raffle->subtitle = $request->subtitle;
             $raffle->pix_expired = $request->pix_expired;
@@ -408,7 +409,7 @@ class SellerController extends Controller
                 }
 
             DB::commit();
-
+            $this->cfinvalidate('/images/' . $user_id . '/gallery/' . $raffle->id . '/*');
             return Redirect::route('raffles.raffleIndex')
                 ->with(['type' => 'success', 'message' => 'Rifa alterada com sucesso!']);
 
@@ -748,5 +749,18 @@ class SellerController extends Controller
         }
 
 
+    }
+
+    private function cfinvalidate($path)
+    {
+        try {
+            $result = CloudFront::invalidate([$path]);
+            if($result->toArray()['@metadata']['statusCode'] === 200 || $result->toArray()['@metadata']['statusCode'] === 201){
+                return true;
+            }
+            return false;
+        }catch(Throwable $th){
+            return false;
+        }
     }
 }

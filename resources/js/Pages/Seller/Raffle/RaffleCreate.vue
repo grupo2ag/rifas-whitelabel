@@ -274,7 +274,7 @@ export default {
         }
     },
     mounted() {
-        console.log(this.form)
+        console.log(this.raffle)
 
         let greaterThanTen = this.quantity_numbers.filter(element => element.texto !== '1.000.000' && element.texto !== '10.000.000');
         console.log(greaterThanTen)
