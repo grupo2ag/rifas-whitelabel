@@ -24,7 +24,7 @@ export default {
             <div class="w-full">
                 <!-- adicionar imagem dinamica -->
                 <!-- <figure> -->
-                <img src="https://mundoemrevista.com.br/wp-content/uploads/2024/01/trevo-de-quatro-folhas.webp"
+                <img :src="data.gallery.img"
                     alt="" />
                 <!-- </figure> -->
             </div>
