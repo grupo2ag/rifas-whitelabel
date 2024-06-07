@@ -21,7 +21,7 @@ class SendMail implements ShouldQueue
         $this->dados = $params;
     }
 
-    public $tries = 3;
+    //public $tries = 3;
 
     /**
      * Execute the job.

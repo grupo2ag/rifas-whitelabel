@@ -50,7 +50,7 @@ export default {
                 Rifas
             </h2>
         </template>
-        <div class="container sm:max-w-full !w-full">
+        <div class="container pt-16 md:pt-0 sm:max-w-full !w-full">
             <div class="flex flex-row flex-wrap justify-center mb-2 animate-fade-down">
                 <div class="w-full mb-2 lg:w-4/12 lg:px-2 sm:w-full sm:mb-2">
                     <CardDashboard :title="'Rifas Criadas'" :valueCount="data?.total_raffles ?? 0">

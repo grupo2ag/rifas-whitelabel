@@ -45,34 +45,34 @@ export default {
             <IconsSvg name="logo-rifa8" class="w-4 h-4 md:w-7 md:h-7 fill-primary-bw" />
         </Link>
 
-        <div class="mb-4 rounded">
+        <div class="mb-2 rounded">
             <Popper content="Dashboard" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
-                <NavLink :href="route('dashboard')">
+                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                     <Squares2X2Icon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>
         </div>
-        <div class="mb-4 rounded">
+        <div class="mb-2 rounded">
             <Popper content="Rifas" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
-                <NavLink :href="route('raffles.raffleIndex')" :active="false" >
+                <NavLink :href="route('raffles.raffleIndex')" :active="route().current('raffles.*')">
                     <TicketIcon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>
         </div>
-        <div class="mb-4 rounded">
+        <div class="mb-2 rounded">
             <Popper content="Meios de Pagamento" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
-                <NavLink :href="route('paymentMethods')" :active="false">
+                <NavLink :href="route('paymentMethods')" :active="route().current('paymentMethods')">
                     <CurrencyDollarIcon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>
         </div>
-        <div class="mb-4 rounded">
+        <div class="mb-2 rounded">
             <Popper content="Afiliados" arrow placement="right" hover openDelay="0" closeDelay="0" offset-distance="10"
                 offset-skid="0">
-                <NavLink :href="route('affiliate.affiliateIndex')" :active="false">
+                <NavLink :href="route('affiliate.affiliateIndex')" :active="route().current('affiliate.*')">
                     <UsersIcon class="w-6 h-6 text-primary-bw" />
                 </NavLink>
             </Popper>

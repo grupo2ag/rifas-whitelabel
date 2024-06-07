@@ -69,7 +69,7 @@ export default {
                 {{ `Rifa #${data?.raffle?.id}` }}
             </h2>
         </template>
-        <div class="container-none !w-full px-2">
+        <div class="container-none !w-full pt-16 md:pt-0 px-2">
             <div class="flex flex-row mb-4">
                 <button @click="previousPage"
                     class="flex justify-center border-none text-neutral/70 btn bg-content hover:bg-base-200 btn-sm lg:btn-md">

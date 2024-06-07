@@ -1,0 +1,21 @@
+@tailwind utilities;
+
+.nav-link{
+    @apply px-4 py-3 md:px-3
+    flex items-center
+        gap-2
+    md:rounded-md
+        text-primary-bw
+    bg-transparent
+    md:hover:bg-white-dark
+    transition duration-150 ease-in-out
+    border-b border-primary-bw/40;
+
+    &__icon {
+        @apply w-6 h-6 stroke-primary-bw;
+    }
+
+    &.active{
+        @apply bg-primary-bw/30 border-primary
+    }
+}
