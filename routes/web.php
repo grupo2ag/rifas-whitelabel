@@ -15,7 +15,7 @@ use App\Http\Controllers\Seller\UserConfigurationsController;
 use App\Http\Controllers\Seller\UserController;
 use Inertia\Inertia;
 
-if(config('app.env') === 'local'){
+if(config('app.env') === 'local' || config('app.env') === 'staging'){
     Route::get('/testee', [TesteController::class, 'index']);
     Route::get('/compra', [TesteController::class, 'simulacao_compra']);
 }
