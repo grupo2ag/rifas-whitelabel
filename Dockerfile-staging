@@ -44,10 +44,19 @@ RUN apt install supervisor -y && rm -rf /var/lib/apt/lists/*
 COPY ./deploy.conf/supervisord.conf /etc/supervisor/
 COPY ./deploy.conf/queue.conf /etc/supervisor/conf.d/
 COPY ./deploy.conf/schedule.conf /etc/supervisor/conf.d/
-COPY ./deploy.conf/reverb.conf /etc/supervisor/conf.d/
 
 ## octane copy para supervisor
 #COPY ./deploy.conf/octane.conf /etc/supervisor/conf.d/
+
+# Fix Security APACHE
+RUN echo "ServerSignature Off" >> /etc/apache2/apache2.conf
+RUN echo "ServerTokens Prod" >> /etc/apache2/apache2.conf
+RUN echo "TraceEnable off"  >> /etc/apache2/apache2.conf
+RUN echo "FileETag None"  >> /etc/apache2/apache2.conf
+
+#Servicos Adicionais
+COPY ./deploy.conf/reverb.conf /etc/supervisor/conf.d/
+COPY ./deploy.conf/000-default.conf /etc/apache2/sites-available/
 
 ## Configurando as variaveis
 WORKDIR /app
