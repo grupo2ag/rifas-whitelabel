@@ -85,6 +85,7 @@ Route::post('/purchase', [RaffleController::class, 'purchase'])->name('purchase'
 Route::get('/account/{cpf}', [RaffleController::class, 'mybillets'])->name('account');
 
 Route::get('/email', [RaffleController::class, 'email'])->name('email');
-Route::get('/{url}/{affiliate?}', [RaffleController::class, 'index'])->name('raffle');
 
 Route::post('/registerUser', [UserController::class, 'create'])->name('registerUser');
+
+Route::get('/{url}/{affiliate?}', [RaffleController::class, 'index'])->name('raffle');
