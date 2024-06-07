@@ -103,7 +103,7 @@ const clearPhotoFileInput = () => {
                         </div>
                     </div>
                     <div class="flex justify-center w-full">
-                        <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="selectNewPhoto">
+                        <SecondaryButton class="mt-2 border-none me-2" type="button" @click.prevent="selectNewPhoto">
                             Selecionar Nova Foto
                         </SecondaryButton>
 

@@ -58,7 +58,7 @@ const submit = () => {
             </div>
 
             <div class="block mt-4 mb-2">
-                <label class="flex items-center">
+                <label class="flex items-center" role="button">
                     <Checkbox v-model:checked="form.remember" name="remember" />
                     <span class="text-sm text-gray-600 ms-2">Lembrar-me</span>
                 </label>
@@ -67,14 +67,21 @@ const submit = () => {
                 <!-- <PrimaryButton class=" ms-4" :class="{ ' opacity-25': form.processing }" :disabled="form.processing">
                     Login
                 </PrimaryButton> -->
-                <button type="submit" class="p-2 text-white rounded bg-primary hover:bg-base-200">Login</button>
+                <button type="submit" class="p-2 text-white rounded bg-primary hover:bg-primary/70">Login</button>
             </div>
-
-            <div class="flex items-center justify-end">
-                <Link v-if="canResetPassword" :href="route('password.request')"
-                    class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Esqueci Minha Senha
-                </Link>
+            <div class="flex flex-row flex-wrap">
+                <div class="flex items-center justify-start w-6/12">
+                    <Link v-if="canResetPassword" :href="route('password.request')"
+                        class="text-sm text-gray-600 underline rounded-md hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Esqueci minha senha
+                    </Link>
+                </div>
+                <div class="flex items-center justify-end w-6/12">
+                    <Link :href="route('register')"
+                        class="text-sm text-gray-600 underline rounded-md hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Cadastrar-se
+                    </Link>
+                </div>
             </div>
         </form>
         <!-- </AuthenticationCard> -->
