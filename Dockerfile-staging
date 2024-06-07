@@ -1,0 +1,84 @@
+FROM ubuntu
+
+# Time Zone
+ENV TZ=America/Bahia
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+## Install php8.3.3
+RUN apt update -y
+RUN apt install software-properties-common -y
+RUN apt install apache2 -y
+RUN apt-get install ca-certificates curl gnupg lsb-release -y
+RUN add-apt-repository ppa:ondrej/php -y
+RUN apt update -y
+RUN apt install php8.3 php8.3-common php8.3-mbstring php8.3-cli php8.3-bcmath php8.3-xml php8.3-zip php8.3-pdo php8.3-common php8.3-tokenizer php8.3-pgsql php8.3-curl php8.3-gd php8.3-pdo php8.3-dev php8.3-soap -y
+
+## Install dependencias
+RUN apt update && \
+    apt install git -y &&\
+    apt install curl -y && \
+    apt install -y tzdata && \
+    a2enmod rewrite
+
+### SET ALTERNATIVES
+RUN update-alternatives --set php /usr/bin/php8.3
+
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer
+
+### SWOOLE
+#RUN cd /tmp && git clone https://github.com/swoole/swoole-src.git && \
+#    cd swoole-src && \
+#    git checkout v5.1.0 && \
+#    phpize  && \
+#    ./configure  --enable-openssl && \
+#    make && make install
+#
+#RUN touch /etc/php/8.3/cli/conf.d/swoole.ini && \
+#    echo 'extension=swoole.so' > /etc/php/8.3/cli/conf.d/swoole.ini
+
+## Configuracao Supervisor
+RUN apt install supervisor -y && rm -rf /var/lib/apt/lists/*
+
+COPY ./deploy.conf/supervisord.conf /etc/supervisor/
+COPY ./deploy.conf/queue.conf /etc/supervisor/conf.d/
+COPY ./deploy.conf/schedule.conf /etc/supervisor/conf.d/
+COPY ./deploy.conf/reverb.conf /etc/supervisor/conf.d/
+
+## octane copy para supervisor
+#COPY ./deploy.conf/octane.conf /etc/supervisor/conf.d/
+
+## Configurando as variaveis
+WORKDIR /app
+
+COPY . .
+
+COPY env-staging .env
+
+EXPOSE 80
+EXPOSE 8000
+
+#ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer install --optimize-autoloader --no-dev
+
+RUN touch .env \
+    && php artisan key:generate --force
+
+####--clean optimize-autoloader --no-dev
+## Optimizing Configuration loading
+RUN php artisan optimize:clear && php artisan optimize
+
+RUN chown -Rf root:www-data /app/storage
+RUN chmod -Rf 775 /app/storage
+
+## Fix Security
+RUN rm -Rf /app/deploy.conf && \
+    rm -Rf /app/Dockerfile-staging && \
+    rm -Rf /app/env-production && \
+    rm -Rf /app/env-staging && \
+    rm -Rf /app/common_files && \
+    rm -Rf /app/.git && \
+    rm -Rf /app/.github
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
