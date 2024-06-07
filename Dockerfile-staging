@@ -69,8 +69,8 @@ RUN touch .env \
 ## Optimizing Configuration loading
 RUN php artisan optimize:clear && php artisan optimize
 
-RUN chown -Rf root:www-data /app/storage
-RUN chmod -Rf 775 /app/storage
+#RUN chown -Rf root:www-data /app/storage
+#RUN chmod -Rf 775 /app/storage
 
 ## Fix Security
 RUN rm -Rf /app/deploy.conf && \
