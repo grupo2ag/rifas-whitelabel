@@ -77,7 +77,7 @@ export default {
                                     </div>
                                     <div v-else class="w-full">
                                         <div v-for="(participant, index) in data?.raffles?.ranking" :key="index"
-                                            class="w-full mb-2">
+                                            class="w-full px-4 mb-2">
                                             <StatsRaffleSale :userName="participant?.name"
                                                 :value="func.translateMoney(participant?.total_amount)"
                                                 :textBottom="participant?.email"

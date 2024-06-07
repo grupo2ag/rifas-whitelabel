@@ -1,5 +1,6 @@
 <?php
 
+use App\Actions\Fortify\CreateNewUser;
 use App\Http\Controllers\Seller\AffiliateController;
 use App\Http\Controllers\TesteController;
 use App\Http\Middleware\LevelMiddleware;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\DashboardController;
 use App\Http\Controllers\Seller\GatewayController;
 use App\Http\Controllers\Seller\UserConfigurationsController;
+use App\Http\Controllers\Seller\UserController;
 use Inertia\Inertia;
 
 if(config('app.env') === 'local'){
@@ -66,6 +68,7 @@ Route::middleware(LevelMiddleware::class)->group(function (){
 
         Route::get('/paymentMethods', [GatewayController::class, 'index'])->name('paymentMethods');
         Route::post('/paymentMethodsStore', [GatewayController::class, 'store'])->name('paymentMethods.store');
+
     });
 });
 
@@ -83,3 +86,5 @@ Route::get('/account/{cpf}', [RaffleController::class, 'mybillets'])->name('acco
 
 Route::get('/email', [RaffleController::class, 'email'])->name('email');
 Route::get('/{url}/{affiliate?}', [RaffleController::class, 'index'])->name('raffle');
+
+Route::post('/registerUser', [UserController::class, 'create'])->name('registerUser');

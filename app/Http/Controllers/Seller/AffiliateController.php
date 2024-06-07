@@ -19,6 +19,12 @@ class AffiliateController extends Controller
     {
         $user = auth()->user();
 
+        $gateway = $user->gatewayConfigurations()->first();
+
+        if(empty($gateway->token) || empty($gateway->login)){
+            return redirect()->route('paymentMethods')->with('message', 'Primeiro passo configure o Gateway');
+        }
+
         if(!empty($affiliateId)){
             $affiliate = $user->affiliate()->where('affiliates.id', $affiliateId)->first();
 
