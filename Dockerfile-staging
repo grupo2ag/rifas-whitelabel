@@ -27,6 +27,11 @@ RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     chmod +x /usr/local/bin/composer
 
+RUN curl -fsSL https://deb.nodesource.com/setup_21.x | bash - && \
+    apt update && \
+    apt install nodejs -y && \
+    npm install -g npm@10.8.1
+
 ### SWOOLE
 #RUN cd /tmp && git clone https://github.com/swoole/swoole-src.git && \
 #    cd swoole-src && \
