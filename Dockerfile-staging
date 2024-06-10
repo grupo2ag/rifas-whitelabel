@@ -79,9 +79,10 @@ RUN composer install --optimize-autoloader --no-dev
 RUN touch .env \
     && php artisan key:generate --force
 
-####--clean optimize-autoloader --no-dev
+## Montagem da Aplicacao NPM
+RUN npm install && npm run build
 ## Optimizing Configuration loading
-#RUN php artisan optimize:clear && php artisan optimize
+RUN php artisan optimize:clear && php artisan optimize
 
 #RUN chown -Rf root:www-data /app/storage
 #RUN chmod -Rf 775 /app/storage
