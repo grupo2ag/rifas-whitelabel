@@ -85,7 +85,7 @@ RUN touch .env \
 RUN npm install && npm run build
 
 ## Optimizing Configuration loading
-RUN php artisan optimize:clear && php artisan optimize
+#RUN php artisan optimize:clear && php artisan optimize
 
 #RUN chown -Rf root:www-data /app/storage
 #RUN chmod -Rf 775 /app/storage
