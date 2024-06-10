@@ -49,8 +49,8 @@ RUN curl -fsSL https://deb.nodesource.com/setup_21.x | bash - && \
 RUN apt install supervisor -y && rm -rf /var/lib/apt/lists/*
 
 COPY ./deploy.conf/supervisord.conf /etc/supervisor/
-COPY ./deploy.conf/queue.conf /etc/supervisor/conf.d/
-COPY ./deploy.conf/schedule.conf /etc/supervisor/conf.d/
+####COPY ./deploy.conf/queue.conf /etc/supervisor/conf.d/
+####COPY ./deploy.conf/schedule.conf /etc/supervisor/conf.d/
 
 ## octane copy para supervisor
 #COPY ./deploy.conf/octane.conf /etc/supervisor/conf.d/
@@ -62,7 +62,6 @@ RUN echo "TraceEnable off"  >> /etc/apache2/apache2.conf
 RUN echo "FileETag None"  >> /etc/apache2/apache2.conf
 
 #Servicos Adicionais
-#COPY ./deploy.conf/reverb_staging.conf /etc/supervisor/conf.d/
 COPY ./deploy.conf/000-default.conf /etc/apache2/sites-available/
 
 ## Configurando as variaveis
