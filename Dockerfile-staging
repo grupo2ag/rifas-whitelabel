@@ -85,7 +85,7 @@ RUN touch .env \
 RUN npm install && npm run build
 
 ##Cache routes and config again
-RUN php artisan route:clear && php artisan route:cache
+RUN php artisan optimize:clear && php artisan optimize:cache
 
 ### Fix Permissao
 RUN chmod -Rf 777 /app/storage
