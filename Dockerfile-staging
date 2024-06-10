@@ -81,6 +81,7 @@ RUN touch .env \
 
 ## Montagem da Aplicacao NPM
 RUN npm install && npm run build
+
 ## Optimizing Configuration loading
 RUN php artisan optimize:clear && php artisan optimize
 
