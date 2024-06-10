@@ -85,7 +85,7 @@ RUN touch .env \
 RUN npm install && npm run build
 
 ##Cache routes and config again
-RUN php artisan optimize:clear && php artisan optimize:cache
+RUN php artisan optimize:clear && php artisan optimize
 #RUN php artisan route:clear && php artisan route:cache
 
 ### Fix Permissao
