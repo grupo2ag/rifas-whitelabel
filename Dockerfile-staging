@@ -86,6 +86,7 @@ RUN npm install && npm run build
 
 ##Cache routes and config again
 RUN php artisan optimize:clear && php artisan optimize:cache
+#RUN php artisan route:clear && php artisan route:cache
 
 ### Fix Permissao
 RUN chmod -Rf 777 /app/storage
