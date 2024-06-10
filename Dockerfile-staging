@@ -84,11 +84,11 @@ RUN touch .env \
 ## Montagem da Aplicacao NPM
 RUN npm install && npm run build
 
-## Optimizing Configuration loading
-#RUN php artisan optimize:clear && php artisan optimize
+##Cache routes and config again
+RUN php artisan route:clear && php artisan route:cache
 
-#RUN chown -Rf root:www-data /app/storage
-#RUN chmod -Rf 775 /app/storage
+### Fix Permissao
+RUN chmod -Rf 777 /app/storage
 
 ## Fix Security
 RUN rm -Rf /app/deploy.conf && \
