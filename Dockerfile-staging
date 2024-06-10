@@ -89,7 +89,7 @@ RUN php artisan optimize:clear && php artisan optimize
 #RUN php artisan route:clear && php artisan route:cache
 
 ### Fix Permissao
-RUN chmod -Rf 777 /app/storage
+RUN chmod -Rf 775 /app/storage
 
 ## Fix Security
 RUN rm -Rf /app/deploy.conf && \
