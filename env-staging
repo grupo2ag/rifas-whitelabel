@@ -47,7 +47,8 @@ CACHE_PREFIX=
 MEMCACHED_HOST=127.0.0.1
 
 REDIS_CLIENT=predis
-REDIS_HOST=rifas8-nxdsmh.serverless.use1.cache.amazonaws.com
+REDIS_SCHEME=tls
+REDIS_HOST=rifas8redis-nxdsmh.serverless.use1.cache.amazonaws.com
 REDIS_PASSWORD=null
 REDIS_PORT=6379
 
