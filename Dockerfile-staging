@@ -62,7 +62,7 @@ RUN echo "TraceEnable off"  >> /etc/apache2/apache2.conf
 RUN echo "FileETag None"  >> /etc/apache2/apache2.conf
 
 #Servicos Adicionais
-COPY ./deploy.conf/reverb_staging.conf /etc/supervisor/conf.d/
+#COPY ./deploy.conf/reverb_staging.conf /etc/supervisor/conf.d/
 COPY ./deploy.conf/000-default.conf /etc/apache2/sites-available/
 
 ## Configurando as variaveis
