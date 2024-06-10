@@ -147,7 +147,7 @@ return [
             'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
         ],
 
-        'clusters' => [
+        //'clusters' => [
             'default' => [
                 [
                     'scheme' => env('REDIS_SCHEME', 'tcp'),
@@ -166,7 +166,7 @@ return [
                     'database' => env('REDIS_CACHE_DB', '1'),
                 ],
             ],
-        ],
+        //],
         /*
         'default' => [
             'url' => env('REDIS_URL'),
