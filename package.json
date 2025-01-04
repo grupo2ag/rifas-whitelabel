@@ -11,7 +11,7 @@
         "@vitejs/plugin-vue": "^5.0.4",
         "@vueuse/core": "^10.9.0",
         "autoprefixer": "^10.4.19",
-        "axios": "^1.6.4",
+        "axios": "^1.7.9",
         "daisyui": "^4.10.2",
         "daisyui-vue": "^0.0.1-alpha.21",
         "laravel-vite-plugin": "^1.0.2",
